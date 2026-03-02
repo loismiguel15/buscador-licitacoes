@@ -1,0 +1,21 @@
+# venv
+.venv/
+venv/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# env
+.env
+.env.*
+
+# sqlite / logs
+*.db
+*.log
+
+# node (se tiver)
+node_modules/
+*.zip
