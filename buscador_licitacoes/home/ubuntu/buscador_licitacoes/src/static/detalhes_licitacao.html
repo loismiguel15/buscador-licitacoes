@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Licitações - Detalhes da Licitação</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
+    nav a { margin-right: 15px; text-decoration: none; color: #333; }
+    .detalhes-container { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+    .detalhes-container h2 { margin-bottom: 20px; }
+    .detalhes-item { margin-bottom: 15px; }
+    .detalhes-item strong { display: block; margin-bottom: 3px; color: #555; }
+    .detalhes-item p, .detalhes-item a { margin: 0; }
+    .texto-integral {
+      background-color: #f9f9f9;
+      border: 1px solid #eee;
+      padding: 10px;
+      margin-top: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .muted { color: #666; }
+    .error { color: #b00020; }
+    .badge { display:inline-block; padding: 2px 8px; border: 1px solid #ccc; border-radius: 999px; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Buscador de Licitações</h1>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="resultados.html">Buscar Licitações</a>
+    <a href="login.html">Login</a>
+    <a href="cadastro.html">Cadastro</a>
+  </nav>
+</header>
+
+<main>
+  <div class="detalhes-container">
+    <h2>Detalhes da Licitação</h2>
+
+    <p id="status" class="muted">Carregando...</p>
+    <p id="error" class="error"></p>
+
+    <!-- Campos -->
+    <div class="detalhes-item">
+      <strong>Número do Processo:</strong>
+      <p id="numero_processo">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Órgão Licitante:</strong>
+      <p id="orgao_licitante">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Modalidade:</strong>
+      <p id="modalidade">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Objeto:</strong>
+      <p id="objeto">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Data de Publicação:</strong>
+      <p id="data_publicacao">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Data de Abertura das Propostas:</strong>
+      <p id="data_abertura_propostas">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Localidade:</strong>
+      <p id="localidade">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Valor Estimado:</strong>
+      <p id="valor_estimado">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Situação:</strong>
+      <p id="situacao">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Fonte dos Dados:</strong>
+      <p><span id="fonte_dados" class="badge">-</span></p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Identificador PNCP (se houver):</strong>
+      <p id="identificador_unico_pncp">-</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Link da Fonte / Edital:</strong>
+      <p id="link_fonte_wrap" class="muted">Não informado.</p>
+    </div>
+
+    <div class="detalhes-item">
+      <strong>Texto Integral do Aviso (se disponível):</strong>
+      <div id="texto_integral_aviso" class="texto-integral muted">Sem texto integral.</div>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <a id="voltar" href="resultados.html">&laquo; Voltar para os resultados</a>
+    </div>
+  </div>
+</main>
+
+<footer style="margin-top: 30px;">
+  <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+  function getParam(name, fallback = "") {
+    const p = new URLSearchParams(window.location.search);
+    return p.get(name) ?? fallback;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString("pt-BR");
+  }
+
+  function formatDateTime(iso) {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleString("pt-BR");
+  }
+
+  function formatMoneyBRL(v) {
+    if (v === null || v === undefined || v === "") return "-";
+    const n = Number(v);
+    if (Number.isNaN(n)) return String(v);
+    return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+
+  function setText(id, value, fallback="-") {
+    document.getElementById(id).textContent = (value !== null && value !== undefined && String(value).trim() !== "") ? value : fallback;
+  }
+
+  async function carregarDetalhes() {
+    const id = getParam("id", "");
+    const status = document.getElementById("status");
+    const error = document.getElementById("error");
+
+    if (!id) {
+      status.textContent = "";
+      error.textContent = "ID não informado na URL. Ex: detalhes_licitacao.html?id=4";
+      return;
+    }
+
+    // Voltar mantendo filtros, se veio de resultados
+    // (se tiver "palavra_chave" etc. na URL, a gente reaproveita)
+    const params = new URLSearchParams(window.location.search);
+    params.delete("id");
+    const voltar = document.getElementById("voltar");
+    if ([...params.keys()].length > 0) {
+      voltar.href = `resultados.html?${params.toString()}`;
+    }
+
+    try {
+      status.textContent = "Consultando a API...";
+      error.textContent = "";
+
+      const res = await fetch(`/api/licitacoes/${encodeURIComponent(id)}`);
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data?.error || "Erro ao carregar detalhes.");
+
+      const lic = data.licitacao || {};
+
+      setText("numero_processo", lic.numero_processo);
+      setText("orgao_licitante", lic.orgao_licitante);
+      setText("modalidade", lic.modalidade);
+      setText("objeto", lic.objeto);
+
+      setText("data_publicacao", formatDate(lic.data_publicacao));
+      setText("data_abertura_propostas", formatDateTime(lic.data_abertura_propostas));
+
+      const loc = [lic.localidade_municipio, lic.localidade_uf].filter(Boolean).join(" - ");
+      setText("localidade", loc || "-");
+
+      setText("valor_estimado", formatMoneyBRL(lic.valor_estimado));
+      setText("situacao", lic.situacao || "N/D");
+
+      setText("fonte_dados", lic.fonte_dados || "-");
+      setText("identificador_unico_pncp", lic.identificador_unico_pncp || "-");
+
+      // Link fonte
+      const wrap = document.getElementById("link_fonte_wrap");
+        wrap.innerHTML = "";
+
+        const pncpId = lic.identificador_unico_pncp;
+
+        if (lic.link_fonte) {
+        const a = document.createElement("a");
+        a.href = lic.link_fonte;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = "Abrir link da fonte";
+        wrap.appendChild(a);
+        } else if (pncpId) {
+        // fallback para abrir no PNCP (link público)
+        const a = document.createElement("a");
+        a.href = `https://pncp.gov.br/app/contratos/${encodeURIComponent(pncpId)}`;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = "Abrir no PNCP";
+        wrap.appendChild(a);
+        } else {
+        wrap.textContent = "Não informado.";
+        wrap.className = "muted";
+        }
+
+      // Texto integral
+      const txt = document.getElementById("texto_integral_aviso");
+      if (lic.texto_integral_aviso) {
+        txt.textContent = lic.texto_integral_aviso;
+        txt.classList.remove("muted");
+      } else {
+        txt.textContent = "Sem texto integral.";
+        txt.classList.add("muted");
+      }
+
+      status.textContent = "OK.";
+    } catch (e) {
+      status.textContent = "";
+      error.textContent = String(e?.message || e);
+    }
+  }
+
+  carregarDetalhes();
+</script>
+
+</body>
+</html>

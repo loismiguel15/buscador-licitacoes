@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Licitações - Painel Administrativo</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #333; }
+        .admin-container { margin-top: 20px; }
+        .admin-section { margin-bottom: 30px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .admin-section h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        button, .button-link { padding: 8px 12px; cursor: pointer; background-color: #5bc0de; color: white; border: none; border-radius: 3px; text-decoration: none; display: inline-block; font-size: 14px; margin-right: 5px; }
+        button:hover, .button-link:hover { background-color: #31b0d5; }
+        .button-danger { background-color: #d9534f; }
+        .button-danger:hover { background-color: #c9302c; }
+        .add-user-form label, .add-user-form input { display: block; margin-bottom: 8px; }
+        .add-user-form input[type=text], .add-user-form input[type=email], .add-user-form input[type=password] { width: 90%; max-width: 300px; padding: 8px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Buscador de Licitações</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="resultados.html">Buscar Licitações</a>
+            <!-- Adicionar link para Minha Conta/Perfil -->
+            <a href="painel_admin.html">Painel Admin</a> <!-- Apenas para Master -->
+            <a href="#">Sair</a> <!-- Link de Logout -->
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <h2>Painel Administrativo - [Nome da Empresa Cliente]</h2>
+        <p>Bem-vindo, [Nome do Usuário Master]!</p>
+
+        <div class="admin-section">
+            <h3>Gerenciar Usuários Comuns</h3>
+
+            <h4>Usuários Existentes</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome Completo</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas de usuários serão inseridas dinamicamente -->
+                    <tr>
+                        <td>Usuário Comum Exemplo 1</td>
+                        <td>comum1@empresa.com</td>
+                        <td>Ativo</td>
+                        <td>
+                            <button class="button-danger">Desativar</button>
+                            <!-- <button>Editar</button> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Usuário Comum Exemplo 2</td>
+                        <td>comum2@empresa.com</td>
+                        <td>Inativo</td>
+                        <td>
+                            <button>Ativar</button>
+                            <!-- <button>Editar</button> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Adicionar Novo Usuário Comum</h4>
+            <form action="#" method="post" class="add-user-form"> <!-- Ação será definida pelo backend -->
+                <label for="novo_nome">Nome Completo:</label>
+                <input type="text" id="novo_nome" name="novo_nome" required>
+
+                <label for="novo_email">Email (Login):</label>
+                <input type="email" id="novo_email" name="novo_email" required>
+
+                <label for="nova_senha">Senha Provisória:</label>
+                <input type="password" id="nova_senha" name="nova_senha" required>
+
+                <button type="submit">Adicionar Usuário</button>
+            </form>
+        </div>
+
+        <!-- Outras seções administrativas podem ser adicionadas aqui -->
+        <!-- Ex: Configurações da Conta Cliente, Histórico de Faturamento, etc. -->
+
+    </main>
+
+    <footer style="margin-top: 30px;">
+        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
+

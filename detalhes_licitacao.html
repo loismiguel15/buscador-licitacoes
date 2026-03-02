@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Licitações - Detalhes da Licitação</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #333; }
+        .detalhes-container { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .detalhes-container h2 { margin-bottom: 20px; }
+        .detalhes-item { margin-bottom: 15px; }
+        .detalhes-item strong { display: block; margin-bottom: 3px; color: #555; }
+        .detalhes-item p, .detalhes-item a { margin: 0; }
+        .texto-integral { background-color: #f9f9f9; border: 1px solid #eee; padding: 10px; margin-top: 10px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; /* Mantém formatação */ }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Buscador de Licitações</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="resultados.html">Buscar Licitações</a>
+            <a href="login.html">Login</a>
+            <a href="cadastro.html">Cadastro</a>
+            <!-- Links de Admin/Painel apareceriam aqui se logado -->
+        </nav>
+    </header>
+
+    <main>
+        <div class="detalhes-container">
+            <h2>Detalhes da Licitação</h2>
+
+            <!-- Dados da licitação serão preenchidos dinamicamente -->
+            <div class="detalhes-item">
+                <strong>Número do Processo:</strong>
+                <p>001/2025</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Órgão Licitante:</strong>
+                <p>Ministério Exemplo</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Modalidade:</strong>
+                <p>Pregão Eletrônico</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Objeto:</strong>
+                <p>Aquisição de equipamentos de informática para renovação do parque tecnológico do Ministério Exemplo, incluindo desktops, notebooks e monitores, conforme especificações técnicas detalhadas no Termo de Referência.</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Data de Publicação:</strong>
+                <p>01/05/2025</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Data de Abertura das Propostas:</strong>
+                <p>15/05/2025 09:00</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Localidade:</strong>
+                <p>Brasília - DF</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Valor Estimado:</strong>
+                <p>R$ 500.000,00</p> <!-- Exemplo, se disponível -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Situação:</strong>
+                <p>Aberta</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Fonte dos Dados:</strong>
+                <p>PNCP</p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Link da Fonte / Edital:</strong>
+                <p><a href="#" target="_blank">Clique aqui para acessar o edital no PNCP</a></p> <!-- Exemplo -->
+            </div>
+
+            <div class="detalhes-item">
+                <strong>Texto Integral do Aviso (se disponível):</strong>
+                <div class="texto-integral">
+                    <!-- Conteúdo do aviso/edital pode ser inserido aqui -->
+                    AVISO DE LICITAÇÃO
+                    PREGÃO ELETRÔNICO Nº 001/2025
+
+                    OBJETO: Aquisição de equipamentos de informática...
+                    DATA DA SESSÃO: 15/05/2025 às 09:00 (horário de Brasília)
+                    LOCAL: Portal Nacional de Contratações Públicas (PNCP)
+                    ...
+                    (Restante do texto do aviso)
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="resultados.html">&laquo; Voltar para os resultados</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer style="margin-top: 30px;">
+        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Licitações - Cadastro</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #333; }
+        .cadastro-container { max-width: 500px; margin: 30px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        .cadastro-container h2 { text-align: center; margin-bottom: 20px; }
+        .cadastro-container label { display: block; margin-bottom: 5px; }
+        .cadastro-container input[type=text], .cadastro-container input[type=email], .cadastro-container input[type=password] { width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 3px; }
+        .cadastro-container button { width: 100%; padding: 10px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 16px; }
+        .cadastro-container button:hover { background-color: #4cae4c; }
+        .cadastro-container p { text-align: center; margin-top: 15px; }
+        .form-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
+        .form-section:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Buscador de Licitações</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="resultados.html">Buscar Licitações</a>
+            <a href="login.html">Login</a>
+            <a href="cadastro.html">Cadastro</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="cadastro-container">
+            <h2>Criar Nova Conta</h2>
+            <form action="#" method="post"> <!-- Ação será definida pelo backend -->
+
+                <div class="form-section">
+                    <h3>Dados da Empresa (Cliente)</h3>
+                    <label for="nome_empresa">Nome da Empresa:</label>
+                    <input type="text" id="nome_empresa" name="nome_empresa" required>
+
+                    <label for="cnpj">CNPJ:</label>
+                    <input type="text" id="cnpj" name="cnpj" placeholder="XX.XXX.XXX/XXXX-XX" required>
+
+                    <label for="email_contato">Email de Contato (Empresa):</label>
+                    <input type="email" id="email_contato" name="email_contato" required>
+
+                    <label for="telefone_contato">Telefone de Contato (Empresa):</label>
+                    <input type="text" id="telefone_contato" name="telefone_contato">
+                </div>
+
+                <div class="form-section">
+                    <h3>Dados do Usuário Master</h3>
+                    <p>Este será o usuário principal para gerenciar a conta.</p>
+                    <label for="nome_master">Nome Completo:</label>
+                    <input type="text" id="nome_master" name="nome_master" required>
+
+                    <label for="email_master">Email (Login):</label>
+                    <input type="email" id="email_master" name="email_master" required>
+
+                    <label for="senha_master">Senha:</label>
+                    <input type="password" id="senha_master" name="senha_master" required>
+
+                    <label for="confirma_senha_master">Confirmar Senha:</label>
+                    <input type="password" id="confirma_senha_master" name="confirma_senha_master" required>
+                </div>
+
+                <button type="submit">Criar Conta</button>
+            </form>
+            <p>Já tem uma conta? <a href="login.html">Faça login</a></p>
+        </div>
+    </main>
+
+    <footer style="margin-top: 30px;">
+        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
+

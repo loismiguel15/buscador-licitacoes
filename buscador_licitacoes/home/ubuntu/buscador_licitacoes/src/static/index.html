@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buscador de Licitações - Início</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
+    nav a { margin-right: 15px; text-decoration: none; color: #333; }
+    .hero { padding: 16px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 18px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1.2fr 0.8fr; } }
+
+    .card { padding: 18px; border: 1px solid #ccc; border-radius: 8px; background: #fff; }
+    .card h3 { margin-top: 0; }
+
+    input[type=text], select {
+      padding: 10px; margin-right: 10px; width: 100%;
+      max-width: 420px; box-sizing: border-box;
+    }
+    button { padding: 10px 15px; cursor: pointer; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .muted { color: #666; }
+    .error { color: #b00020; }
+    .ok { color: #0b6b0b; }
+    .badge { display:inline-block; padding: 2px 8px; border: 1px solid #ccc; border-radius: 999px; font-size: 12px; }
+    .links a { display: inline-block; margin-right: 12px; }
+    .small { font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Buscador de Licitações</h1>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="resultados.html">Buscar Licitações</a>
+    <a href="login.html">Login</a>
+    <a href="cadastro.html">Cadastro</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <h2>Encontre oportunidades de licitação em segundos</h2>
+    <p class="muted">Busque licitações publicadas no <strong>PNCP</strong> e (quando disponível) em <strong>Diários Oficiais</strong>, com filtros e visualização de detalhes.</p>
+    <div class="links">
+      <a href="resultados.html">Ir para a busca avançada</a>
+      <a href="resultados.html?palavra_chave=pregão" class="small">Exemplo: “pregão”</a>
+      <a href="resultados.html?palavra_chave=limpeza" class="small">Exemplo: “limpeza”</a>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Busca rápida -->
+    <div class="card">
+      <h3>Busca rápida</h3>
+      <p class="muted small">Digite palavras-chave (ex.: limpeza, informática, obra, consultoria).</p>
+
+      <form action="resultados.html" method="get" class="row" style="margin-top:10px;">
+        <input type="text" name="palavra_chave" placeholder="Digite palavras-chave do objeto..." />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <p style="margin-top:12px;">
+        <a href="resultados.html">Abrir busca avançada (modalidade, órgão, UF, paginação)</a>
+      </p>
+    </div>
+
+    <!-- Sincronizar PNCP -->
+    <div class="card">
+      <h3>Atualizar dados do PNCP</h3>
+      <p class="muted small">
+        Importa automaticamente licitações publicadas nos últimos dias.
+        <span class="badge">Requer API /api/pncp/sync</span>
+      </p>
+
+      <div class="row" style="margin-top:10px;">
+        <label class="small">
+          Dias:
+          <select id="dias">
+            <option value="1">1</option>
+            <option value="3" selected>3</option>
+            <option value="7">7</option>
+            <option value="15">15</option>
+          </select>
+        </label>
+
+        <label class="small">
+          Limite:
+          <select id="limite">
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200" selected>200</option>
+            <option value="500">500</option>
+          </select>
+        </label>
+
+        <button type="button" onclick="atualizarPNCP()">Atualizar PNCP</button>
+      </div>
+
+      <p id="sync_status" class="muted" style="margin-top:10px;"></p>
+      <p id="sync_error" class="error" style="margin-top:6px;"></p>
+
+      <p class="small muted" style="margin-top:10px;">
+        Dica: após sincronizar, vá em <a href="resultados.html">Buscar Licitações</a> e pesquise por um termo.
+      </p>
+    </div>
+  </div>
+
+  <section style="margin-top: 30px;">
+    <h3>Sobre o sistema</h3>
+    <p>Este sistema centraliza informações de licitações para facilitar o acesso e monitoramento por fornecedores.</p>
+    <ul>
+      <li><strong>Busca</strong> por palavra-chave, órgão, modalidade e UF</li>
+      <li><strong>Detalhes</strong> completos da licitação (objeto, valor estimado, datas, situação)</li>
+      <li><strong>Sincronização</strong> com o PNCP por período</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+  async function atualizarPNCP() {
+    const status = document.getElementById("sync_status");
+    const error = document.getElementById("sync_error");
+    const dias = document.getElementById("dias").value;
+    const limite = document.getElementById("limite").value;
+
+    status.className = "muted";
+    status.textContent = "Atualizando PNCP... aguarde.";
+    error.textContent = "";
+
+    try {
+      const res = await fetch(`/api/pncp/sync?dias=${encodeURIComponent(dias)}&limite=${encodeURIComponent(limite)}`);
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data?.error || "Erro na sincronização.");
+
+      status.className = "ok";
+      if (data.salvos === 0 && data.atualizados > 0) {
+        status.textContent = `✔ PNCP já estava atualizado. Conferidos ${data.recebidos} registros (atualizados ${data.atualizados}).`;
+        } else {
+        status.textContent = `✔ Sync concluído: recebidos ${data.recebidos}, salvos ${data.salvos}, atualizados ${data.atualizados}, pulados ${data.pulados}.`;
+        }
+      const agora = new Date().toLocaleString("pt-BR");
+      status.textContent += ` (Atualizado em: ${agora})`;
+    } catch (e) {
+      status.textContent = "";
+      error.textContent = "Erro: " + (e?.message || e);
+    }
+    
+  }
+</script>
+
+</body>
+</html>

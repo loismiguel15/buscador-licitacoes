@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Licitações - Início</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #333; }
+        .search-container { margin-top: 30px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        input[type=text], select { padding: 10px; margin-right: 10px; width: 300px; }
+        button { padding: 10px 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Buscador de Licitações</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="resultados.html">Buscar Licitações</a>
+            <a href="login.html">Login</a>
+            <a href="cadastro.html">Cadastro</a>
+            <!-- Links de Admin/Painel apareceriam aqui se logado -->
+        </nav>
+    </header>
+
+    <main>
+        <h2>Encontre Oportunidades de Licitação</h2>
+        <p>Utilize nossa plataforma para buscar licitações publicadas nos Diários Oficiais e no PNCP.</p>
+
+        <div class="search-container">
+            <h3>Busca Rápida</h3>
+            <form action="resultados.html" method="get">
+                <input type="text" name="palavra_chave" placeholder="Digite palavras-chave do objeto...">
+                <button type="submit">Buscar</button>
+            </form>
+            <p><a href="resultados.html">Ir para a busca avançada</a></p>
+        </div>
+
+        <section style="margin-top: 30px;">
+            <h3>Sobre o Sistema</h3>
+            <p>Este sistema centraliza informações de licitações para facilitar o acesso e monitoramento por fornecedores do governo.</p>
+            <p>Fontes de dados incluem Diários Oficiais e o Portal Nacional de Contratações Públicas (PNCP).</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
+
