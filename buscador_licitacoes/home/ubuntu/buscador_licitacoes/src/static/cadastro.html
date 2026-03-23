@@ -1,82 +1,588 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Licitações - Cadastro</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
-        nav a { margin-right: 15px; text-decoration: none; color: #333; }
-        .cadastro-container { max-width: 500px; margin: 30px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
-        .cadastro-container h2 { text-align: center; margin-bottom: 20px; }
-        .cadastro-container label { display: block; margin-bottom: 5px; }
-        .cadastro-container input[type=text], .cadastro-container input[type=email], .cadastro-container input[type=password] { width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 3px; }
-        .cadastro-container button { width: 100%; padding: 10px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 16px; }
-        .cadastro-container button:hover { background-color: #4cae4c; }
-        .cadastro-container p { text-align: center; margin-top: 15px; }
-        .form-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; }
-        .form-section:last-child { border-bottom: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Licitações - Cadastro</title>
+
+  <link rel="icon" type="image/png" href="/static/img/logo1.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/global.css">
+  <link rel="stylesheet" href="/static/css/cadastro.css">
+
+  <style>
+    .password-strength {
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .strength-bar {
+      width: 100%;
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    body.dark .strength-bar {
+      background: #243247;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.25s ease, background-color 0.25s ease;
+      background: #dc2626;
+    }
+
+    .strength-text {
+      margin-top: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+    }
+
+    body.dark .strength-text {
+      color: var(--text-soft);
+    }
+  </style>
 </head>
 <body>
 
-    <header>
+<header>
+  <div class="container topbar">
+    <a href="index.html" class="brand">
+      <img src="/static/img/logo1.png" class="logo" alt="Logo Buscador de Licitações">
+      <div class="brand-text">
         <h1>Buscador de Licitações</h1>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="resultados.html">Buscar Licitações</a>
-            <a href="login.html">Login</a>
-            <a href="cadastro.html">Cadastro</a>
-        </nav>
-    </header>
+        <span>Encontre oportunidades com mais rapidez</span>
+      </div>
+    </a>
 
-    <main>
-        <div class="cadastro-container">
-            <h2>Criar Nova Conta</h2>
-            <form action="#" method="post"> <!-- Ação será definida pelo backend -->
+    <nav>
+      <a href="index.html">Início</a>
+    </nav>
 
-                <div class="form-section">
-                    <h3>Dados da Empresa (Cliente)</h3>
-                    <label for="nome_empresa">Nome da Empresa:</label>
-                    <input type="text" id="nome_empresa" name="nome_empresa" required>
+    <div class="nav-actions">
+      <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">🌙 Tema escuro</button>
+      <a href="login.html" class="btn btn-outline">Login</a>
+      <a href="cadastro.html" class="btn btn-primary">Criar Conta</a>
+    </div>
+  </div>
+</header>
 
-                    <label for="cnpj">CNPJ:</label>
-                    <input type="text" id="cnpj" name="cnpj" placeholder="XX.XXX.XXX/XXXX-XX" required>
+<main class="cadastro-page">
+  <div class="cadastro-bg-animation">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="aurora aurora-1"></span>
+    <span class="aurora aurora-2"></span>
+    <span class="grid-glow"></span>
+  </div>
 
-                    <label for="email_contato">Email de Contato (Empresa):</label>
-                    <input type="email" id="email_contato" name="email_contato" required>
+  <div class="cadastro-wrapper">
 
-                    <label for="telefone_contato">Telefone de Contato (Empresa):</label>
-                    <input type="text" id="telefone_contato" name="telefone_contato">
-                </div>
+    <div class="cadastro-side">
+      <span class="page-tag">Cadastro de empresa</span>
+      <h2>Crie sua conta e comece a monitorar licitações</h2>
+      <p>
+        Cadastre sua empresa, valide o CNPJ e configure o usuário master para acessar
+        a plataforma com mais segurança e organização.
+      </p>
 
-                <div class="form-section">
-                    <h3>Dados do Usuário Master</h3>
-                    <p>Este será o usuário principal para gerenciar a conta.</p>
-                    <label for="nome_master">Nome Completo:</label>
-                    <input type="text" id="nome_master" name="nome_master" required>
-
-                    <label for="email_master">Email (Login):</label>
-                    <input type="email" id="email_master" name="email_master" required>
-
-                    <label for="senha_master">Senha:</label>
-                    <input type="password" id="senha_master" name="senha_master" required>
-
-                    <label for="confirma_senha_master">Confirmar Senha:</label>
-                    <input type="password" id="confirma_senha_master" name="confirma_senha_master" required>
-                </div>
-
-                <button type="submit">Criar Conta</button>
-            </form>
-            <p>Já tem uma conta? <a href="login.html">Faça login</a></p>
+      <div class="side-points">
+        <div class="side-point">
+          <strong>Validação automática</strong>
+          <span>Consulta do CNPJ e preenchimento da razão social.</span>
         </div>
-    </main>
 
-    <footer style="margin-top: 30px;">
-        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
-    </footer>
+        <div class="side-point">
+          <strong>Mais confiabilidade</strong>
+          <span>Cadastro liberado apenas para empresas ativas.</span>
+        </div>
+
+        <div class="side-point">
+          <strong>Acesso imediato</strong>
+          <span>Após criar a conta, o usuário master já entra no sistema.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cadastro-card">
+      <h2>Criar Nova Conta</h2>
+
+      <form id="formCadastro" novalidate>
+        <div class="form-section">
+          <h3>Dados da Empresa</h3>
+
+          <label for="cnpj">CNPJ</label>
+          <input type="text" id="cnpj" placeholder="00.000.000/0000-00" autocomplete="off" required>
+
+          <p class="help-text">
+            Ao digitar 14 dígitos, buscamos a Razão Social e validamos se a empresa está ATIVA.
+          </p>
+
+          <div id="cnpjStatus" class="status muted"></div>
+
+          <label for="nome_empresa">Nome da Empresa (Razão Social)</label>
+          <input type="text" id="nome_empresa" readonly required>
+
+          <label for="email_contato">Email da Empresa</label>
+          <input type="email" id="email_contato" required>
+
+          <label for="telefone_contato">Telefone</label>
+          <input type="text" id="telefone_contato">
+        </div>
+
+        <div class="form-section">
+          <h3>Usuário Master</h3>
+
+          <label for="nome_master">Nome</label>
+          <input type="text" id="nome_master" required>
+
+          <label for="email_master">Email</label>
+          <input type="email" id="email_master" required>
+
+          <label for="senha_master">Senha</label>
+          <input type="password" id="senha_master" required>
+
+          <p class="help-text">
+            A senha deve conter no mínimo 8 caracteres, com letra maiúscula,
+            letra minúscula, número e caractere especial.
+          </p>
+
+          <div class="password-strength">
+            <div class="strength-bar">
+              <div id="strengthFill" class="strength-fill"></div>
+            </div>
+            <div id="strengthText" class="strength-text">Força da senha: muito fraca</div>
+          </div>
+
+          <div id="senhaStatus" class="status muted"></div>
+
+          <label for="confirma_senha_master">Confirmar Senha</label>
+          <input type="password" id="confirma_senha_master" required>
+
+          <div id="confirmaSenhaStatus" class="status muted"></div>
+        </div>
+
+        <button type="submit" id="btnCriarConta" class="btn btn-primary full" disabled>
+          Criar Conta
+        </button>
+
+        <div id="msg" class="msg"></div>
+
+        <p class="cadastro-link">
+          Já tem uma conta?
+          <a href="login.html">Fazer login</a>
+        </p>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-box">
+    <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script>
+  const temaSalvo = localStorage.getItem("tema");
+  const botaoTema = document.getElementById("theme-toggle");
+
+  if (temaSalvo === "dark") {
+    document.body.classList.add("dark");
+  }
+
+  function atualizarTextoTema() {
+    if (!botaoTema) return;
+
+    if (document.body.classList.contains("dark")) {
+      botaoTema.textContent = "☀️ Tema claro";
+    } else {
+      botaoTema.textContent = "🌙 Tema escuro";
+    }
+  }
+
+  function alternarTema() {
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+      localStorage.setItem("tema", "dark");
+    } else {
+      localStorage.setItem("tema", "light");
+    }
+
+    atualizarTextoTema();
+  }
+
+  atualizarTextoTema();
+
+  const form = document.getElementById("formCadastro");
+  const btn = document.getElementById("btnCriarConta");
+  const msg = document.getElementById("msg");
+
+  const cnpjInput = document.getElementById("cnpj");
+  const nomeInput = document.getElementById("nome_empresa");
+  const cnpjStatus = document.getElementById("cnpjStatus");
+
+  const senhaInput = document.getElementById("senha_master");
+  const confirmaSenhaInput = document.getElementById("confirma_senha_master");
+  const senhaStatus = document.getElementById("senhaStatus");
+  const confirmaSenhaStatus = document.getElementById("confirmaSenhaStatus");
+
+  const strengthFill = document.getElementById("strengthFill");
+  const strengthText = document.getElementById("strengthText");
+
+  let lastLookupOk = false;
+  let lastSituacaoAtiva = false;
+  let lastNomeEmpresa = "";
+
+  let senhaForteOk = false;
+  let confirmaSenhaOk = false;
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.className = "msg " + (ok ? "ok" : "err");
+    msg.style.display = "block";
+  }
+
+  function setStatus(text, type) {
+    cnpjStatus.textContent = text || "";
+    cnpjStatus.className = "status " + (type || "muted");
+  }
+
+  function onlyDigits(s) {
+    return (s || "").replace(/\D/g, "");
+  }
+
+  function formatCNPJ(value) {
+    const v = onlyDigits(value).slice(0, 14);
+    let out = v;
+
+    if (v.length > 2) out = v.slice(0, 2) + "." + v.slice(2);
+    if (v.length > 5) out = out.slice(0, 6) + "." + out.slice(6);
+    if (v.length > 8) out = out.slice(0, 10) + "/" + out.slice(10);
+    if (v.length > 12) out = out.slice(0, 15) + "-" + out.slice(15);
+
+    return out;
+  }
+
+  function validarSenhaForte(senha) {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/.test(senha);
+  }
+
+  function calcularForcaSenha(senha) {
+    let score = 0;
+
+    if (senha.length >= 8) score++;
+    if (/[a-z]/.test(senha)) score++;
+    if (/[A-Z]/.test(senha)) score++;
+    if (/\d/.test(senha)) score++;
+    if (/[^A-Za-z\d]/.test(senha)) score++;
+
+    return score;
+  }
+
+  function atualizarBarraSenha(senha) {
+    const score = calcularForcaSenha(senha);
+
+    let width = 0;
+    let text = "Força da senha: muito fraca";
+    let color = "#dc2626";
+
+    if (!senha) {
+      width = 0;
+      text = "Força da senha: muito fraca";
+      color = "#dc2626";
+    } else if (score <= 2) {
+      width = 25;
+      text = "Força da senha: fraca";
+      color = "#dc2626";
+    } else if (score === 3) {
+      width = 50;
+      text = "Força da senha: média";
+      color = "#f59e0b";
+    } else if (score === 4) {
+      width = 75;
+      text = "Força da senha: boa";
+      color = "#2563eb";
+    } else if (score === 5) {
+      width = 100;
+      text = "Força da senha: forte";
+      color = "#16a34a";
+    }
+
+    strengthFill.style.width = width + "%";
+    strengthFill.style.backgroundColor = color;
+    strengthText.textContent = text;
+  }
+
+  function validarSenhas() {
+    const senha = senhaInput.value || "";
+    const confirma = confirmaSenhaInput.value || "";
+
+    atualizarBarraSenha(senha);
+
+    if (!senha) {
+      senhaForteOk = false;
+      senhaStatus.textContent = "";
+      senhaStatus.className = "status muted";
+    } else if (!validarSenhaForte(senha)) {
+      senhaForteOk = false;
+      senhaStatus.textContent = "Senha fraca. Use maiúscula, minúscula, número e símbolo.";
+      senhaStatus.className = "status err";
+    } else {
+      senhaForteOk = true;
+      senhaStatus.textContent = "Senha forte ✔";
+      senhaStatus.className = "status ok";
+    }
+
+    if (!confirma) {
+      confirmaSenhaOk = false;
+      confirmaSenhaStatus.textContent = "";
+      confirmaSenhaStatus.className = "status muted";
+    } else if (senha !== confirma) {
+      confirmaSenhaOk = false;
+      confirmaSenhaStatus.textContent = "As senhas não coincidem.";
+      confirmaSenhaStatus.className = "status err";
+    } else {
+      confirmaSenhaOk = true;
+      confirmaSenhaStatus.textContent = "As senhas coincidem ✔";
+      confirmaSenhaStatus.className = "status ok";
+    }
+  }
+
+  function updateButtonState() {
+    const ok = lastLookupOk && lastSituacaoAtiva && !!lastNomeEmpresa && senhaForteOk && confirmaSenhaOk;
+    btn.disabled = !ok;
+  }
+
+  let timer = null;
+  let abortController = null;
+
+  async function buscarCNPJ() {
+    const digits = onlyDigits(cnpjInput.value);
+
+    if (digits.length !== 14) {
+      lastLookupOk = false;
+      lastSituacaoAtiva = false;
+      lastNomeEmpresa = "";
+      nomeInput.value = "";
+      setStatus("", "muted");
+      updateButtonState();
+      return;
+    }
+
+    setStatus("Consultando CNPJ...", "muted");
+
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
+
+    try {
+      const resp = await fetch(`/api/auth/cnpj/lookup?cnpj=${encodeURIComponent(digits)}`, {
+        signal: abortController.signal,
+        cache: "no-store",
+        credentials: "include"
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        lastLookupOk = false;
+        lastSituacaoAtiva = false;
+        lastNomeEmpresa = "";
+        nomeInput.value = "";
+        setStatus("Erro na consulta do CNPJ (servidor).", "err");
+        updateButtonState();
+        return;
+      }
+
+      if (!data.ok) {
+        lastLookupOk = false;
+        lastSituacaoAtiva = false;
+        lastNomeEmpresa = "";
+        nomeInput.value = "";
+        setStatus(data.error || "CNPJ inválido.", "err");
+        updateButtonState();
+        return;
+      }
+
+      const nome = (data.nome_empresa || "").trim();
+      const situacao = (data.situacao || "").trim().toUpperCase();
+      const municipio = (data.municipio || "").trim();
+      const uf = (data.uf || "").trim().toUpperCase();
+
+      lastLookupOk = true;
+      lastNomeEmpresa = nome;
+      nomeInput.value = nome;
+
+      lastSituacaoAtiva = (situacao === "ATIVA");
+
+      if (!nome) {
+        setStatus("CNPJ OK, mas não retornou Razão Social. Não é possível cadastrar.", "err");
+        updateButtonState();
+        return;
+      }
+
+      if (!lastSituacaoAtiva) {
+        setStatus(`Empresa encontrada, porém situação: ${situacao || "DESCONHECIDA"} (${municipio}${uf ? "-" + uf : ""}). Cadastro bloqueado.`, "err");
+        updateButtonState();
+        return;
+      }
+
+      setStatus(`Empresa ATIVA ✔ (${municipio}${uf ? "-" + uf : ""})`, "ok");
+      updateButtonState();
+
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+
+      lastLookupOk = false;
+      lastSituacaoAtiva = false;
+      lastNomeEmpresa = "";
+      nomeInput.value = "";
+      setStatus("Erro ao consultar CNPJ (conexão).", "err");
+      updateButtonState();
+    }
+  }
+
+  function scheduleLookup(delay = 600) {
+    clearTimeout(timer);
+    timer = setTimeout(buscarCNPJ, delay);
+  }
+
+  cnpjInput.addEventListener("input", () => {
+    cnpjInput.value = formatCNPJ(cnpjInput.value);
+    scheduleLookup(600);
+  });
+
+  cnpjInput.addEventListener("blur", () => {
+    cnpjInput.value = formatCNPJ(cnpjInput.value);
+    buscarCNPJ();
+  });
+
+  cnpjInput.addEventListener("change", () => {
+    cnpjInput.value = formatCNPJ(cnpjInput.value);
+    buscarCNPJ();
+  });
+
+  cnpjInput.addEventListener("paste", () => {
+    setTimeout(() => {
+      cnpjInput.value = formatCNPJ(cnpjInput.value);
+      buscarCNPJ();
+    }, 0);
+  });
+
+  senhaInput.addEventListener("input", () => {
+    validarSenhas();
+    updateButtonState();
+  });
+
+  confirmaSenhaInput.addEventListener("input", () => {
+    validarSenhas();
+    updateButtonState();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.style.display = "none";
+
+    validarSenhas();
+
+    if (btn.disabled) {
+      showMsg("Informe um CNPJ válido e ATIVO para liberar o cadastro.", false);
+      return;
+    }
+
+    if (!senhaForteOk) {
+      showMsg("Crie uma senha forte para continuar.", false);
+      updateButtonState();
+      return;
+    }
+
+    if (!confirmaSenhaOk) {
+      showMsg("As senhas não coincidem.", false);
+      updateButtonState();
+      return;
+    }
+
+    const payload = {
+      nome_empresa: nomeInput.value.trim(),
+      cnpj: onlyDigits(cnpjInput.value),
+      email_contato: document.getElementById("email_contato").value.trim(),
+      telefone_contato: document.getElementById("telefone_contato").value.trim(),
+      nome_master: document.getElementById("nome_master").value.trim(),
+      email_master: document.getElementById("email_master").value.trim(),
+      senha_master: document.getElementById("senha_master").value,
+      confirma_senha_master: document.getElementById("confirma_senha_master").value
+    };
+
+    btn.textContent = "Criando...";
+    btn.disabled = true;
+
+    try {
+      const resp = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        showMsg(data.error || "Erro ao criar conta.", false);
+        btn.textContent = "Criar Conta";
+        updateButtonState();
+        return;
+      }
+
+      showMsg(data.message || "Conta criada com sucesso! Você já está logado.", true);
+
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 800);
+
+    } catch (e) {
+      showMsg("Erro de conexão com o servidor.", false);
+      btn.textContent = "Criar Conta";
+      updateButtonState();
+    }
+  });
+
+  const cadastroPage = document.querySelector(".cadastro-page");
+  const cadastroSide = document.querySelector(".cadastro-side");
+
+  if (cadastroPage && cadastroSide) {
+    cadastroPage.addEventListener("mousemove", (e) => {
+      const rect = cadastroPage.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+
+      const moveX = (x - 0.5) * 10;
+      const moveY = (y - 0.5) * 10;
+
+      cadastroSide.style.setProperty("--cadastro-x", `${moveX}px`);
+      cadastroSide.style.setProperty("--cadastro-y", `${moveY}px`);
+    });
+
+    cadastroPage.addEventListener("mouseleave", () => {
+      cadastroSide.style.setProperty("--cadastro-x", "0px");
+      cadastroSide.style.setProperty("--cadastro-y", "0px");
+    });
+  }
+
+  updateButtonState();
+  atualizarBarraSenha("");
+</script>
 
 </body>
 </html>
-

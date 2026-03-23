@@ -1,20 +1,34 @@
 from flask import Blueprint, request, jsonify
-from datetime import datetime, date, timedelta
+from datetime import date
 
-from src.models import db, Licitacao
+from src.models import db
 from src.services.pncp_client import fetch_contratacoes_publicacao
+from src.services.licitacao_service import salvar_licitacao_pncp
 
 pncp_bp = Blueprint("pncp", __name__)
+
 
 @pncp_bp.route("/sync", methods=["GET"])
 def sync_pncp():
     try:
-        dias = int(request.args.get("dias", 3))
-        limite_total = int(request.args.get("limite", 200))  # total máximo desejado
-        codigo_modalidade = int(request.args.get("modalidade", 6))
+        limite_total = int(request.args.get("limite", 200))
+        codigo_modalidade_raw = request.args.get("modalidade")
+        termo = request.args.get("termo")
+        uf = request.args.get("uf")
+
+        if codigo_modalidade_raw in (None, "", "null"):
+            return jsonify({
+                "error": (
+                    "Para o endpoint /contratacoes/publicacao do PNCP, "
+                    "o parâmetro 'modalidade' é obrigatório. "
+                    "Exemplo: /api/pncp/sync?modalidade=8&uf=SP&limite=50"
+                )
+            }), 400
+
+        codigo_modalidade = int(codigo_modalidade_raw)
 
         hoje = date.today()
-        ini = (hoje - timedelta(days=dias)).strftime("%Y%m%d")
+        ini = hoje.strftime("%Y%m%d")
         fim = hoje.strftime("%Y%m%d")
 
         salvos = 0
@@ -23,94 +37,46 @@ def sync_pncp():
         recebidos = 0
 
         pagina = 1
-        tamanho_pagina = 50  # tamanho por requisição
+        tamanho_pagina = 50
 
         while recebidos < limite_total:
-
             data = fetch_contratacoes_publicacao(
                 data_inicial=ini,
                 data_final=fim,
                 codigo_modalidade=codigo_modalidade,
                 pagina=pagina,
-                tamanho=tamanho_pagina
+                tamanho=tamanho_pagina,
+                uf=uf,
             )
 
-            itens = data.get("data", [])
+            itens = data.get("data", []) or []
 
             if not itens:
-                break  # acabou as páginas
+                break
 
-            for it in itens:
-
+            for item in itens:
                 if recebidos >= limite_total:
                     break
 
                 recebidos += 1
 
-                pncp_id = it.get("numeroControlePNCP")
-                if not pncp_id:
-                    pulados += 1
-                    continue
-
-                objeto = (it.get("objetoCompra") or "").strip()
-                orgao_ent = it.get("orgaoEntidade") or {}
-                orgao = (orgao_ent.get("razaoSocial") or "").strip()
-
-                if not objeto or not orgao:
-                    pulados += 1
-                    continue
-
-                with db.session.no_autoflush:
-                    lic = Licitacao.query.filter_by(
-                        identificador_unico_pncp=str(pncp_id)
-                    ).first()
-
-                novo = lic is None
-
-                if novo:
-                    lic = Licitacao(
-                        identificador_unico_pncp=str(pncp_id),
-                        data_coleta=datetime.now(),
-                        data_ultima_atualizacao=datetime.now(),
-                    )
-
-                unidade = it.get("unidadeOrgao") or {}
-
-                lic.fonte_dados = "PNCP"
-                lic.numero_processo = it.get("processo") or it.get("numeroCompra")
-                lic.objeto = objeto
-                lic.orgao_licitante = orgao
-                lic.modalidade = it.get("modalidadeNome")
-                lic.localidade_uf = unidade.get("ufSigla")
-                lic.localidade_municipio = unidade.get("municipioNome")
-                lic.valor_estimado = it.get("valorTotalEstimado")
-                lic.situacao = it.get("situacaoCompraNome") or "N/D"
-                lic.link_fonte = it.get("linkProcessoEletronico")
-
-                lic.texto_integral_aviso = (
-                    f"{lic.modalidade} | {lic.situacao} | PNCP: {pncp_id}\n"
-                    f"Órgão: {orgao}\n"
-                    f"Objeto: {objeto}"
+                identificador = (
+                    item.get("numeroControlePNCP")
+                    or item.get("numeroCompra")
+                    or item.get("sequencialCompra")
                 )
 
-                dp = it.get("dataPublicacaoPncp")
-                if dp:
-                    try:
-                        lic.data_publicacao = date.fromisoformat(dp[:10])
-                    except:
-                        lic.data_publicacao = date.today()
+                if not identificador:
+                    pulados += 1
+                    continue
 
-                dap = it.get("dataAberturaProposta")
-                if dap:
-                    try:
-                        lic.data_abertura_propostas = datetime.fromisoformat(dap)
-                    except:
-                        pass
+                licitacao = salvar_licitacao_pncp(item)
 
-                lic.data_ultima_atualizacao = datetime.now()
+                if not licitacao:
+                    pulados += 1
+                    continue
 
-                if novo:
-                    db.session.add(lic)
+                if licitacao in db.session.new:
                     salvos += 1
                 else:
                     atualizados += 1
@@ -121,8 +87,9 @@ def sync_pncp():
 
         return jsonify({
             "message": "Sync PNCP concluído",
-            "dias": dias,
             "modalidade": codigo_modalidade,
+            "termo": termo,
+            "uf": uf,
             "recebidos": recebidos,
             "salvos": salvos,
             "atualizados": atualizados,

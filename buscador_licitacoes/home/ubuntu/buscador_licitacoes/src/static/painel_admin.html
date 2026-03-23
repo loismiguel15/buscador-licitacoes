@@ -1,104 +1,819 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Licitações - Painel Administrativo</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
-        nav a { margin-right: 15px; text-decoration: none; color: #333; }
-        .admin-container { margin-top: 20px; }
-        .admin-section { margin-bottom: 30px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
-        .admin-section h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        button, .button-link { padding: 8px 12px; cursor: pointer; background-color: #5bc0de; color: white; border: none; border-radius: 3px; text-decoration: none; display: inline-block; font-size: 14px; margin-right: 5px; }
-        button:hover, .button-link:hover { background-color: #31b0d5; }
-        .button-danger { background-color: #d9534f; }
-        .button-danger:hover { background-color: #c9302c; }
-        .add-user-form label, .add-user-form input { display: block; margin-bottom: 8px; }
-        .add-user-form input[type=text], .add-user-form input[type=email], .add-user-form input[type=password] { width: 90%; max-width: 300px; padding: 8px; border: 1px solid #ccc; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Licitações - Painel Administrativo</title>
+
+  <link rel="icon" type="image/png" href="/static/img/logo1.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/global.css">
+  <link rel="stylesheet" href="/static/css/painel.css">
 </head>
 <body>
 
-    <header>
-        <h1>Buscador de Licitações</h1>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="resultados.html">Buscar Licitações</a>
-            <!-- Adicionar link para Minha Conta/Perfil -->
-            <a href="painel_admin.html">Painel Admin</a> <!-- Apenas para Master -->
-            <a href="#">Sair</a> <!-- Link de Logout -->
-        </nav>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <a href="/dashboard" class="sidebar-brand">
+        <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
+        <div class="sidebar-brand-text">
+          <h2>Buscador de Licitações</h2>
+          <span>Painel Admin</span>
+        </div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="sidebar-link active">
+        <span>🏠</span>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="/licitacoes_encontradas" class="sidebar-link">
+        <span>📄</span>
+        <span>Minhas Licitações</span>
+      </a>
+
+      <a href="/resultados" class="sidebar-link">
+        <span>🔎</span>
+        <span>Buscar Licitações</span>
+      </a>
+
+      <a href="#secaoUsuarios" class="sidebar-link">
+        <span>👥</span>
+        <span>Usuários</span>
+      </a>
+
+      <a href="#secaoPreferencias" class="sidebar-link">
+        <span>⚙️</span>
+        <span>Preferências</span>
+      </a>
+
+      <a href="/pagamento/assinar" class="sidebar-link">
+        <span>💳</span>
+        <span>Assinatura</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="#" class="sidebar-link sidebar-link-logout" onclick="logout(event)">
+        <span>🚪</span>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="main-area">
+
+    <header class="topbar-dashboard">
+      <div class="topbar-search">
+        <input type="text" placeholder="Pesquisar no painel...">
+      </div>
+
+      <div class="topbar-actions">
+        <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
+          🌙 Tema escuro
+        </button>
+
+        <div class="topbar-user">
+          <div class="topbar-user-text">
+            <strong id="nomeUsuario">Carregando...</strong>
+            <span id="nomeEmpresa">Carregando...</span>
+          </div>
+          <div class="user-avatar">ADM</div>
+        </div>
+      </div>
     </header>
 
-    <main class="admin-container">
-        <h2>Painel Administrativo - [Nome da Empresa Cliente]</h2>
-        <p>Bem-vindo, [Nome do Usuário Master]!</p>
+    <main class="painel-page">
+      <div class="container painel-container">
 
-        <div class="admin-section">
-            <h3>Gerenciar Usuários Comuns</h3>
+        <div class="painel-header painel-header-modern">
+          <div>
+            <span class="page-tag">Área administrativa</span>
+            <h2>Painel Administrativo</h2>
+            <p>
+              Configure suas preferências para que o sistema encontre as melhores licitações automaticamente.
+            </p>
+          </div>
 
-            <h4>Usuários Existentes</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome Completo</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Linhas de usuários serão inseridas dinamicamente -->
-                    <tr>
-                        <td>Usuário Comum Exemplo 1</td>
-                        <td>comum1@empresa.com</td>
-                        <td>Ativo</td>
-                        <td>
-                            <button class="button-danger">Desativar</button>
-                            <!-- <button>Editar</button> -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Usuário Comum Exemplo 2</td>
-                        <td>comum2@empresa.com</td>
-                        <td>Inativo</td>
-                        <td>
-                            <button>Ativar</button>
-                            <!-- <button>Editar</button> -->
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h4>Adicionar Novo Usuário Comum</h4>
-            <form action="#" method="post" class="add-user-form"> <!-- Ação será definida pelo backend -->
-                <label for="novo_nome">Nome Completo:</label>
-                <input type="text" id="novo_nome" name="novo_nome" required>
-
-                <label for="novo_email">Email (Login):</label>
-                <input type="email" id="novo_email" name="novo_email" required>
-
-                <label for="nova_senha">Senha Provisória:</label>
-                <input type="password" id="nova_senha" name="nova_senha" required>
-
-                <button type="submit">Adicionar Usuário</button>
-            </form>
+          <div id="trialBanner" class="trial-banner hidden-block">
+            <h3>🎁 Seu acesso ao sistema</h3>
+            <p id="trialTexto">
+              Você tem 10 dias gratuitos para usar o sistema.
+            </p>
+            <div class="trial-actions">
+              <a href="/pagamento/assinar" class="btn btn-primary">Assinar agora</a>
+            </div>
+          </div>
         </div>
 
-        <!-- Outras seções administrativas podem ser adicionadas aqui -->
-        <!-- Ex: Configurações da Conta Cliente, Histórico de Faturamento, etc. -->
+        <div id="msgPreferencias" class="msg hidden-block"></div>
+        <div id="msg" class="msg hidden-block"></div>
 
+        <section class="dashboard-highlight-cards">
+          <div class="highlight-card">
+            <span class="highlight-label">Busca automática</span>
+            <strong>Preferências configuráveis</strong>
+            <p>Defina palavras-chave, estados e modalidades para localizar oportunidades com mais precisão.</p>
+          </div>
+
+          <div class="highlight-card">
+            <span class="highlight-label">Monitoramento</span>
+            <strong>PNCP em acompanhamento</strong>
+            <p>O sistema usa seus filtros para encontrar novas licitações relevantes para sua empresa.</p>
+          </div>
+        </section>
+
+        <section class="painel-section painel-section-featured" id="secaoPreferencias">
+          <div class="section-title section-title-featured">
+            <div>
+              <span class="section-badge">Principal</span>
+              <h3>Preferências de Busca</h3>
+              <p>Defina filtros usados para encontrar licitações mais relevantes para sua empresa.</p>
+            </div>
+          </div>
+
+          <div class="panel-card panel-card-featured">
+            <div class="card-head-featured">
+              <div>
+                <h4>Configure sua busca automática</h4>
+                <p>
+                  Preencha os critérios abaixo para que o sistema encontre novas oportunidades para sua empresa.
+                </p>
+              </div>
+            </div>
+
+            <form id="formPreferencias" class="form-grid form-grid-featured" novalidate>
+              <div class="field field-full">
+                <label for="keywords">Palavras-chave</label>
+                <textarea id="keywords" name="keywords" placeholder="Ex: software, sistema, informática"></textarea>
+                <div class="hint">Separe por vírgula. Exemplo: software, sistema, informática</div>
+              </div>
+
+              <div class="field">
+                <label>UFs</label>
+
+                <div class="dropdown">
+                  <button type="button" id="ufsBtn" class="dropdown-btn" onclick="toggleDropdown('ufsDropdown')">
+                    Selecionar estados
+                  </button>
+
+                  <div id="ufsDropdown" class="dropdown-content">
+                    <label><input type="checkbox" name="ufs" value="AC"> AC - Acre</label>
+                    <label><input type="checkbox" name="ufs" value="AL"> AL - Alagoas</label>
+                    <label><input type="checkbox" name="ufs" value="AP"> AP - Amapá</label>
+                    <label><input type="checkbox" name="ufs" value="AM"> AM - Amazonas</label>
+                    <label><input type="checkbox" name="ufs" value="BA"> BA - Bahia</label>
+                    <label><input type="checkbox" name="ufs" value="CE"> CE - Ceará</label>
+                    <label><input type="checkbox" name="ufs" value="DF"> DF - Distrito Federal</label>
+                    <label><input type="checkbox" name="ufs" value="ES"> ES - Espírito Santo</label>
+                    <label><input type="checkbox" name="ufs" value="GO"> GO - Goiás</label>
+                    <label><input type="checkbox" name="ufs" value="MA"> MA - Maranhão</label>
+                    <label><input type="checkbox" name="ufs" value="MT"> MT - Mato Grosso</label>
+                    <label><input type="checkbox" name="ufs" value="MS"> MS - Mato Grosso do Sul</label>
+                    <label><input type="checkbox" name="ufs" value="MG"> MG - Minas Gerais</label>
+                    <label><input type="checkbox" name="ufs" value="PA"> PA - Pará</label>
+                    <label><input type="checkbox" name="ufs" value="PB"> PB - Paraíba</label>
+                    <label><input type="checkbox" name="ufs" value="PR"> PR - Paraná</label>
+                    <label><input type="checkbox" name="ufs" value="PE"> PE - Pernambuco</label>
+                    <label><input type="checkbox" name="ufs" value="PI"> PI - Piauí</label>
+                    <label><input type="checkbox" name="ufs" value="RJ"> RJ - Rio de Janeiro</label>
+                    <label><input type="checkbox" name="ufs" value="RN"> RN - Rio Grande do Norte</label>
+                    <label><input type="checkbox" name="ufs" value="RS"> RS - Rio Grande do Sul</label>
+                    <label><input type="checkbox" name="ufs" value="RO"> RO - Rondônia</label>
+                    <label><input type="checkbox" name="ufs" value="RR"> RR - Roraima</label>
+                    <label><input type="checkbox" name="ufs" value="SC"> SC - Santa Catarina</label>
+                    <label><input type="checkbox" name="ufs" value="SP"> SP - São Paulo</label>
+                    <label><input type="checkbox" name="ufs" value="SE"> SE - Sergipe</label>
+                    <label><input type="checkbox" name="ufs" value="TO"> TO - Tocantins</label>
+                  </div>
+                </div>
+
+                <div class="hint">Clique para abrir e marque quantos estados quiser.</div>
+              </div>
+
+              <div class="field">
+                <label>Modalidades (código PNCP)</label>
+
+                <div class="dropdown">
+                  <button type="button" id="modalidadesBtn" class="dropdown-btn" onclick="toggleDropdown('modalidadesDropdown')">
+                    Selecionar modalidades
+                  </button>
+
+                  <div id="modalidadesDropdown" class="dropdown-content">
+                    <label><input type="checkbox" name="modalidades" value="1"> 1 - Concorrência</label>
+                    <label><input type="checkbox" name="modalidades" value="2"> 2 - Concurso</label>
+                    <label><input type="checkbox" name="modalidades" value="3"> 3 - Leilão</label>
+                    <label><input type="checkbox" name="modalidades" value="4"> 4 - Pregão</label>
+                    <label><input type="checkbox" name="modalidades" value="5"> 5 - Diálogo Competitivo</label>
+                    <label><input type="checkbox" name="modalidades" value="6"> 6 - Dispensa</label>
+                    <label><input type="checkbox" name="modalidades" value="7"> 7 - Inexigibilidade</label>
+                  </div>
+                </div>
+
+                <div class="hint">Clique para abrir e marque quantas modalidades quiser.</div>
+              </div>
+
+              <div class="field field-full featured-save-box">
+                <div class="featured-save-note">
+                  <strong>Busca inteligente</strong>
+                  <span>Ao salvar, o sistema usará esses filtros para localizar oportunidades mais alinhadas ao seu perfil.</span>
+                </div>
+
+                <button type="submit" id="btnSalvarPreferencias" class="btn btn-primary btn-featured-save">
+                  Salvar Preferências
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="painel-section painel-section-secondary" id="secaoUsuarios">
+          <div class="section-title">
+            <h3>Gestão de Usuários</h3>
+            <p>Cadastre, ative ou desative usuários vinculados à sua empresa.</p>
+          </div>
+
+          <div class="usuarios-grid">
+            <div class="panel-card">
+              <h4>Usuários Existentes</h4>
+
+              <div id="resumoUsuarios" class="users-summary">
+                <strong>Usuários ativos:</strong>
+                <span id="usuariosAtivosTexto">Carregando...</span>
+              </div>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nome Completo</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Ações</th>
+                      <th>Conta</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabelaUsuarios">
+                    <tr>
+                      <td colspan="5">Carregando usuários...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <h4>Adicionar Novo Usuário</h4>
+
+              <form id="formNovoUsuario" class="form-grid" novalidate>
+                <div class="field">
+                  <label for="novo_nome">Nome Completo</label>
+                  <input type="text" id="novo_nome" name="novo_nome" required>
+                </div>
+
+                <div class="field">
+                  <label for="novo_email">Email (Login)</label>
+                  <input type="email" id="novo_email" name="novo_email" required>
+                </div>
+
+                <div class="field field-full">
+                  <label for="nova_senha">Senha Provisória</label>
+                  <input type="password" id="nova_senha" name="nova_senha" required>
+                </div>
+
+                <div class="field field-full">
+                  <button type="submit" id="btnAdicionarUsuario" class="btn btn-primary">
+                    Adicionar Usuário
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+      </div>
     </main>
 
-    <footer style="margin-top: 30px;">
-        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
+    <footer>
+      <div class="container footer-box">
+        <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+      </div>
     </footer>
+  </div>
+</div>
+
+<div id="modalDetalhesUsuario" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Segurança da Conta</h3>
+
+    <div class="seguranca-info">
+      <p><strong>Último login:</strong> <span id="detUltimoLogin">Carregando...</span></p>
+      <p><strong>Último IP:</strong> <span id="detUltimoIp">Carregando...</span></p>
+      <p><strong>Dispositivo:</strong> <span id="detUserAgent">Carregando...</span></p>
+      <p><strong>Sessão expira em:</strong> <span id="detSessaoExpira">Carregando...</span></p>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" onclick="fecharDetalhesUsuario()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const temaSalvo = localStorage.getItem("tema");
+  const botaoTema = document.getElementById("theme-toggle");
+
+  if (temaSalvo === "dark") {
+    document.body.classList.add("dark");
+  }
+
+  function atualizarTextoTema() {
+    if (!botaoTema) return;
+
+    if (document.body.classList.contains("dark")) {
+      botaoTema.textContent = "☀️ Tema claro";
+    } else {
+      botaoTema.textContent = "🌙 Tema escuro";
+    }
+  }
+
+  function alternarTema() {
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+      localStorage.setItem("tema", "dark");
+    } else {
+      localStorage.setItem("tema", "light");
+    }
+
+    atualizarTextoTema();
+  }
+
+  atualizarTextoTema();
+
+  const msg = document.getElementById("msg");
+  const msgPreferencias = document.getElementById("msgPreferencias");
+  const nomeEmpresa = document.getElementById("nomeEmpresa");
+  const nomeUsuario = document.getElementById("nomeUsuario");
+  const trialBanner = document.getElementById("trialBanner");
+  const trialTexto = document.getElementById("trialTexto");
+  const formNovoUsuario = document.getElementById("formNovoUsuario");
+  const btnAdicionarUsuario = document.getElementById("btnAdicionarUsuario");
+  const tabelaUsuarios = document.getElementById("tabelaUsuarios");
+  const usuariosAtivosTexto = document.getElementById("usuariosAtivosTexto");
+
+  const formPreferencias = document.getElementById("formPreferencias");
+  const btnSalvarPreferencias = document.getElementById("btnSalvarPreferencias");
+  const keywordsInput = document.getElementById("keywords");
+
+  function showMsg(text, ok) {
+    msg.textContent = text;
+    msg.className = "msg " + (ok ? "ok" : "err");
+    msg.style.display = "block";
+  }
+
+  function showMsgPreferencias(text, ok) {
+    msgPreferencias.textContent = text;
+    msgPreferencias.className = "msg " + (ok ? "ok" : "err");
+    msgPreferencias.style.display = "block";
+  }
+
+  function splitCsv(value) {
+    return value.split(",").map(item => item.trim()).filter(item => item !== "");
+  }
+
+  function getCheckedValues(name) {
+    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+  }
+
+  function atualizarTextoUFs() {
+    const selecionados = getCheckedValues("ufs");
+    const botao = document.getElementById("ufsBtn");
+
+    if (!botao) return;
+
+    if (selecionados.length === 0) {
+      botao.textContent = "Selecionar estados";
+    } else if (selecionados.length <= 3) {
+      botao.textContent = selecionados.join(", ");
+    } else {
+      botao.textContent = `${selecionados.length} estados selecionados`;
+    }
+  }
+
+  function atualizarTextoModalidades() {
+    const selecionados = getCheckedValues("modalidades");
+    const botao = document.getElementById("modalidadesBtn");
+
+    if (!botao) return;
+
+    if (selecionados.length === 0) {
+      botao.textContent = "Selecionar modalidades";
+    } else if (selecionados.length <= 3) {
+      botao.textContent = selecionados.join(", ");
+    } else {
+      botao.textContent = `${selecionados.length} modalidades selecionadas`;
+    }
+  }
+
+  function toggleDropdown(id) {
+    const menu = document.getElementById(id);
+    if (!menu) return;
+
+    const aberto = menu.style.display === "block";
+    menu.style.display = aberto ? "none" : "block";
+
+    if (aberto) {
+      atualizarTextoUFs();
+      atualizarTextoModalidades();
+    }
+  }
+
+  function atualizarResumoUsuarios(plano) {
+    if (!usuariosAtivosTexto) return;
+
+    const ativos = plano?.usuarios_ativos ?? 0;
+    const limite = plano?.limite_usuarios_ativos ?? 3;
+
+    usuariosAtivosTexto.textContent = `${ativos} / ${limite}`;
+
+    if (ativos >= limite) {
+      btnAdicionarUsuario.disabled = true;
+      btnAdicionarUsuario.textContent = "Limite atingido";
+    } else {
+      btnAdicionarUsuario.disabled = false;
+      btnAdicionarUsuario.textContent = "Adicionar Usuário";
+    }
+  }
+
+  function podeAdicionarUsuario(plano) {
+    const ativos = plano?.usuarios_ativos ?? 0;
+    const limite = plano?.limite_usuarios_ativos ?? 3;
+    return ativos < limite;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('input[name="ufs"]').forEach(input => {
+      input.addEventListener("change", atualizarTextoUFs);
+    });
+
+    document.querySelectorAll('input[name="modalidades"]').forEach(input => {
+      input.addEventListener("change", atualizarTextoModalidades);
+    });
+
+    atualizarTextoUFs();
+    atualizarTextoModalidades();
+  });
+
+  document.addEventListener("click", function (event) {
+    document.querySelectorAll(".dropdown").forEach(dropdown => {
+      if (!dropdown.contains(event.target)) {
+        const menu = dropdown.querySelector(".dropdown-content");
+        if (menu) menu.style.display = "none";
+      }
+    });
+
+    atualizarTextoUFs();
+    atualizarTextoModalidades();
+  });
+
+  async function carregarDadosUsuario() {
+    try {
+      const resp = await fetch("/api/auth/me", {
+        method: "GET",
+        credentials: "include"
+      });
+
+      if (!resp.ok) {
+        window.location.href = "login.html";
+        return null;
+      }
+
+      const data = await resp.json();
+
+      nomeEmpresa.textContent = data.empresa?.nome || "Empresa";
+      nomeUsuario.textContent = data.user?.nome || "Usuário";
+
+      const secaoUsuarios = document.getElementById("secaoUsuarios");
+      const secaoPreferencias = document.getElementById("secaoPreferencias");
+
+      if (data.user?.tipo !== "master") {
+        if (secaoUsuarios) secaoUsuarios.style.display = "none";
+        if (secaoPreferencias) secaoPreferencias.style.display = "none";
+      }
+
+      const assinatura = data.assinatura;
+
+      if (assinatura && assinatura.provider_status === "trial" && assinatura.trial_ends_at) {
+        const fim = new Date(assinatura.trial_ends_at);
+        const agora = new Date();
+        const diffMs = fim - agora;
+        const diasRestantes = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+        const fimFormatado = fim.toLocaleDateString("pt-BR");
+
+        if (diasRestantes > 0) {
+          trialTexto.innerHTML = `
+            Você está usando o sistema com <strong>10 dias grátis</strong>.<br>
+            Faltam <strong>${diasRestantes} dia(s)</strong> para o fim do seu período gratuito.<br>
+            Seu acesso grátis termina em <strong>${fimFormatado}</strong>.
+          `;
+        } else {
+          trialTexto.innerHTML = `
+            Seu período gratuito terminou em <strong>${fimFormatado}</strong>.<br>
+            Para continuar usando o sistema, faça sua assinatura agora.
+          `;
+        }
+
+        trialBanner.style.display = "block";
+      }
+
+      return data;
+
+    } catch (error) {
+      window.location.href = "login.html";
+      return null;
+    }
+  }
+
+  async function carregarUsuarios() {
+    try {
+      const resp = await fetch("/api/auth/usuarios", {
+        method: "GET",
+        credentials: "include"
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        showMsg(data.error || "Erro ao carregar usuários.", false);
+        tabelaUsuarios.innerHTML = `<tr><td colspan="5">Erro ao carregar usuários.</td></tr>`;
+        if (usuariosAtivosTexto) usuariosAtivosTexto.textContent = "Erro ao carregar";
+        return;
+      }
+
+      const usuarios = data.usuarios || [];
+      const plano = data.plano || {
+        usuarios_ativos: 0,
+        limite_usuarios_ativos: 3
+      };
+
+      atualizarResumoUsuarios(plano);
+      tabelaUsuarios.innerHTML = "";
+
+      if (usuarios.length === 0) {
+        tabelaUsuarios.innerHTML = `<tr><td colspan="5">Nenhum usuário encontrado.</td></tr>`;
+        return;
+      }
+
+      usuarios.forEach(usuario => {
+        const tr = document.createElement("tr");
+
+        const statusTexto = usuario.ativo ? "Ativo" : "Inativo";
+        const botaoTexto = usuario.ativo ? "Desativar" : "Ativar";
+        const botaoClasse = usuario.ativo ? "button-danger" : "button-success";
+
+        const bloquearAtivacao =
+          !usuario.ativo &&
+          usuario.tipo === "comum" &&
+          !podeAdicionarUsuario(plano);
+
+        tr.innerHTML = `
+          <td>${usuario.nome}</td>
+          <td>${usuario.email}</td>
+          <td>
+            <span class="status-pill ${usuario.ativo ? "is-active" : "is-inactive"}">
+              ${statusTexto}
+            </span>
+          </td>
+          <td>
+            ${
+              usuario.tipo === "comum"
+                ? `<button
+                     type="button"
+                     class="mini-btn ${botaoClasse}"
+                     onclick="toggleUsuario(${usuario.id})"
+                     ${bloquearAtivacao ? "disabled" : ""}
+                   >
+                     ${bloquearAtivacao ? "Limite atingido" : botaoTexto}
+                   </button>`
+                : `<span class="master-badge">Master</span>`
+            }
+          </td>
+          <td>
+            <button
+              type="button"
+              class="mini-btn button-info"
+              onclick="abrirDetalhesUsuario(${usuario.id})"
+            >
+              Detalhes
+            </button>
+          </td>
+        `;
+
+        tabelaUsuarios.appendChild(tr);
+      });
+    } catch (error) {
+      showMsg("Erro de conexão ao carregar usuários.", false);
+      tabelaUsuarios.innerHTML = `<tr><td colspan="5">Erro de conexão.</td></tr>`;
+      if (usuariosAtivosTexto) usuariosAtivosTexto.textContent = "Erro de conexão";
+    }
+  }
+
+  async function carregarPreferencias() {
+    try {
+      const resp = await fetch("/api/preferencias", {
+        method: "GET",
+        credentials: "include"
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        showMsgPreferencias(data.error || "Erro ao carregar preferências.", false);
+        return;
+      }
+
+      keywordsInput.value = (data.keywords || []).join(", ");
+
+      const ufsSalvas = data.ufs || [];
+      document.querySelectorAll('input[name="ufs"]').forEach(input => {
+        input.checked = ufsSalvas.includes(input.value);
+      });
+
+      const modalidadesSalvas = data.modalidades || [];
+      document.querySelectorAll('input[name="modalidades"]').forEach(input => {
+        input.checked = modalidadesSalvas.includes(input.value);
+      });
+
+      atualizarTextoUFs();
+      atualizarTextoModalidades();
+    } catch (error) {
+      showMsgPreferencias("Erro de conexão ao carregar preferências.", false);
+    }
+  }
+
+  async function toggleUsuario(usuarioId) {
+    try {
+      const resp = await fetch(`/api/auth/usuarios/${usuarioId}/toggle`, {
+        method: "PATCH",
+        credentials: "include"
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        showMsg(data.error || "Erro ao alterar status do usuário.", false);
+        await carregarUsuarios();
+        return;
+      }
+
+      showMsg(data.message || "Status do usuário atualizado com sucesso.", true);
+      await carregarUsuarios();
+    } catch (error) {
+      showMsg("Erro de conexão ao alterar status do usuário.", false);
+    }
+  }
+
+  async function abrirDetalhesUsuario(usuarioId) {
+    const modal = document.getElementById("modalDetalhesUsuario");
+    modal.classList.add("show");
+
+    document.getElementById("detUltimoLogin").textContent = "Carregando...";
+    document.getElementById("detUltimoIp").textContent = "Carregando...";
+    document.getElementById("detUserAgent").textContent = "Carregando...";
+    document.getElementById("detSessaoExpira").textContent = "Carregando...";
+
+    try {
+      const resp = await fetch(`/api/auth/usuario/${usuarioId}/seguranca`, {
+        method: "GET",
+        credentials: "include"
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        document.getElementById("detUltimoLogin").textContent = "Erro ao carregar";
+        document.getElementById("detUltimoIp").textContent = "-";
+        document.getElementById("detUserAgent").textContent = "-";
+        document.getElementById("detSessaoExpira").textContent = "-";
+        return;
+      }
+
+      document.getElementById("detUltimoLogin").textContent = data.ultimo_login
+        ? new Date(data.ultimo_login).toLocaleString("pt-BR")
+        : "Nunca acessou";
+
+      document.getElementById("detUltimoIp").textContent = data.ultimo_ip || "-";
+      document.getElementById("detUserAgent").textContent = data.ultimo_user_agent || "-";
+      document.getElementById("detSessaoExpira").textContent = data.sessao_expira_em
+        ? new Date(data.sessao_expira_em).toLocaleString("pt-BR")
+        : "-";
+    } catch (error) {
+      document.getElementById("detUltimoLogin").textContent = "Erro ao carregar";
+      document.getElementById("detUltimoIp").textContent = "-";
+      document.getElementById("detUserAgent").textContent = "-";
+      document.getElementById("detSessaoExpira").textContent = "-";
+    }
+  }
+
+  function fecharDetalhesUsuario() {
+    document.getElementById("modalDetalhesUsuario").classList.remove("show");
+  }
+
+  formNovoUsuario?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const nome = document.getElementById("novo_nome").value.trim();
+    const email = document.getElementById("novo_email").value.trim();
+    const senha = document.getElementById("nova_senha").value;
+
+    if (!nome || !email || !senha) {
+      showMsg("Preencha nome, email e senha.", false);
+      return;
+    }
+
+    btnAdicionarUsuario.disabled = true;
+    btnAdicionarUsuario.textContent = "Adicionando...";
+
+    try {
+      const resp = await fetch("/api/auth/novo-usuario", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ nome, email, senha })
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        showMsg(data.error || "Erro ao adicionar usuário.", false);
+        return;
+      }
+
+      showMsg(data.message || "Usuário adicionado com sucesso.", true);
+      formNovoUsuario.reset();
+      await carregarUsuarios();
+    } catch (error) {
+      showMsg("Erro de conexão ao adicionar usuário.", false);
+    } finally {
+      btnAdicionarUsuario.disabled = false;
+      btnAdicionarUsuario.textContent = "Adicionar Usuário";
+    }
+  });
+
+  formPreferencias?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const payload = {
+      keywords: splitCsv(keywordsInput.value),
+      ufs: getCheckedValues("ufs"),
+      modalidades: getCheckedValues("modalidades")
+    };
+
+    btnSalvarPreferencias.disabled = true;
+    btnSalvarPreferencias.textContent = "Salvando...";
+
+    try {
+      const resp = await fetch("/api/preferencias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
+
+      const data = await resp.json().catch(() => ({}));
+
+      if (!resp.ok) {
+        showMsgPreferencias(data.error || "Erro ao salvar preferências.", false);
+        return;
+      }
+
+      showMsgPreferencias(data.message || "Preferências salvas com sucesso.", true);
+      await carregarPreferencias();
+    } catch (error) {
+      showMsgPreferencias("Erro de conexão ao salvar preferências.", false);
+    } finally {
+      btnSalvarPreferencias.disabled = false;
+      btnSalvarPreferencias.textContent = "Salvar Preferências";
+    }
+  });
+
+  window.addEventListener("load", async () => {
+    const dataUsuario = await carregarDadosUsuario();
+
+    if (dataUsuario?.user?.tipo === "master") {
+      await carregarUsuarios();
+      await carregarPreferencias();
+    }
+  });
+</script>
 
 </body>
 </html>
-

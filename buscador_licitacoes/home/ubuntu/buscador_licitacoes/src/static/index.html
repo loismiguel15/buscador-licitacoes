@@ -1,161 +1,406 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buscador de Licitações - Início</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
-    header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
-    nav a { margin-right: 15px; text-decoration: none; color: #333; }
-    .hero { padding: 16px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 18px; }
-    @media (min-width: 900px) { .grid { grid-template-columns: 1.2fr 0.8fr; } }
 
-    .card { padding: 18px; border: 1px solid #ccc; border-radius: 8px; background: #fff; }
-    .card h3 { margin-top: 0; }
+  <link rel="icon" type="image/png" href="static/img/logo1.png">
 
-    input[type=text], select {
-      padding: 10px; margin-right: 10px; width: 100%;
-      max-width: 420px; box-sizing: border-box;
-    }
-    button { padding: 10px 15px; cursor: pointer; }
-    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    .muted { color: #666; }
-    .error { color: #b00020; }
-    .ok { color: #0b6b0b; }
-    .badge { display:inline-block; padding: 2px 8px; border: 1px solid #ccc; border-radius: 999px; font-size: 12px; }
-    .links a { display: inline-block; margin-right: 12px; }
-    .small { font-size: 13px; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/global.css">
+  <link rel="stylesheet" href="static/css/index.css">
 </head>
 <body>
 
-<header>
-  <h1>Buscador de Licitações</h1>
-  <nav>
-    <a href="index.html">Início</a>
-    <a href="resultados.html">Buscar Licitações</a>
-    <a href="login.html">Login</a>
-    <a href="cadastro.html">Cadastro</a>
-  </nav>
-</header>
+  <header>
+    <div class="container topbar">
+      <a href="index.html" class="brand">
+        <img src="static/img/logo1.png" class="logo" alt="Logo Buscador de Licitações">
+        <div class="brand-text">
+          <h1>Buscador de Licitações</h1>
+          <span>Encontre oportunidades com mais rapidez</span>
+        </div>
+      </a>
 
-<main>
-  <div class="hero">
-    <h2>Encontre oportunidades de licitação em segundos</h2>
-    <p class="muted">Busque licitações publicadas no <strong>PNCP</strong> e (quando disponível) em <strong>Diários Oficiais</strong>, com filtros e visualização de detalhes.</p>
-    <div class="links">
-      <a href="resultados.html">Ir para a busca avançada</a>
-      <a href="resultados.html?palavra_chave=pregão" class="small">Exemplo: “pregão”</a>
-      <a href="resultados.html?palavra_chave=limpeza" class="small">Exemplo: “limpeza”</a>
-    </div>
-  </div>
+      <nav>
+        <a href="#sobre">Sobre</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#beneficios">Benefícios</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+      </nav>
 
-  <div class="grid">
-    <!-- Busca rápida -->
-    <div class="card">
-      <h3>Busca rápida</h3>
-      <p class="muted small">Digite palavras-chave (ex.: limpeza, informática, obra, consultoria).</p>
-
-      <form action="resultados.html" method="get" class="row" style="margin-top:10px;">
-        <input type="text" name="palavra_chave" placeholder="Digite palavras-chave do objeto..." />
-        <button type="submit">Buscar</button>
-      </form>
-
-      <p style="margin-top:12px;">
-        <a href="resultados.html">Abrir busca avançada (modalidade, órgão, UF, paginação)</a>
-      </p>
-    </div>
-
-    <!-- Sincronizar PNCP -->
-    <div class="card">
-      <h3>Atualizar dados do PNCP</h3>
-      <p class="muted small">
-        Importa automaticamente licitações publicadas nos últimos dias.
-        <span class="badge">Requer API /api/pncp/sync</span>
-      </p>
-
-      <div class="row" style="margin-top:10px;">
-        <label class="small">
-          Dias:
-          <select id="dias">
-            <option value="1">1</option>
-            <option value="3" selected>3</option>
-            <option value="7">7</option>
-            <option value="15">15</option>
-          </select>
-        </label>
-
-        <label class="small">
-          Limite:
-          <select id="limite">
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="200" selected>200</option>
-            <option value="500">500</option>
-          </select>
-        </label>
-
-        <button type="button" onclick="atualizarPNCP()">Atualizar PNCP</button>
+      <div class="nav-actions">
+        <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">🌙 Tema escuro</button>
+        <a href="login.html" class="btn btn-outline">Login</a>
+        <a href="cadastro.html" class="btn btn-primary">Criar Conta</a>
       </div>
-
-      <p id="sync_status" class="muted" style="margin-top:10px;"></p>
-      <p id="sync_error" class="error" style="margin-top:6px;"></p>
-
-      <p class="small muted" style="margin-top:10px;">
-        Dica: após sincronizar, vá em <a href="resultados.html">Buscar Licitações</a> e pesquise por um termo.
-      </p>
     </div>
-  </div>
+  </header>
 
-  <section style="margin-top: 30px;">
-    <h3>Sobre o sistema</h3>
-    <p>Este sistema centraliza informações de licitações para facilitar o acesso e monitoramento por fornecedores.</p>
-    <ul>
-      <li><strong>Busca</strong> por palavra-chave, órgão, modalidade e UF</li>
-      <li><strong>Detalhes</strong> completos da licitação (objeto, valor estimado, datas, situação)</li>
-      <li><strong>Sincronização</strong> com o PNCP por período</li>
-    </ul>
-  </section>
-</main>
+  <main>
 
-<footer>
-  <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
-</footer>
+    <section class="top-notice">
+      <div class="container top-notice-box">
+        <p>
+          Plataforma online para empresas que querem encontrar licitações com mais organização, praticidade e eficiência.
+        </p>
+        <a href="cadastro.html">Começar agora</a>
+      </div>
+    </section>
 
-<script>
-  async function atualizarPNCP() {
-    const status = document.getElementById("sync_status");
-    const error = document.getElementById("sync_error");
-    const dias = document.getElementById("dias").value;
-    const limite = document.getElementById("limite").value;
+    <section class="hero">
+      <div class="container hero-box">
 
-    status.className = "muted";
-    status.textContent = "Atualizando PNCP... aguarde.";
-    error.textContent = "";
+        <div class="hero-content">
+          <span class="hero-tag">Plataforma inteligente de monitoramento de licitações</span>
 
-    try {
-      const res = await fetch(`/api/pncp/sync?dias=${encodeURIComponent(dias)}&limite=${encodeURIComponent(limite)}`);
-      const data = await res.json();
+          <h2>Encontre licitações ideais para sua empresa com mais rapidez e organização</h2>
 
-      if (!res.ok) throw new Error(data?.error || "Erro na sincronização.");
+          <p>
+            Centralize sua rotina, acompanhe editais com mais clareza e organize a busca por oportunidades públicas em uma plataforma moderna, prática e profissional.
+          </p>
 
-      status.className = "ok";
-      if (data.salvos === 0 && data.atualizados > 0) {
-        status.textContent = `✔ PNCP já estava atualizado. Conferidos ${data.recebidos} registros (atualizados ${data.atualizados}).`;
-        } else {
-        status.textContent = `✔ Sync concluído: recebidos ${data.recebidos}, salvos ${data.salvos}, atualizados ${data.atualizados}, pulados ${data.pulados}.`;
-        }
-      const agora = new Date().toLocaleString("pt-BR");
-      status.textContent += ` (Atualizado em: ${agora})`;
-    } catch (e) {
-      status.textContent = "";
-      error.textContent = "Erro: " + (e?.message || e);
+          <div class="hero-buttons">
+            <a href="cadastro.html" class="btn btn-primary">Criar Conta</a>
+            <a href="#como-funciona" class="btn btn-soft">Ver como funciona</a>
+          </div>
+
+          <div class="hero-highlights">
+            <div class="highlight-item">
+              <strong>Busca inteligente</strong>
+              <span>Localize oportunidades com mais precisão e rapidez.</span>
+            </div>
+
+            <div class="highlight-item">
+              <strong>Mais organização</strong>
+              <span>Centralize informações importantes em um só painel.</span>
+            </div>
+
+            <div class="highlight-item">
+              <strong>Mais produtividade</strong>
+              <span>Reduza o tempo gasto com buscas manuais repetitivas.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="dashboard-card">
+            <div class="dashboard-top">
+              <span class="dashboard-badge">Monitoramento inteligente</span>
+              <span class="trial-badge">10 dias grátis</span>
+            </div>
+
+            <h3>Encontre oportunidades compatíveis com sua empresa</h3>
+
+            <div class="dashboard-list">
+              <div class="dashboard-item">
+                <strong>Busca personalizada</strong>
+                <span>Filtre por palavras-chave, órgão e localização.</span>
+              </div>
+
+              <div class="dashboard-item">
+                <strong>Informações organizadas</strong>
+                <span>Visualize dados importantes com mais clareza.</span>
+              </div>
+
+              <div class="dashboard-item">
+                <strong>Acompanhamento prático</strong>
+                <span>Concentre sua rotina em um só lugar.</span>
+              </div>
+
+              <div class="dashboard-item">
+                <strong>Mais eficiência</strong>
+                <span>Reduza o tempo gasto com buscas manuais.</span>
+              </div>
+            </div>
+
+            <div class="dashboard-meta">
+              <span>Filtros inteligentes</span>
+              <span>Painel centralizado</span>
+              <span>Acesso online</span>
+            </div>
+
+            <a href="cadastro.html" class="mini-link">Começar teste grátis</a>
+          </div>
+
+          <div class="mini-card mini-card-dark">
+            <h3>Ganhe tempo na sua rotina</h3>
+            <p>
+              Centralize informações, acompanhe oportunidades com mais clareza e reduza o esforço com buscas manuais repetitivas.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="container trust-strip-grid">
+        <div class="trust-item">Mais rapidez na busca</div>
+        <div class="trust-item">Mais organização no processo</div>
+        <div class="trust-item">Filtros inteligentes</div>
+        <div class="trust-item">Acesso simples e profissional</div>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <div class="container stats-grid">
+        <div class="stat-card">
+          <h3>+Agilidade</h3>
+          <p>Reduza o tempo gasto com buscas manuais e encontre oportunidades com mais eficiência.</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>+Organização</h3>
+          <p>Centralize informações importantes em um ambiente simples, claro e profissional.</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>+Controle</h3>
+          <p>Acompanhe oportunidades e detalhes importantes com mais praticidade no dia a dia.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sobre">
+      <div class="container">
+        <div class="section-head section-head-center">
+          <span class="section-tag">Sobre a plataforma</span>
+          <h3>Uma solução pensada para empresas que querem encontrar licitações com mais eficiência</h3>
+          <p>
+            O Buscador de Licitações foi criado para facilitar o acesso a oportunidades públicas, tornando o processo de busca mais rápido, organizado e centralizado.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-banner" id="como-funciona">
+      <div class="container">
+        <div class="how-banner-box">
+          <div class="how-banner-text">
+            <span class="section-tag">Como funciona</span>
+            <h3>Veja como sua empresa pode começar em poucos passos</h3>
+            <p>
+              Nossa plataforma foi desenvolvida para simplificar a rotina de busca e acompanhamento de licitações, trazendo mais praticidade e organização para o dia a dia.
+            </p>
+          </div>
+
+          <div class="how-steps">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <h4>Cadastre sua empresa</h4>
+              <p>Crie sua conta e tenha acesso à plataforma de monitoramento.</p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <h4>Defina seus filtros</h4>
+              <p>Pesquise por palavras-chave, órgãos, localização e modalidades.</p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <h4>Acompanhe oportunidades</h4>
+              <p>Visualize editais e organize sua busca com mais rapidez e controle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="beneficios">
+      <div class="container">
+        <div class="section-head section-head-center">
+          <span class="section-tag">Benefícios</span>
+          <h3>Mais eficiência para sua empresa disputar oportunidades públicas</h3>
+          <p>
+            Tenha uma plataforma preparada para tornar sua busca por licitações mais simples, inteligente e produtiva.
+          </p>
+        </div>
+
+        <div class="features">
+          <div class="feature-card">
+            <h4>Monitoramento de oportunidades</h4>
+            <p>Acompanhe licitações relevantes em um só lugar, de forma clara e organizada.</p>
+          </div>
+
+          <div class="feature-card">
+            <h4>Busca com filtros personalizados</h4>
+            <p>Encontre oportunidades usando palavras-chave, modalidade, órgão e localização.</p>
+          </div>
+
+          <div class="feature-card">
+            <h4>Mais organização no processo</h4>
+            <p>Consulte detalhes importantes e acompanhe melhor cada oportunidade encontrada.</p>
+          </div>
+
+          <div class="feature-card">
+            <h4>Mais praticidade no dia a dia</h4>
+            <p>Economize tempo e reduza o esforço com buscas manuais repetitivas.</p>
+          </div>
+
+          <div class="feature-card">
+            <h4>Visão centralizada</h4>
+            <p>Tenha mais controle sobre as informações mais importantes da sua rotina.</p>
+          </div>
+
+          <div class="feature-card">
+            <h4>Plataforma profissional</h4>
+            <p>Use um sistema pensado para empresas que desejam crescer nesse mercado.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="value-banner">
+      <div class="container value-banner-box">
+        <div class="value-banner-text">
+          <span class="section-tag">Mais valor para sua rotina</span>
+          <h3>Menos tempo procurando. Mais tempo avaliando oportunidades.</h3>
+          <p>
+            Com uma plataforma mais organizada, sua empresa consegue focar no que realmente importa: identificar oportunidades relevantes e agir com mais rapidez.
+          </p>
+        </div>
+
+        <div class="value-points">
+          <div class="value-point">
+            <strong>Mais clareza</strong>
+            <span>Visualize informações importantes com facilidade.</span>
+          </div>
+
+          <div class="value-point">
+            <strong>Mais agilidade</strong>
+            <span>Ganhe velocidade na rotina de busca e acompanhamento.</span>
+          </div>
+
+          <div class="value-point">
+            <strong>Mais estratégia</strong>
+            <span>Tenha uma estrutura melhor para organizar sua operação.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="planos">
+      <div class="container">
+        <div class="pricing-card">
+          <div class="pricing-info">
+            <span class="section-tag section-tag-light">Plano disponível</span>
+            <h3>Plano Monitoramento de Licitações</h3>
+            <p>
+              Tenha acesso a uma plataforma completa para monitorar oportunidades, usar filtros personalizados e acompanhar licitações com mais praticidade.
+            </p>
+
+            <ul class="pricing-list">
+              <li>Monitoramento de licitações</li>
+              <li>Busca com filtros personalizados</li>
+              <li>Acompanhamento de oportunidades</li>
+              <li>Painel organizado e fácil de usar</li>
+            </ul>
+          </div>
+
+          <div class="pricing-box">
+            <p class="price-label">Acesso mensal</p>
+            <p class="price">R$ 49,90<span>/mês</span></p>
+            <p class="trial-note">Teste grátis por 10 dias</p>
+
+            <div class="cta-buttons">
+              <a href="cadastro.html" class="btn btn-cta-light">Começar Agora</a>
+              <a href="login.html" class="btn btn-cta-outline">Já tenho conta</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" id="faq">
+      <div class="container">
+        <div class="section-head section-head-center">
+          <span class="section-tag">Perguntas frequentes</span>
+          <h3>Dúvidas comuns sobre a plataforma</h3>
+          <p>
+            Respostas rápidas para ajudar sua empresa a entender melhor como o sistema funciona.
+          </p>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-card">
+            <h4>Quem pode usar a plataforma?</h4>
+            <p>Empresas que desejam encontrar e acompanhar licitações com mais rapidez, organização e praticidade.</p>
+          </div>
+
+          <div class="faq-card">
+            <h4>O acesso é online?</h4>
+            <p>Sim. O sistema funciona de forma online, em uma plataforma simples e profissional.</p>
+          </div>
+
+          <div class="faq-card">
+            <h4>Posso pesquisar com filtros?</h4>
+            <p>Sim. A plataforma permite organizar a busca com critérios importantes para sua empresa.</p>
+          </div>
+
+          <div class="faq-card">
+            <h4>Como começo a usar?</h4>
+            <p>Basta criar sua conta, acessar a plataforma e começar a organizar sua rotina de monitoramento.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container final-cta-box">
+        <h3>Pronto para encontrar licitações com mais rapidez e organização?</h3>
+        <p>
+          Crie sua conta e comece a usar uma plataforma desenvolvida para facilitar a rotina da sua empresa na busca por oportunidades públicas.
+        </p>
+        <a href="cadastro.html" class="btn btn-primary">Criar Conta Agora</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-box">
+      <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+      <p>Plataforma criada para facilitar a busca e o acompanhamento de licitações públicas.</p>
+    </div>
+  </footer>
+
+  <script>
+    const temaSalvo = localStorage.getItem("tema");
+    const botaoTema = document.getElementById("theme-toggle");
+
+    if (temaSalvo === "dark") {
+      document.body.classList.add("dark");
     }
-    
-  }
-</script>
+
+    function atualizarTextoTema() {
+      if (document.body.classList.contains("dark")) {
+        botaoTema.textContent = "☀️ Tema claro";
+      } else {
+        botaoTema.textContent = "🌙 Tema escuro";
+      }
+    }
+
+    function alternarTema() {
+      document.body.classList.toggle("dark");
+
+      if (document.body.classList.contains("dark")) {
+        localStorage.setItem("tema", "dark");
+      } else {
+        localStorage.setItem("tema", "light");
+      }
+
+      atualizarTextoTema();
+    }
+
+    atualizarTextoTema();
+  </script>
 
 </body>
 </html>

@@ -4,122 +4,132 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buscador de Licitações - Detalhes da Licitação</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
-    header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
-    nav a { margin-right: 15px; text-decoration: none; color: #333; }
-    .detalhes-container { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
-    .detalhes-container h2 { margin-bottom: 20px; }
-    .detalhes-item { margin-bottom: 15px; }
-    .detalhes-item strong { display: block; margin-bottom: 3px; color: #555; }
-    .detalhes-item p, .detalhes-item a { margin: 0; }
-    .texto-integral {
-      background-color: #f9f9f9;
-      border: 1px solid #eee;
-      padding: 10px;
-      margin-top: 10px;
-      max-height: 400px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
-    .muted { color: #666; }
-    .error { color: #b00020; }
-    .badge { display:inline-block; padding: 2px 8px; border: 1px solid #ccc; border-radius: 999px; font-size: 12px; }
-  </style>
+
+  <link rel="icon" type="image/png" href="/static/img/logo1.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/global.css">
+  <link rel="stylesheet" href="/static/css/detalhes_licitacao.css">
 </head>
 <body>
 
 <header>
-  <h1>Buscador de Licitações</h1>
-  <nav>
-    <a href="index.html">Início</a>
-    <a href="resultados.html">Buscar Licitações</a>
-    <a href="login.html">Login</a>
-    <a href="cadastro.html">Cadastro</a>
-  </nav>
+  <div class="container topbar">
+    <a href="/dashboard" class="brand">
+      <img src="/static/img/logo1.png" class="logo" alt="Logo Buscador de Licitações">
+      <div class="brand-text">
+        <h1>Buscador de Licitações</h1>
+        <span>Encontre oportunidades com mais rapidez</span>
+      </div>
+    </a>
+
+    <nav>
+      <a href="/dashboard">Painel Administrativo</a>
+      <a href="/licitacoes_encontradas">Minhas Licitações</a>
+      <a href="/resultados">Buscar Licitações</a>
+      <a href="#" onclick="logout(event)">Sair</a>
+    </nav>
+  </div>
 </header>
 
-<main>
-  <div class="detalhes-container">
-    <h2>Detalhes da Licitação</h2>
-
-    <p id="status" class="muted">Carregando...</p>
-    <p id="error" class="error"></p>
-
-    <!-- Campos -->
-    <div class="detalhes-item">
-      <strong>Número do Processo:</strong>
-      <p id="numero_processo">-</p>
+<main class="detalhes-page">
+  <div class="container">
+    <div class="page-header">
+      <span class="page-tag">Detalhes da oportunidade</span>
+      <h2>Detalhes da Licitação</h2>
+      <p>
+        Consulte todas as informações disponíveis sobre a licitação, incluindo datas,
+        objeto, situação, localidade e link da fonte.
+      </p>
     </div>
 
-    <div class="detalhes-item">
-      <strong>Órgão Licitante:</strong>
-      <p id="orgao_licitante">-</p>
-    </div>
+    <section class="detalhes-card">
+      <div class="feedback-area">
+        <p id="status" class="muted">Carregando...</p>
+        <p id="error" class="error"></p>
+      </div>
 
-    <div class="detalhes-item">
-      <strong>Modalidade:</strong>
-      <p id="modalidade">-</p>
-    </div>
+      <div class="detalhes-grid">
+        <div class="detalhes-item">
+          <strong>Número do Processo</strong>
+          <p id="numero_processo">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Objeto:</strong>
-      <p id="objeto">-</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Órgão Licitante</strong>
+          <p id="orgao_licitante">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Data de Publicação:</strong>
-      <p id="data_publicacao">-</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Modalidade</strong>
+          <p id="modalidade">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Data de Abertura das Propostas:</strong>
-      <p id="data_abertura_propostas">-</p>
-    </div>
+        <div class="detalhes-item detalhes-item-full">
+          <strong>Objeto</strong>
+          <p id="objeto">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Localidade:</strong>
-      <p id="localidade">-</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Data de Publicação</strong>
+          <p id="data_publicacao">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Valor Estimado:</strong>
-      <p id="valor_estimado">-</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Data de Abertura das Propostas</strong>
+          <p id="data_abertura_propostas">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Situação:</strong>
-      <p id="situacao">-</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Localidade</strong>
+          <p id="localidade">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Fonte dos Dados:</strong>
-      <p><span id="fonte_dados" class="badge">-</span></p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Valor Estimado</strong>
+          <p id="valor_estimado">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Identificador PNCP (se houver):</strong>
-      <p id="identificador_unico_pncp">-</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Situação</strong>
+          <p id="situacao">-</p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Link da Fonte / Edital:</strong>
-      <p id="link_fonte_wrap" class="muted">Não informado.</p>
-    </div>
+        <div class="detalhes-item">
+          <strong>Fonte dos Dados</strong>
+          <p><span id="fonte_dados" class="badge">-</span></p>
+        </div>
 
-    <div class="detalhes-item">
-      <strong>Texto Integral do Aviso (se disponível):</strong>
-      <div id="texto_integral_aviso" class="texto-integral muted">Sem texto integral.</div>
-    </div>
+        <div class="detalhes-item detalhes-item-full">
+          <strong>Identificador PNCP (se houver)</strong>
+          <p id="identificador_unico_pncp">-</p>
+        </div>
 
-    <div style="margin-top: 20px;">
-      <a id="voltar" href="resultados.html">&laquo; Voltar para os resultados</a>
-    </div>
+        <div class="detalhes-item detalhes-item-full">
+          <strong>Link da Fonte / Edital</strong>
+          <p id="link_fonte_wrap" class="muted">Não informado.</p>
+        </div>
+
+        <div class="detalhes-item detalhes-item-full">
+          <strong>Texto Integral do Aviso (se disponível)</strong>
+          <div id="texto_integral_aviso" class="texto-integral muted">Sem texto integral.</div>
+        </div>
+      </div>
+
+      <div class="detalhes-actions">
+        <a id="voltar" href="/resultados" class="btn btn-outline">&laquo; Voltar para os resultados</a>
+      </div>
+    </section>
   </div>
 </main>
 
-<footer style="margin-top: 30px;">
-  <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+<footer>
+  <div class="container footer-box">
+    <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+  </div>
 </footer>
 
 <script>
@@ -149,8 +159,9 @@
     return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
-  function setText(id, value, fallback="-") {
-    document.getElementById(id).textContent = (value !== null && value !== undefined && String(value).trim() !== "") ? value : fallback;
+  function setText(id, value, fallback = "-") {
+    document.getElementById(id).textContent =
+      (value !== null && value !== undefined && String(value).trim() !== "") ? value : fallback;
   }
 
   async function carregarDetalhes() {
@@ -160,17 +171,16 @@
 
     if (!id) {
       status.textContent = "";
-      error.textContent = "ID não informado na URL. Ex: detalhes_licitacao.html?id=4";
+      error.textContent = "ID não informado na URL.";
       return;
     }
 
-    // Voltar mantendo filtros, se veio de resultados
-    // (se tiver "palavra_chave" etc. na URL, a gente reaproveita)
     const params = new URLSearchParams(window.location.search);
     params.delete("id");
     const voltar = document.getElementById("voltar");
+
     if ([...params.keys()].length > 0) {
-      voltar.href = `resultados.html?${params.toString()}`;
+      voltar.href = `/resultados?${params.toString()}`;
     }
 
     try {
@@ -201,33 +211,32 @@
       setText("fonte_dados", lic.fonte_dados || "-");
       setText("identificador_unico_pncp", lic.identificador_unico_pncp || "-");
 
-      // Link fonte
       const wrap = document.getElementById("link_fonte_wrap");
-        wrap.innerHTML = "";
+      wrap.innerHTML = "";
 
-        const pncpId = lic.identificador_unico_pncp;
+      const pncpId = lic.identificador_unico_pncp;
 
-        if (lic.link_fonte) {
+      if (lic.link_fonte) {
         const a = document.createElement("a");
         a.href = lic.link_fonte;
         a.target = "_blank";
-        a.rel = "noopener";
+        a.rel = "noopener noreferrer";
         a.textContent = "Abrir link da fonte";
+        a.className = "detail-link";
         wrap.appendChild(a);
-        } else if (pncpId) {
-        // fallback para abrir no PNCP (link público)
+      } else if (pncpId) {
         const a = document.createElement("a");
         a.href = `https://pncp.gov.br/app/contratos/${encodeURIComponent(pncpId)}`;
         a.target = "_blank";
-        a.rel = "noopener";
+        a.rel = "noopener noreferrer";
         a.textContent = "Abrir no PNCP";
+        a.className = "detail-link";
         wrap.appendChild(a);
-        } else {
+      } else {
         wrap.textContent = "Não informado.";
         wrap.className = "muted";
-        }
+      }
 
-      // Texto integral
       const txt = document.getElementById("texto_integral_aviso");
       if (lic.texto_integral_aviso) {
         txt.textContent = lic.texto_integral_aviso;
@@ -242,6 +251,21 @@
       status.textContent = "";
       error.textContent = String(e?.message || e);
     }
+  }
+
+  async function logout(event) {
+    event.preventDefault();
+
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
+
+    window.location.href = "/login.html";
   }
 
   carregarDetalhes();

@@ -1,55 +1,545 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Licitações - Login</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        header, footer { background-color: #f2f2f2; padding: 10px; margin-bottom: 20px; }
-        nav a { margin-right: 15px; text-decoration: none; color: #333; }
-        .login-container { max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
-        .login-container h2 { text-align: center; margin-bottom: 20px; }
-        .login-container label { display: block; margin-bottom: 5px; }
-        .login-container input[type=email], .login-container input[type=password] { width: 95%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 3px; }
-        .login-container button { width: 100%; padding: 10px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 16px; }
-        .login-container button:hover { background-color: #4cae4c; }
-        .login-container p { text-align: center; margin-top: 15px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Licitações - Login</title>
+
+  <link rel="icon" type="image/png" href="/static/img/logo1.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/global.css">
+  <link rel="stylesheet" href="/static/css/login.css">
 </head>
 <body>
 
-    <header>
-        <h1>Buscador de Licitações</h1>
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="resultados.html">Buscar Licitações</a>
-            <a href="login.html">Login</a>
-            <a href="cadastro.html">Cadastro</a>
-        </nav>
-    </header>
-
-    <main>
-        <div class="login-container">
-            <h2>Acessar Conta</h2>
-            <form action="#" method="post"> <!-- Ação será definida pelo backend -->
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" required>
-
-                <button type="submit">Entrar</button>
-            </form>
-            <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
-            <!-- Adicionar link para "Esqueci minha senha" se necessário -->
+  <header>
+    <div class="container topbar">
+      <a href="index.html" class="brand">
+        <img src="/static/img/logo1.png" class="logo" alt="Logo Buscador de Licitações">
+        <div class="brand-text">
+          <h1>Buscador de Licitações</h1>
+          <span>Encontre oportunidades com mais rapidez</span>
         </div>
-    </main>
+      </a>
 
-    <footer style="position: fixed; bottom: 0; width: calc(100% - 40px);">
-        <p>&copy; 2025 Buscador de Licitações. Todos os direitos reservados.</p>
-    </footer>
+      <nav>
+        <a href="index.html">Início</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
+          🌙 Tema escuro
+        </button>
+        <a href="login.html" class="btn btn-outline">Login</a>
+        <a href="cadastro.html" class="btn btn-primary">Criar Conta</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="login-page">
+    <div class="login-bg-animation">
+      <span class="blob blob-1"></span>
+      <span class="blob blob-2"></span>
+      <span class="blob blob-3"></span>
+      <span class="aurora aurora-1"></span>
+      <span class="aurora aurora-2"></span>
+      <span class="grid-glow"></span>
+    </div>
+
+    <section class="login-wrapper">
+      <div class="login-hero">
+        <div class="login-hero-content">
+          <span class="page-tag">Acesso seguro</span>
+          <h2>Entre na sua plataforma de licitações</h2>
+          <p>
+            Acompanhe oportunidades, organize suas buscas e acesse seu painel
+            com praticidade e segurança.
+          </p>
+
+          <div class="login-hero-card">
+            <h3>Mais controle para sua rotina</h3>
+            <ul class="login-hero-list">
+              <li>Busca rápida de licitações</li>
+              <li>Painel administrativo completo</li>
+              <li>Recuperação de senha por e-mail</li>
+              <li>Ambiente moderno e seguro</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <div class="login-card-header">
+          <span class="form-tag">Login</span>
+          <h2>Acessar Conta</h2>
+          <p>Entre com seu e-mail e senha para continuar.</p>
+        </div>
+
+        <form id="formLogin" class="login-form" novalidate>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Digite seu e-mail"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              placeholder="Digite sua senha"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <div class="form-options">
+            <div class="forgot-link">
+              <a href="#" id="abrirRecuperacao">Esqueci minha senha</a>
+            </div>
+          </div>
+
+          <button type="submit" id="btnEntrar" class="btn btn-primary full">
+            Entrar
+          </button>
+        </form>
+
+        <div id="msg" class="msg"></div>
+
+        <p class="login-link">
+          Não tem uma conta?
+          <a href="cadastro.html">Cadastre-se</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-box">
+      <p>&copy; 2026 Buscador de Licitações. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <div id="resetModal" class="modal-overlay">
+    <div class="modal-card">
+      <h3>Recuperar senha</h3>
+      <p class="modal-desc">
+        Informe o e-mail da sua conta. Enviaremos um código para você redefinir a senha.
+      </p>
+
+      <div id="step1">
+        <div class="form-group">
+          <label for="resetEmail">E-mail</label>
+          <input type="email" id="resetEmail" placeholder="Digite seu e-mail">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="fecharModal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnEnviarCodigo">Enviar código</button>
+        </div>
+      </div>
+
+      <div id="step2" class="hidden">
+        <div class="form-group">
+          <label for="resetCode">Código</label>
+          <input type="text" id="resetCode" placeholder="Digite o código recebido" maxlength="6">
+        </div>
+
+        <p class="reset-help">O código expira em 10 minutos.</p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="voltarStep1">Voltar</button>
+          <button type="button" class="btn btn-primary" id="btnValidarCodigo">Validar código</button>
+        </div>
+      </div>
+
+      <div id="step3" class="hidden">
+        <div class="form-group">
+          <label for="novaSenha">Nova senha</label>
+          <input type="password" id="novaSenha" placeholder="Digite a nova senha">
+        </div>
+
+        <p class="reset-help">
+          Use no mínimo 8 caracteres, com letra maiúscula, minúscula, número e símbolo.
+        </p>
+
+        <div class="form-group">
+          <label for="confirmaNovaSenha">Confirmar nova senha</label>
+          <input type="password" id="confirmaNovaSenha" placeholder="Confirme a nova senha">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="voltarStep2">Voltar</button>
+          <button type="button" class="btn btn-primary" id="btnRedefinirSenha">Redefinir senha</button>
+        </div>
+      </div>
+
+      <div id="resetMsg" class="msg reset-msg"></div>
+    </div>
+  </div>
+
+  <script>
+    const temaSalvo = localStorage.getItem("tema");
+    const botaoTema = document.getElementById("theme-toggle");
+
+    if (temaSalvo === "dark") {
+      document.body.classList.add("dark");
+    }
+
+    function atualizarTextoTema() {
+      if (!botaoTema) return;
+
+      if (document.body.classList.contains("dark")) {
+        botaoTema.textContent = "☀️ Tema claro";
+      } else {
+        botaoTema.textContent = "🌙 Tema escuro";
+      }
+    }
+
+    function alternarTema() {
+      document.body.classList.toggle("dark");
+
+      if (document.body.classList.contains("dark")) {
+        localStorage.setItem("tema", "dark");
+      } else {
+        localStorage.setItem("tema", "light");
+      }
+
+      atualizarTextoTema();
+    }
+
+    atualizarTextoTema();
+
+    const form = document.getElementById("formLogin");
+    const btn = document.getElementById("btnEntrar");
+    const msg = document.getElementById("msg");
+
+    function showMsg(text, ok) {
+      msg.textContent = text;
+      msg.className = "msg " + (ok ? "ok" : "err");
+      msg.style.display = "block";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.style.display = "none";
+
+      const payload = {
+        email: document.getElementById("email").value.trim(),
+        senha: document.getElementById("senha").value
+      };
+
+      btn.textContent = "Entrando...";
+      btn.disabled = true;
+
+      try {
+        const resp = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify(payload)
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+          showMsg(data.error || "Erro ao fazer login.", false);
+          btn.textContent = "Entrar";
+          btn.disabled = false;
+          return;
+        }
+
+        showMsg(data.message || "Login realizado com sucesso!", true);
+
+        setTimeout(() => {
+          if (data.forcar_troca_senha) {
+            window.location.href = "/trocar-senha.html";
+            return;
+          }
+
+          if (data.user?.tipo === "master") {
+            window.location.href = "/dashboard";
+          } else {
+            window.location.href = "/licitacoes_encontradas";
+          }
+        }, 700);
+
+      } catch (error) {
+        showMsg("Erro de conexão com o servidor.", false);
+        btn.textContent = "Entrar";
+        btn.disabled = false;
+      }
+    });
+
+    const resetModal = document.getElementById("resetModal");
+    const abrirRecuperacao = document.getElementById("abrirRecuperacao");
+    const fecharModal = document.getElementById("fecharModal");
+
+    const step1 = document.getElementById("step1");
+    const step2 = document.getElementById("step2");
+    const step3 = document.getElementById("step3");
+
+    const resetEmail = document.getElementById("resetEmail");
+    const resetCode = document.getElementById("resetCode");
+    const novaSenha = document.getElementById("novaSenha");
+    const confirmaNovaSenha = document.getElementById("confirmaNovaSenha");
+
+    const btnEnviarCodigo = document.getElementById("btnEnviarCodigo");
+    const btnValidarCodigo = document.getElementById("btnValidarCodigo");
+    const btnRedefinirSenha = document.getElementById("btnRedefinirSenha");
+
+    const voltarStep1 = document.getElementById("voltarStep1");
+    const voltarStep2 = document.getElementById("voltarStep2");
+    const resetMsg = document.getElementById("resetMsg");
+
+    function showResetMsg(text, ok) {
+      resetMsg.textContent = text;
+      resetMsg.className = "msg reset-msg " + (ok ? "ok" : "err");
+      resetMsg.style.display = "block";
+    }
+
+    function hideResetMsg() {
+      resetMsg.style.display = "none";
+    }
+
+    function goStep1() {
+      step1.classList.remove("hidden");
+      step2.classList.add("hidden");
+      step3.classList.add("hidden");
+    }
+
+    function goStep2() {
+      step1.classList.add("hidden");
+      step2.classList.remove("hidden");
+      step3.classList.add("hidden");
+    }
+
+    function goStep3() {
+      step1.classList.add("hidden");
+      step2.classList.add("hidden");
+      step3.classList.remove("hidden");
+    }
+
+    function openResetModal() {
+      resetModal.classList.add("show");
+      resetEmail.value = document.getElementById("email").value.trim();
+      resetCode.value = "";
+      novaSenha.value = "";
+      confirmaNovaSenha.value = "";
+      hideResetMsg();
+      goStep1();
+    }
+
+    function closeResetModal() {
+      resetModal.classList.remove("show");
+      hideResetMsg();
+    }
+
+    abrirRecuperacao.addEventListener("click", (e) => {
+      e.preventDefault();
+      openResetModal();
+    });
+
+    fecharModal.addEventListener("click", closeResetModal);
+
+    voltarStep1.addEventListener("click", () => {
+      hideResetMsg();
+      goStep1();
+    });
+
+    voltarStep2.addEventListener("click", () => {
+      hideResetMsg();
+      goStep2();
+    });
+
+    resetModal.addEventListener("click", (e) => {
+      if (e.target === resetModal) {
+        closeResetModal();
+      }
+    });
+
+    btnEnviarCodigo.addEventListener("click", async () => {
+      hideResetMsg();
+
+      const email = resetEmail.value.trim();
+
+      if (!email) {
+        showResetMsg("Informe seu e-mail.", false);
+        return;
+      }
+
+      btnEnviarCodigo.disabled = true;
+      btnEnviarCodigo.textContent = "Enviando...";
+
+      try {
+        const resp = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({ email })
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+          showResetMsg(data.error || "Erro ao enviar código.", false);
+          btnEnviarCodigo.disabled = false;
+          btnEnviarCodigo.textContent = "Enviar código";
+          return;
+        }
+
+        showResetMsg(
+          data.message || "Se o e-mail estiver cadastrado, enviaremos um código de recuperação.",
+          true
+        );
+        goStep2();
+
+      } catch (error) {
+        showResetMsg("Erro de conexão com o servidor.", false);
+      }
+
+      btnEnviarCodigo.disabled = false;
+      btnEnviarCodigo.textContent = "Enviar código";
+    });
+
+    btnValidarCodigo.addEventListener("click", async () => {
+      hideResetMsg();
+
+      const email = resetEmail.value.trim();
+      const code = resetCode.value.trim();
+
+      if (!email || !code) {
+        showResetMsg("Informe o e-mail e o código.", false);
+        return;
+      }
+
+      btnValidarCodigo.disabled = true;
+      btnValidarCodigo.textContent = "Validando...";
+
+      try {
+        const resp = await fetch("/api/auth/verify-reset-code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({ email, code })
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+          showResetMsg(data.error || "Código inválido.", false);
+          btnValidarCodigo.disabled = false;
+          btnValidarCodigo.textContent = "Validar código";
+          return;
+        }
+
+        showResetMsg(data.message || "Código validado com sucesso.", true);
+        goStep3();
+
+      } catch (error) {
+        showResetMsg("Erro de conexão com o servidor.", false);
+      }
+
+      btnValidarCodigo.disabled = false;
+      btnValidarCodigo.textContent = "Validar código";
+    });
+
+    btnRedefinirSenha.addEventListener("click", async () => {
+      hideResetMsg();
+
+      const email = resetEmail.value.trim();
+      const code = resetCode.value.trim();
+      const senha1 = novaSenha.value;
+      const senha2 = confirmaNovaSenha.value;
+
+      if (!email || !code || !senha1 || !senha2) {
+        showResetMsg("Preencha todos os campos.", false);
+        return;
+      }
+
+      btnRedefinirSenha.disabled = true;
+      btnRedefinirSenha.textContent = "Salvando...";
+
+      try {
+        const resp = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: email,
+            code: code,
+            nova_senha: senha1,
+            confirma_nova_senha: senha2
+          })
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok) {
+          showResetMsg(data.error || "Erro ao redefinir senha.", false);
+          btnRedefinirSenha.disabled = false;
+          btnRedefinirSenha.textContent = "Redefinir senha";
+          return;
+        }
+
+        showResetMsg(data.message || "Senha redefinida com sucesso.", true);
+
+        setTimeout(() => {
+          closeResetModal();
+          document.getElementById("email").value = email;
+          document.getElementById("senha").focus();
+          showMsg("Senha redefinida com sucesso. Faça login com a nova senha.", true);
+        }, 1200);
+
+      } catch (error) {
+        showResetMsg("Erro de conexão com o servidor.", false);
+      }
+
+      btnRedefinirSenha.disabled = false;
+      btnRedefinirSenha.textContent = "Redefinir senha";
+    });
+
+    const loginPage = document.querySelector(".login-page");
+    const heroCard = document.querySelector(".login-hero");
+
+    if (loginPage && heroCard) {
+      loginPage.addEventListener("mousemove", (e) => {
+        const rect = loginPage.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+
+        const moveX = (x - 0.5) * 12;
+        const moveY = (y - 0.5) * 12;
+
+        heroCard.style.setProperty("--hero-x", `${moveX}px`);
+        heroCard.style.setProperty("--hero-y", `${moveY}px`);
+      });
+
+      loginPage.addEventListener("mouseleave", () => {
+        heroCard.style.setProperty("--hero-x", "0px");
+        heroCard.style.setProperty("--hero-y", "0px");
+      });
+    }
+  </script>
 
 </body>
 </html>
-
