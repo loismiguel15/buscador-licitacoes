@@ -1,0 +1,6 @@
+src/static/editais/
+instance/
+*.db
+.env
+venv/
+__pycache__/
