@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify, session
 from datetime import datetime
 from src.models import db, Usuario, Assinatura, AssinaturaStatus
 from src.routes._session_guard import login_required
-from src.services.mercadopago_service import criar_preapproval
 
 assinaturas_bp = Blueprint("assinaturas", __name__)
+
 
 @assinaturas_bp.route("/api/assinaturas/checkout", methods=["POST"])
 @login_required
@@ -19,34 +19,40 @@ def checkout_assinatura():
         plano = "BASIC"
         valor = 19.90
 
-    user_id = session["user_id"]
-    cliente_id = session["cliente_id"]
+    user_id = session.get("user_id")
+    cliente_id = session.get("cliente_id")
+
+    if not user_id or not cliente_id:
+        return jsonify({"error": "Sessão inválida"}), 401
 
     usuario = Usuario.query.get(user_id)
     if not usuario:
         return jsonify({"error": "Usuário inválido"}), 401
 
-    # cria assinatura no MP
-    mp = criar_preapproval(payer_email=usuario.email, plano=plano, valor=valor)
-    preapproval_id = mp.get("id")
-    init_point = mp.get("init_point")
-
-    # salva no banco como pending
+    # procura assinatura existente
     ass = Assinatura.query.filter_by(cliente_id=cliente_id).first()
     if not ass:
         ass = Assinatura(cliente_id=cliente_id)
 
+    # marca como pendente até integrar com EFI
     ass.status = AssinaturaStatus.PENDING
-    ass.mp_preapproval_id = preapproval_id
-    ass.mp_payer_email = usuario.email
     ass.updated_at = datetime.utcnow()
+
+    # preenche campos se existirem no model
+    if hasattr(ass, "plano"):
+        ass.plano = plano
+    if hasattr(ass, "valor"):
+        ass.valor = valor
+    if hasattr(ass, "email_pagador"):
+        ass.email_pagador = usuario.email
 
     db.session.add(ass)
     db.session.commit()
 
     return jsonify({
-        "init_point": init_point,
-        "mp_preapproval_id": preapproval_id,
+        "ok": True,
+        "message": "Checkout iniciado com sucesso",
         "plano": plano,
-        "valor": valor
+        "valor": valor,
+        "status": "pending"
     }), 200
