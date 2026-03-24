@@ -30,9 +30,17 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "asdf#FGSgvasgf$5$WGT")
 # ==========================
 # Database config
 # ==========================
-use_sqlite = os.getenv("USE_SQLITE", "1") == "1"
+database_url = os.getenv("DATABASE_URL")
 
-if use_sqlite:
+if database_url:
+    # Corrige prefixo se necessário
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    print("🔥 USANDO POSTGRES:", database_url)
+
+else:
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     DB_PATH = os.path.join(BASE_DIR, "app.db")
 
@@ -41,17 +49,7 @@ if use_sqlite:
         "connect_args": {"timeout": 30}
     }
 
-    print("BANCO REAL:", app.config["SQLALCHEMY_DATABASE_URI"])
-else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        f"mysql+pymysql://{os.getenv('DB_USERNAME', 'root')}:"
-        f"{os.getenv('DB_PASSWORD', 'password')}@"
-        f"{os.getenv('DB_HOST', 'localhost')}:"
-        f"{os.getenv('DB_PORT', '3306')}/"
-        f"{os.getenv('DB_NAME', 'mydb')}"
-    )
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    print("⚠️ USANDO SQLITE LOCAL:", app.config["SQLALCHEMY_DATABASE_URI"])
 
 # ==========================
 # Init DB
