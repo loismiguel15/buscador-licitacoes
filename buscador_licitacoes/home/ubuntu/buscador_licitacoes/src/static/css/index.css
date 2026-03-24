@@ -929,3 +929,148 @@ body.dark .final-cta-box {
     grid-template-columns: 1fr 1fr;
   }
 }
+/* ===== MOBILE REAL AJUSTADO ===== */
+@media (max-width: 768px) {
+
+  /* ===== HEADER ===== */
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  nav {
+    display: none;
+  }
+
+  .nav-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-actions .btn {
+    width: 100%;
+    height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .brand-text h1 {
+    font-size: 1.3rem;
+  }
+
+  .brand-text span {
+    font-size: 0.85rem;
+  }
+
+  /* ===== TOP NOTICE ===== */
+  .top-notice-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* ===== HERO ===== */
+  .hero-box {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .hero-content {
+    padding: 26px 18px;
+    border-radius: 22px;
+  }
+
+  .hero-content h2 {
+    font-size: clamp(1.7rem, 6.5vw, 2.4rem);
+    line-height: 1.15;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* BOTÕES HERO */
+  .hero-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+    height: 50px;
+  }
+
+  /* HIGHLIGHTS */
+  .hero-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== HERO LADO DIREITO ===== */
+  .hero-side {
+    gap: 14px;
+  }
+
+  .dashboard-card {
+    padding: 18px;
+  }
+
+  .dashboard-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .mini-card {
+    padding: 16px;
+  }
+
+  /* ===== TRUST ===== */
+  .trust-strip-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== STATS ===== */
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== STEPS ===== */
+  .how-steps {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== VALUE ===== */
+  .value-banner-box {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-card {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+  }
+
+  /* ===== FAQ ===== */
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta-box {
+    padding: 22px 16px;
+  }
+}
