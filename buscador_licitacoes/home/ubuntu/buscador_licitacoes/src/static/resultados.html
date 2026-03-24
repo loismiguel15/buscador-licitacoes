@@ -19,10 +19,10 @@
 <div class="app-layout">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebarMenu">
     <div class="sidebar-top">
       <a href="/dashboard" class="sidebar-brand">
-        <img src="/static/img/logo1.png" class="sidebar-logo">
+        <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
         <div>
           <strong>Buscador</strong>
           <span>Admin Panel</span>
@@ -48,12 +48,22 @@
 
     <!-- TOPBAR -->
     <header class="topbar-dashboard">
+
+      <button
+        class="mobile-menu-toggle"
+        type="button"
+        onclick="toggleSidebar()"
+        aria-label="Abrir menu"
+      >
+        ⋮
+      </button>
+
       <div class="topbar-search">
         <input type="text" placeholder="Pesquisar no painel...">
       </div>
 
       <div class="topbar-actions">
-        <button class="btn btn-outline" onclick="alternarTema()" id="theme-toggle">
+        <button class="btn btn-outline" onclick="alternarTema()" id="theme-toggle" type="button">
           🌙 Tema escuro
         </button>
       </div>
@@ -79,12 +89,12 @@
           <form id="searchForm" action="/resultados" method="get" class="search-grid">
 
             <div class="field field-full">
-              <label>Palavra-chave</label>
+              <label for="palavra_chave">Palavra-chave</label>
               <input type="text" id="palavra_chave" name="palavra_chave">
             </div>
 
             <div class="field">
-              <label>Modalidade</label>
+              <label for="modalidade">Modalidade</label>
               <select id="modalidade" name="modalidade">
                 <option value="">Todas</option>
                 <option value="1">1 - Concorrência</option>
@@ -98,12 +108,12 @@
             </div>
 
             <div class="field">
-              <label>Órgão</label>
+              <label for="orgao">Órgão</label>
               <input type="text" id="orgao" name="orgao">
             </div>
 
             <div class="field">
-              <label>UF</label>
+              <label for="uf">UF</label>
               <input type="text" id="uf" name="uf" maxlength="2">
             </div>
 
@@ -111,7 +121,7 @@
             <input type="hidden" id="per_page" name="per_page" value="10">
 
             <div class="field actions-row">
-              <button class="btn btn-primary">Buscar</button>
+              <button class="btn btn-primary" type="submit">Buscar</button>
             </div>
 
           </form>
@@ -158,8 +168,27 @@
   </div>
 </div>
 
-<!-- JS COMPLETO (SEU ORIGINAL) -->
 <script>
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebarMenu");
+  if (!sidebar) return;
+  sidebar.classList.toggle("show-mobile");
+}
+
+document.addEventListener("click", function (e) {
+  const sidebar = document.getElementById("sidebarMenu");
+  const button = document.querySelector(".mobile-menu-toggle");
+
+  if (!sidebar || !button) return;
+
+  const clicouDentroSidebar = sidebar.contains(e.target);
+  const clicouNoBotao = button.contains(e.target);
+
+  if (!clicouDentroSidebar && !clicouNoBotao) {
+    sidebar.classList.remove("show-mobile");
+  }
+});
+
 const temaSalvo = localStorage.getItem("tema");
 const botaoTema = document.getElementById("theme-toggle");
 

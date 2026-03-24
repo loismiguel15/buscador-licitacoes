@@ -500,3 +500,110 @@ body.dark .pagination a:hover {
     grid-template-columns: 1fr;
   }
 }
+/* ===== BOTÃO MOBILE ===== */
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  background: var(--surface-card);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+
+  .mobile-menu-toggle {
+    display: inline-flex !important;
+  }
+
+  .topbar-dashboard {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .topbar-search {
+    flex: 1 !important;
+  }
+
+  /* SIDEBAR MOBILE */
+  .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: -100%;
+    width: 260px;
+    height: 100vh;
+    z-index: 2000;
+    transition: 0.3s;
+  }
+
+  .sidebar.show-mobile {
+    left: 0;
+  }
+
+}
+/* ===== BOTÃO MOBILE + SIDEBAR MOBILE ===== */
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border-card);
+  border-radius: 14px;
+  background: var(--surface-card);
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  transform: translateY(-1px);
+}
+
+body.dark .mobile-menu-toggle {
+  background: #111827;
+  border-color: #2b3a55;
+  color: #dbe8ff;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: inline-flex !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    min-width: 0 !important;
+    height: 100vh !important;
+    z-index: 2000 !important;
+    transition: left 0.28s ease !important;
+    border-radius: 0 20px 20px 0 !important;
+    overflow-y: auto !important;
+  }
+
+  .sidebar.show-mobile {
+    left: 0 !important;
+  }
+
+  .topbar-dashboard {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .topbar-search {
+    flex: 1 !important;
+  }
+}

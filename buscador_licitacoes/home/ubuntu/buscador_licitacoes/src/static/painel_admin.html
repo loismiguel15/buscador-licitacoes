@@ -16,6 +16,8 @@
 </head>
 <body>
 
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
+
 <div class="app-layout">
   <aside class="sidebar" id="sidebarMenu">
     <div class="sidebar-top">
@@ -44,12 +46,12 @@
         <span>Buscar Licitações</span>
       </a>
 
-      <a href="#secaoUsuarios" class="sidebar-link">
+      <a href="#secaoUsuarios" class="sidebar-link" onclick="fecharSidebar()">
         <span>👥</span>
         <span>Usuários</span>
       </a>
 
-      <a href="#secaoPreferencias" class="sidebar-link">
+      <a href="#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
         <span>⚙️</span>
         <span>Preferências</span>
       </a>
@@ -362,21 +364,36 @@
 
   function toggleSidebar() {
     const sidebar = document.getElementById("sidebarMenu");
-    if (!sidebar) return;
+    const overlay = document.getElementById("sidebarOverlay");
+    if (!sidebar || !overlay) return;
+
     sidebar.classList.toggle("show-mobile");
+    overlay.classList.toggle("show");
+  }
+
+  function fecharSidebar() {
+    const sidebar = document.getElementById("sidebarMenu");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (!sidebar || !overlay) return;
+
+    sidebar.classList.remove("show-mobile");
+    overlay.classList.remove("show");
   }
 
   document.addEventListener("click", function (event) {
     const sidebar = document.getElementById("sidebarMenu");
     const button = document.querySelector(".mobile-menu-toggle");
+    const overlay = document.getElementById("sidebarOverlay");
 
-    if (!sidebar || !button) return;
+    if (!sidebar || !button || !overlay) return;
 
     const clicouDentroSidebar = sidebar.contains(event.target);
     const clicouNoBotao = button.contains(event.target);
+    const clicouNoOverlay = overlay.contains(event.target);
 
-    if (!clicouDentroSidebar && !clicouNoBotao) {
+    if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
       sidebar.classList.remove("show-mobile");
+      overlay.classList.remove("show");
     }
   });
 

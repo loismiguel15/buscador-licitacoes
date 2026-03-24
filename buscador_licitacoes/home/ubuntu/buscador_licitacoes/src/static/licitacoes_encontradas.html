@@ -16,8 +16,10 @@
 </head>
 <body>
 
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
+
 <div class="app-layout">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebarMenu">
     <div class="sidebar-top">
       <a href="/dashboard" class="sidebar-brand">
         <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
@@ -29,32 +31,32 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="sidebar-link">
+      <a href="/dashboard" class="sidebar-link" onclick="fecharSidebar()">
         <span>🏠</span>
         <span>Dashboard</span>
       </a>
 
-      <a href="/licitacoes_encontradas" class="sidebar-link active">
+      <a href="/licitacoes_encontradas" class="sidebar-link active" onclick="fecharSidebar()">
         <span>📄</span>
         <span>Minhas Licitações</span>
       </a>
 
-      <a href="/resultados" class="sidebar-link">
+      <a href="/resultados" class="sidebar-link" onclick="fecharSidebar()">
         <span>🔎</span>
         <span>Buscar Licitações</span>
       </a>
 
-      <a href="/dashboard#secaoUsuarios" class="sidebar-link">
+      <a href="/dashboard#secaoUsuarios" class="sidebar-link" onclick="fecharSidebar()">
         <span>👥</span>
         <span>Usuários</span>
       </a>
 
-      <a href="/dashboard#secaoPreferencias" class="sidebar-link">
+      <a href="/dashboard#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
         <span>⚙️</span>
         <span>Preferências</span>
       </a>
 
-      <a href="/pagamento/assinar" class="sidebar-link">
+      <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
         <span>💳</span>
         <span>Assinatura</span>
       </a>
@@ -76,6 +78,10 @@
       </div>
 
       <div class="topbar-actions">
+        <button class="mobile-menu-toggle" type="button" onclick="toggleSidebar()" aria-label="Abrir menu">
+          ⋮
+        </button>
+
         <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
           🌙 Tema escuro
         </button>
@@ -227,6 +233,41 @@
 
     atualizarTextoTema();
   }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebarMenu");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (!sidebar || !overlay) return;
+
+    sidebar.classList.toggle("show-mobile");
+    overlay.classList.toggle("show");
+  }
+
+  function fecharSidebar() {
+    const sidebar = document.getElementById("sidebarMenu");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (!sidebar || !overlay) return;
+
+    sidebar.classList.remove("show-mobile");
+    overlay.classList.remove("show");
+  }
+
+  document.addEventListener("click", function (event) {
+    const sidebar = document.getElementById("sidebarMenu");
+    const button = document.querySelector(".mobile-menu-toggle");
+    const overlay = document.getElementById("sidebarOverlay");
+
+    if (!sidebar || !button || !overlay) return;
+
+    const clicouDentroSidebar = sidebar.contains(event.target);
+    const clicouNoBotao = button.contains(event.target);
+    const clicouNoOverlay = overlay.contains(event.target);
+
+    if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
+      sidebar.classList.remove("show-mobile");
+      overlay.classList.remove("show");
+    }
+  });
 
   atualizarTextoTema();
 
@@ -382,55 +423,55 @@
   }
 
   function render(lista) {
-  const tbody = document.getElementById("tabelaResultados");
-  tbody.innerHTML = "";
+    const tbody = document.getElementById("tabelaResultados");
+    tbody.innerHTML = "";
 
-  if (!lista.length) {
-    tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Nenhuma licitação encontrada</td></tr>";
-    return;
+    if (!lista.length) {
+      tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Nenhuma licitação encontrada</td></tr>";
+      return;
+    }
+
+    for (const lic of lista) {
+      const tr = document.createElement("tr");
+
+      const temAbrirLicitacao = !!lic.link_fonte;
+      const temEdital = !!(lic.link_fonte || lic.link_edital);
+
+      tr.innerHTML = `
+        <td>${lic.orgao_licitante || "-"}</td>
+        <td>${lic.localidade_uf || "-"}</td>
+        <td>${lic.modalidade || "-"}</td>
+        <td>${resumo(lic.objeto)}</td>
+        <td>${formatarData(lic.data_publicacao)}</td>
+        <td class="actions-cell">
+
+          <a class="action-link" href="/detalhes?id=${lic.id}">
+            Detalhes
+          </a>
+
+          ${temAbrirLicitacao
+            ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="${lic.link_fonte}">
+                 Abrir licitação
+               </a>`
+            : ""}
+
+          ${temEdital
+            ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="/api/licitacoes/visualizar-edital/${lic.id}">
+                 Ver edital
+               </a>`
+            : ""}
+
+          ${temEdital
+            ? `<a class="action-link download-link" href="/api/licitacoes/baixar-edital/${lic.id}">
+                 Baixar edital
+               </a>`
+            : ""}
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    }
   }
-
-  for (const lic of lista) {
-    const tr = document.createElement("tr");
-
-    const temAbrirLicitacao = !!lic.link_fonte;
-    const temEdital = !!(lic.link_fonte || lic.link_edital);
-
-    tr.innerHTML = `
-      <td>${lic.orgao_licitante || "-"}</td>
-      <td>${lic.localidade_uf || "-"}</td>
-      <td>${lic.modalidade || "-"}</td>
-      <td>${resumo(lic.objeto)}</td>
-      <td>${formatarData(lic.data_publicacao)}</td>
-      <td class="actions-cell">
-
-        <a class="action-link" href="/detalhes?id=${lic.id}">
-          Detalhes
-        </a>
-
-        ${temAbrirLicitacao
-          ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="${lic.link_fonte}">
-               Abrir licitação
-             </a>`
-          : ""}
-
-        ${temEdital
-          ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="/api/licitacoes/visualizar-edital/${lic.id}">
-               Ver edital
-             </a>`
-          : ""}
-
-        ${temEdital
-          ? `<a class="action-link download-link" href="/api/licitacoes/baixar-edital/${lic.id}">
-               Baixar edital
-             </a>`
-          : ""}
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  }
-}
 
   function renderPagination(pagination) {
     const el = document.getElementById("pagination");
