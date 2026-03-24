@@ -31,17 +31,17 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="sidebar-link active">
+      <a href="/dashboard" class="sidebar-link active" onclick="fecharSidebar()">
         <span>🏠</span>
         <span>Dashboard</span>
       </a>
 
-      <a href="/licitacoes_encontradas" class="sidebar-link">
+      <a href="/licitacoes_encontradas" class="sidebar-link" onclick="fecharSidebar()">
         <span>📄</span>
         <span>Minhas Licitações</span>
       </a>
 
-      <a href="/resultados" class="sidebar-link">
+      <a href="/resultados" class="sidebar-link" onclick="fecharSidebar()">
         <span>🔎</span>
         <span>Buscar Licitações</span>
       </a>
@@ -56,7 +56,7 @@
         <span>Preferências</span>
       </a>
 
-      <a href="/pagamento/assinar" class="sidebar-link">
+      <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
         <span>💳</span>
         <span>Assinatura</span>
       </a>
@@ -73,15 +73,15 @@
   <div class="main-area">
 
     <header class="topbar-dashboard">
+      <button class="mobile-menu-toggle" type="button" onclick="toggleSidebar()" aria-label="Abrir menu">
+        ⋮
+      </button>
+
       <div class="topbar-search">
         <input type="text" placeholder="Pesquisar no painel...">
       </div>
 
       <div class="topbar-actions">
-        <button class="mobile-menu-toggle" type="button" onclick="toggleSidebar()" aria-label="Abrir menu">
-          ⋮
-        </button>
-
         <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
           🌙 Tema escuro
         </button>
@@ -164,7 +164,6 @@
 
               <div class="field">
                 <label>UFs</label>
-
                 <div class="dropdown">
                   <button type="button" id="ufsBtn" class="dropdown-btn" onclick="toggleDropdown('ufsDropdown')">
                     Selecionar estados
@@ -206,7 +205,6 @@
 
               <div class="field">
                 <label>Modalidades (código PNCP)</label>
-
                 <div class="dropdown">
                   <button type="button" id="modalidadesBtn" class="dropdown-btn" onclick="toggleDropdown('modalidadesDropdown')">
                     Selecionar modalidades
@@ -342,23 +340,14 @@
 
   function atualizarTextoTema() {
     if (!botaoTema) return;
-
-    if (document.body.classList.contains("dark")) {
-      botaoTema.textContent = "☀️ Tema claro";
-    } else {
-      botaoTema.textContent = "🌙 Tema escuro";
-    }
+    botaoTema.textContent = document.body.classList.contains("dark")
+      ? "☀️ Tema claro"
+      : "🌙 Tema escuro";
   }
 
   function alternarTema() {
     document.body.classList.toggle("dark");
-
-    if (document.body.classList.contains("dark")) {
-      localStorage.setItem("tema", "dark");
-    } else {
-      localStorage.setItem("tema", "light");
-    }
-
+    localStorage.setItem("tema", document.body.classList.contains("dark") ? "dark" : "light");
     atualizarTextoTema();
   }
 
@@ -409,7 +398,6 @@
   const btnAdicionarUsuario = document.getElementById("btnAdicionarUsuario");
   const tabelaUsuarios = document.getElementById("tabelaUsuarios");
   const usuariosAtivosTexto = document.getElementById("usuariosAtivosTexto");
-
   const formPreferencias = document.getElementById("formPreferencias");
   const btnSalvarPreferencias = document.getElementById("btnSalvarPreferencias");
   const keywordsInput = document.getElementById("keywords");
@@ -437,7 +425,6 @@
   function atualizarTextoUFs() {
     const selecionados = getCheckedValues("ufs");
     const botao = document.getElementById("ufsBtn");
-
     if (!botao) return;
 
     if (selecionados.length === 0) {
@@ -452,7 +439,6 @@
   function atualizarTextoModalidades() {
     const selecionados = getCheckedValues("modalidades");
     const botao = document.getElementById("modalidadesBtn");
-
     if (!botao) return;
 
     if (selecionados.length === 0) {
@@ -467,14 +453,8 @@
   function toggleDropdown(id) {
     const menu = document.getElementById(id);
     if (!menu) return;
-
     const aberto = menu.style.display === "block";
     menu.style.display = aberto ? "none" : "block";
-
-    if (aberto) {
-      atualizarTextoUFs();
-      atualizarTextoModalidades();
-    }
   }
 
   function atualizarResumoUsuarios(plano) {
@@ -520,9 +500,6 @@
         if (menu) menu.style.display = "none";
       }
     });
-
-    atualizarTextoUFs();
-    atualizarTextoModalidades();
   });
 
   async function carregarDadosUsuario() {
@@ -576,7 +553,6 @@
       }
 
       return data;
-
     } catch (error) {
       window.location.href = "login.html";
       return null;
