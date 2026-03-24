@@ -33,13 +33,11 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "asdf#FGSgvasgf$5$WGT")
 database_url = os.getenv("DATABASE_URL")
 
 if database_url:
-    # Corrige prefixo se necessário
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     print("🔥 USANDO POSTGRES:", database_url)
-
 else:
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     DB_PATH = os.path.join(BASE_DIR, "app.db")
@@ -50,6 +48,8 @@ else:
     }
 
     print("⚠️ USANDO SQLITE LOCAL:", app.config["SQLALCHEMY_DATABASE_URI"])
+
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # ==========================
 # Init DB
@@ -211,6 +211,7 @@ def serve(path):
 
     return "index.html not found", 404
 
+
 # ==========================
 # Debug
 # ==========================
@@ -247,15 +248,3 @@ if __name__ == "__main__":
         print("[SCHEDULER] Desativado. Use /api/pncp-debug/monitorar para testar manualmente.")
 
     app.run(host="0.0.0.0", port=5000, debug=False)
-
-
-if __name__ == "__main__":
-    enable_scheduler = os.getenv("ENABLE_SCHEDULER", "0") == "1"
-
-    if enable_scheduler:
-        iniciar_scheduler()
-    else:
-        print("[SCHEDULER] Desativado. Use /api/pncp-debug/monitorar para testar manualmente.")
-
-    app.run(host="0.0.0.0", port=5000, debug=False)
-
