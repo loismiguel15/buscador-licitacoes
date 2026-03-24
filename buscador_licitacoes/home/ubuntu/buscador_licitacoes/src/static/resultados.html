@@ -31,11 +31,30 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a href="/dashboard" class="sidebar-link">🏠 Dashboard</a>
-      <a href="/licitacoes_encontradas" class="sidebar-link">📄 Minhas Licitações</a>
-      <a href="/resultados" class="sidebar-link active">🔎 Buscar Licitações</a>
-      <a href="/dashboard#secaoPreferencias" class="sidebar-link">⚙️ Preferências</a>
-      <a href="/pagamento/assinar" class="sidebar-link">💳 Assinatura</a>
+      <a href="/dashboard" class="sidebar-link" onclick="fecharSidebar()">
+        <span>🏠</span>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="/licitacoes_encontradas" class="sidebar-link" onclick="fecharSidebar()">
+        <span>📄</span>
+        <span>Minhas Licitações</span>
+      </a>
+
+      <a href="/resultados" class="sidebar-link active" onclick="fecharSidebar()">
+        <span>🔎</span>
+        <span>Buscar Licitações</span>
+      </a>
+
+      <a href="/dashboard#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
+        <span>⚙️</span>
+        <span>Preferências</span>
+      </a>
+
+      <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
+        <span>💳</span>
+        <span>Assinatura</span>
+      </a>
     </nav>
 
     <div class="sidebar-bottom">

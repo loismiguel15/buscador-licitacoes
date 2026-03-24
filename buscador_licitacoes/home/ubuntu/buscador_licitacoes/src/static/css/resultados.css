@@ -500,64 +500,18 @@ body.dark .pagination a:hover {
     grid-template-columns: 1fr;
   }
 }
-/* ===== BOTÃO MOBILE ===== */
+/* ===== BOTÃO MOBILE + SIDEBAR MOBILE ===== */
 .mobile-menu-toggle {
   display: none;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
+  border: 1px solid var(--border-card);
   border-radius: 12px;
-  border: 1px solid var(--border-card);
-  background: var(--surface-card);
-  font-size: 1.4rem;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-
-  .mobile-menu-toggle {
-    display: inline-flex !important;
-  }
-
-  .topbar-dashboard {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-  }
-
-  .topbar-search {
-    flex: 1 !important;
-  }
-
-  /* SIDEBAR MOBILE */
-  .sidebar {
-    position: fixed !important;
-    top: 0;
-    left: -100%;
-    width: 260px;
-    height: 100vh;
-    z-index: 2000;
-    transition: 0.3s;
-  }
-
-  .sidebar.show-mobile {
-    left: 0;
-  }
-
-}
-/* ===== BOTÃO MOBILE + SIDEBAR MOBILE ===== */
-.mobile-menu-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  height: 46px;
-  border: 1px solid var(--border-card);
-  border-radius: 14px;
   background: var(--surface-card);
   color: var(--primary);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow);
@@ -577,14 +531,28 @@ body.dark .mobile-menu-toggle {
 @media (max-width: 768px) {
   .mobile-menu-toggle {
     display: inline-flex !important;
+    flex-shrink: 0 !important;
+  }
+
+  .topbar-dashboard {
+    display: grid !important;
+    grid-template-columns: 44px 1fr auto !important;
+    gap: 10px !important;
+    align-items: center !important;
+  }
+
+  .topbar-search {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .sidebar {
     position: fixed !important;
     top: 0 !important;
     left: -100% !important;
-    width: 280px !important;
-    max-width: 85vw !important;
+    width: 250px !important;
+    max-width: 78vw !important;
     min-width: 0 !important;
     height: 100vh !important;
     z-index: 2000 !important;
@@ -595,15 +563,5 @@ body.dark .mobile-menu-toggle {
 
   .sidebar.show-mobile {
     left: 0 !important;
-  }
-
-  .topbar-dashboard {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-  }
-
-  .topbar-search {
-    flex: 1 !important;
   }
 }
