@@ -831,11 +831,15 @@ body.dark .mobile-menu-toggle {
   .app-layout {
     display: block !important;
     width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   .main-area {
     width: 100% !important;
+    min-width: 0 !important;
     margin-left: 0 !important;
+    padding-left: 0 !important;
+    overflow-x: hidden !important;
   }
 
   /* SIDEBAR */
@@ -845,11 +849,13 @@ body.dark .mobile-menu-toggle {
     left: -100% !important;
     width: 250px !important;
     max-width: 78vw !important;
+    min-width: 0 !important;
     height: 100vh !important;
     z-index: 2200 !important;
     transition: left 0.25s ease !important;
     border-radius: 0 20px 20px 0 !important;
     overflow-y: auto !important;
+    padding: 16px 14px !important;
   }
 
   .sidebar.show-mobile {
@@ -859,7 +865,7 @@ body.dark .mobile-menu-toggle {
   .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
+    background: rgba(0, 0, 0, 0.45);
     z-index: 2100;
     display: none;
   }
@@ -868,7 +874,42 @@ body.dark .mobile-menu-toggle {
     display: block;
   }
 
-  /* TOPO PERFEITO */
+  .sidebar-top {
+    margin-bottom: 16px !important;
+  }
+
+  .sidebar-brand {
+    gap: 10px !important;
+  }
+
+  .sidebar-logo {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+  }
+
+  .sidebar-brand-text h2 {
+    font-size: 1rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .sidebar-brand-text span {
+    font-size: 0.78rem !important;
+  }
+
+  .sidebar-nav {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .sidebar-link {
+    padding: 12px !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* TOPO */
   .topbar-dashboard {
     display: grid !important;
     grid-template-columns: 44px 1fr auto !important;
@@ -878,54 +919,124 @@ body.dark .mobile-menu-toggle {
   }
 
   .mobile-menu-toggle {
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
+    width: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0 !important;
   }
 
   .topbar-actions {
     display: flex !important;
     align-items: center !important;
+    justify-content: flex-end !important;
     gap: 8px !important;
+    width: auto !important;
   }
 
   .topbar-user {
-    gap: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding-left: 10px !important;
+    border-left: 1px solid rgba(11, 44, 95, 0.12) !important;
+  }
+
+  body.dark .topbar-user {
+    border-left-color: rgba(255, 255, 255, 0.08) !important;
   }
 
   .topbar-user-text {
-    display: none !important; /* 🔥 isso resolve bagunça */
+    display: none !important;
   }
 
   .user-avatar {
     width: 36px !important;
     height: 36px !important;
+    font-size: 0.78rem !important;
+    flex-shrink: 0 !important;
   }
 
   /* SEARCH EMBAIXO */
   .topbar-search {
     grid-column: 1 / -1 !important;
     width: 100% !important;
+    max-width: 100% !important;
   }
 
   .topbar-search input {
     width: 100% !important;
     height: 44px !important;
+    padding: 0 14px !important;
+    font-size: 0.94rem !important;
   }
 
-  /* CARDS */
+  /* CONTEÚDO */
+  .container,
+  .minhas-container,
+  .painel-container {
+    width: calc(100% - 24px) !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   .filtros-card,
-  .resultados-card {
+  .resultados-card,
+  .page-highlight-card,
+  .panel-card,
+  .panel-card-featured,
+  .highlight-card {
     padding: 16px !important;
+    border-radius: 18px !important;
   }
 
-  /* GRID */
-  .filtros-grid {
+  .filtros-grid,
+  .search-grid,
+  .usuarios-grid,
+  .dashboard-highlight-cards,
+  .form-grid,
+  .form-grid-featured {
     grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .page-header-modern,
+  .painel-header-modern {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .page-header h2,
+  .painel-header h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .page-header p,
+  .painel-header p {
+    font-size: 0.94rem !important;
+    line-height: 1.55 !important;
   }
 
   /* TABELA */
-  table {
+  .table-wrapper {
+    width: 100% !important;
+    overflow-x: auto !important;
+    border-radius: 14px !important;
+  }
+
+  table,
+  .results-table {
     min-width: 700px !important;
+  }
+
+  th,
+  td {
+    padding: 11px 12px !important;
+    font-size: 0.88rem !important;
   }
 }

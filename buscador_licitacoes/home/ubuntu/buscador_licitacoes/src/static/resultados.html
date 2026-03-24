@@ -15,8 +15,9 @@
 </head>
 
 <body>
-
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 <div class="app-layout">
+
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebarMenu">
@@ -60,8 +61,9 @@
     <div class="sidebar-bottom">
       <a href="#" onclick="logout(event)" class="sidebar-link">🚪 Sair</a>
     </div>
+    
   </aside>
-
+  
   <!-- MAIN -->
   <div class="main-area">
 
@@ -190,21 +192,37 @@
 <script>
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebarMenu");
-  if (!sidebar) return;
+  const overlay = document.getElementById("sidebarOverlay");
+
+  if (!sidebar || !overlay) return;
+
   sidebar.classList.toggle("show-mobile");
+  overlay.classList.toggle("show");
+}
+
+function fecharSidebar() {
+  const sidebar = document.getElementById("sidebarMenu");
+  const overlay = document.getElementById("sidebarOverlay");
+
+  if (!sidebar || !overlay) return;
+
+  sidebar.classList.remove("show-mobile");
+  overlay.classList.remove("show");
 }
 
 document.addEventListener("click", function (e) {
   const sidebar = document.getElementById("sidebarMenu");
   const button = document.querySelector(".mobile-menu-toggle");
+  const overlay = document.getElementById("sidebarOverlay");
 
-  if (!sidebar || !button) return;
+  if (!sidebar || !button || !overlay) return;
 
   const clicouDentroSidebar = sidebar.contains(e.target);
   const clicouNoBotao = button.contains(e.target);
+  const clicouNoOverlay = overlay.contains(e.target);
 
-  if (!clicouDentroSidebar && !clicouNoBotao) {
-    sidebar.classList.remove("show-mobile");
+  if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
+    fecharSidebar();
   }
 });
 
@@ -385,6 +403,3 @@ if (temBusca) {
   carregar();
 }
 </script>
-
-</body>
-</html>
