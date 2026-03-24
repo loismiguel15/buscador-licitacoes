@@ -1027,3 +1027,392 @@ body.dark .modal-box {
     border-radius: 16px;
   }
 }
+/* =========================
+   PAINEL MOBILE + BOTÃO 3 PONTINHOS
+   ========================= */
+
+.mobile-menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border-card);
+  border-radius: 14px;
+  background: var(--surface-card);
+  color: var(--primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  transform: translateY(-1px);
+}
+
+body.dark .mobile-menu-toggle {
+  background: #111827;
+  border-color: #2b3a55;
+  color: #dbe8ff;
+}
+
+@media (max-width: 768px) {
+  .painel-page {
+    padding: 18px 0 28px !important;
+    min-height: auto !important;
+  }
+
+  .app-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: auto !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 280px !important;
+    max-width: 85vw !important;
+    min-width: 0 !important;
+    height: 100vh !important;
+    padding: 16px 14px !important;
+    border-radius: 0 20px 20px 0 !important;
+    box-shadow: 0 10px 28px rgba(11, 44, 95, 0.22) !important;
+    overflow-y: auto !important;
+    z-index: 2000 !important;
+    transition: left 0.28s ease !important;
+  }
+
+  .sidebar.show-mobile {
+    left: 0 !important;
+  }
+
+  .sidebar-top {
+    margin-bottom: 16px !important;
+  }
+
+  .sidebar-brand {
+    gap: 10px !important;
+  }
+
+  .sidebar-logo {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+  }
+
+  .sidebar-brand-text h2 {
+    font-size: 0.98rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .sidebar-brand-text span {
+    font-size: 0.76rem !important;
+  }
+
+  .sidebar-nav {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .sidebar-link {
+    padding: 12px 12px !important;
+    border-radius: 12px !important;
+    font-size: 0.94rem !important;
+  }
+
+  .sidebar-bottom {
+    margin-top: 12px !important;
+    padding-top: 14px !important;
+  }
+
+  .main-area {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .topbar-dashboard {
+    position: relative !important;
+    top: auto !important;
+    padding: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .topbar-search {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .topbar-search input {
+    height: 46px !important;
+    padding: 0 14px !important;
+    font-size: 0.94rem !important;
+  }
+
+  .topbar-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-flex !important;
+  }
+
+  .topbar-user {
+    padding-left: 0 !important;
+    border-left: none !important;
+    gap: 10px !important;
+  }
+
+  .topbar-user-text {
+    display: flex !important;
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  .topbar-user-text strong {
+    font-size: 0.9rem !important;
+  }
+
+  .topbar-user-text span {
+    font-size: 0.75rem !important;
+  }
+
+  .user-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .painel-container {
+    width: min(100%, calc(100% - 20px)) !important;
+  }
+
+  .painel-header {
+    margin-bottom: 18px !important;
+  }
+
+  .painel-header-modern {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .page-tag {
+    font-size: 0.78rem !important;
+    padding: 7px 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .painel-header h2 {
+    font-size: 1.55rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .painel-header p {
+    font-size: 0.94rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .trial-banner,
+  .panel-card,
+  .panel-card-featured,
+  .highlight-card {
+    padding: 16px !important;
+    border-radius: 18px !important;
+  }
+
+  .trial-banner h3,
+  .panel-card h4,
+  .card-head-featured h4,
+  .section-title h3 {
+    font-size: 1.02rem !important;
+  }
+
+  .trial-banner p,
+  .highlight-card p,
+  .section-title p,
+  .card-head-featured p {
+    font-size: 0.92rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .trial-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .dashboard-highlight-cards {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .highlight-card strong {
+    font-size: 0.98rem !important;
+  }
+
+  .painel-section,
+  .painel-section-featured {
+    margin-bottom: 22px !important;
+  }
+
+  .card-head-featured {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .users-summary {
+    font-size: 0.86rem !important;
+    line-height: 1.45 !important;
+    padding: 12px !important;
+  }
+
+  .usuarios-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .table-wrapper {
+    border-radius: 14px !important;
+    overflow-x: auto !important;
+  }
+
+  table {
+    min-width: 640px !important;
+  }
+
+  th,
+  td {
+    padding: 11px 12px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .form-grid,
+  .form-grid-featured {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .field label {
+    font-size: 0.92rem !important;
+    margin-bottom: 6px !important;
+  }
+
+  textarea,
+  input,
+  select {
+    padding: 13px 14px !important;
+    font-size: 0.95rem !important;
+    border-radius: 12px !important;
+  }
+
+  textarea {
+    min-height: 110px !important;
+  }
+
+  .hint {
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .dropdown-btn {
+    min-height: 48px !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    font-size: 0.94rem !important;
+  }
+
+  .dropdown-content {
+    border-radius: 14px !important;
+    padding: 8px !important;
+    max-height: 220px !important;
+  }
+
+  .dropdown-content label {
+    font-size: 0.9rem !important;
+    padding: 8px 9px !important;
+  }
+
+  .featured-save-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    margin-top: 8px !important;
+  }
+
+  .featured-save-note {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .featured-save-note strong {
+    font-size: 0.9rem !important;
+  }
+
+  .featured-save-note span {
+    font-size: 0.86rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .btn-featured-save {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 50px !important;
+    border-radius: 14px !important;
+    font-size: 0.94rem !important;
+  }
+
+  .mini-btn {
+    padding: 8px 11px !important;
+    font-size: 0.82rem !important;
+    border-radius: 9px !important;
+  }
+
+  .modal-overlay {
+    padding: 14px !important;
+  }
+
+  .modal-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 18px !important;
+    border-radius: 16px !important;
+  }
+
+  .modal-box h3 {
+    font-size: 1.02rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  .seguranca-info p {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .modal-actions {
+    margin-top: 14px !important;
+    text-align: right !important;
+  }
+
+  .footer-box {
+    padding-bottom: 18px !important;
+    text-align: center !important;
+  }
+}

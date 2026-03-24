@@ -17,7 +17,7 @@
 <body>
 
 <div class="app-layout">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebarMenu">
     <div class="sidebar-top">
       <a href="/dashboard" class="sidebar-brand">
         <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
@@ -76,6 +76,10 @@
       </div>
 
       <div class="topbar-actions">
+        <button class="mobile-menu-toggle" type="button" onclick="toggleSidebar()" aria-label="Abrir menu">
+          ⋮
+        </button>
+
         <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
           🌙 Tema escuro
         </button>
@@ -355,6 +359,26 @@
 
     atualizarTextoTema();
   }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebarMenu");
+    if (!sidebar) return;
+    sidebar.classList.toggle("show-mobile");
+  }
+
+  document.addEventListener("click", function (event) {
+    const sidebar = document.getElementById("sidebarMenu");
+    const button = document.querySelector(".mobile-menu-toggle");
+
+    if (!sidebar || !button) return;
+
+    const clicouDentroSidebar = sidebar.contains(event.target);
+    const clicouNoBotao = button.contains(event.target);
+
+    if (!clicouDentroSidebar && !clicouNoBotao) {
+      sidebar.classList.remove("show-mobile");
+    }
+  });
 
   atualizarTextoTema();
 
