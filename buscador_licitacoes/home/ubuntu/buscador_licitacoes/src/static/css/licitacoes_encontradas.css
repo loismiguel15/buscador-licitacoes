@@ -910,30 +910,30 @@ body.dark .mobile-menu-toggle {
   }
 
   /* TOPO */
-  .topbar-dashboard {
-    display: grid !important;
-    grid-template-columns: 44px 1fr auto !important;
-    gap: 10px !important;
-    align-items: center !important;
-    padding: 12px !important;
-  }
+ .topbar-dashboard {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
 
-  .mobile-menu-toggle {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    width: 44px !important;
-    height: 44px !important;
-    flex-shrink: 0 !important;
-  }
+.mobile-menu-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 22px !important;
+  z-index: 9999 !important;
+}
 
-  .topbar-actions {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    gap: 8px !important;
-    width: auto !important;
-  }
+.topbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  width: auto !important;
+}
 
   .topbar-user {
     display: flex !important;
