@@ -15,402 +15,401 @@
 </head>
 
 <body>
-<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
-<div class="app-layout">
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebarMenu">
-    <div class="sidebar-top">
-      <a href="/dashboard" class="sidebar-brand">
-        <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
-        <div>
-          <strong>Buscador</strong>
-          <span>Admin Panel</span>
-        </div>
-      </a>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="/dashboard" class="sidebar-link" onclick="fecharSidebar()">
-        <span>🏠</span>
-        <span>Dashboard</span>
-      </a>
-
-      <a href="/licitacoes_encontradas" class="sidebar-link" onclick="fecharSidebar()">
-        <span>📄</span>
-        <span>Minhas Licitações</span>
-      </a>
-
-      <a href="/resultados" class="sidebar-link active" onclick="fecharSidebar()">
-        <span>🔎</span>
-        <span>Buscar Licitações</span>
-      </a>
-
-      <a href="/dashboard#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
-        <span>⚙️</span>
-        <span>Preferências</span>
-      </a>
-
-      <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
-        <span>💳</span>
-        <span>Assinatura</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <a href="#" onclick="logout(event)" class="sidebar-link">🚪 Sair</a>
-    </div>
-    
-  </aside>
-  
-  <!-- MAIN -->
-  <div class="main-area">
-
-    <!-- TOPBAR -->
-    <header class="topbar-dashboard">
-
-      <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-        ☰
-      </button>
-
-      <div class="topbar-search">
-        <input type="text" placeholder="Pesquisar no painel...">
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebarMenu">
+      <div class="sidebar-top">
+        <a href="/dashboard" class="sidebar-brand">
+          <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
+          <div>
+            <strong>Buscador</strong>
+            <span>Admin Panel</span>
+          </div>
+        </a>
       </div>
 
-      <div class="topbar-actions">
-        <button class="btn btn-outline" onclick="alternarTema()" id="theme-toggle" type="button">
-          🌙 Tema escuro
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="sidebar-link" onclick="fecharSidebar()">
+          <span>🏠</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="/licitacoes_encontradas" class="sidebar-link" onclick="fecharSidebar()">
+          <span>📄</span>
+          <span>Minhas Licitações</span>
+        </a>
+
+        <a href="/resultados" class="sidebar-link active" onclick="fecharSidebar()">
+          <span>🔎</span>
+          <span>Buscar Licitações</span>
+        </a>
+
+        <a href="/dashboard#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
+          <span>⚙️</span>
+          <span>Preferências</span>
+        </a>
+
+        <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
+          <span>💳</span>
+          <span>Assinatura</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="#" onclick="logout(event)" class="sidebar-link">🚪 Sair</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-area">
+      <!-- TOPBAR -->
+      <header class="topbar-dashboard">
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          onclick="toggleSidebar()"
+          aria-label="Abrir menu">
+          ☰
         </button>
-      </div>
-    </header>
 
-    <!-- CONTEÚDO -->
-    <main class="resultados-page">
-      <div class="container">
-
-        <div class="page-header">
-          <span class="page-tag">Busca avançada</span>
-          <h2>Buscar Licitações</h2>
-          <p>Pesquise oportunidades por palavra-chave, modalidade, órgão e UF.</p>
+        <div class="topbar-search">
+          <input type="text" placeholder="Pesquisar no painel...">
         </div>
 
-        <!-- FILTROS -->
-        <section class="filtros-card">
-          <div class="card-header">
-            <h3>Filtros de Busca</h3>
-            <p>Refine os resultados para encontrar licitações mais relevantes.</p>
+        <div class="topbar-actions">
+          <button class="btn btn-outline" onclick="alternarTema()" id="theme-toggle" type="button">
+            🌙 Tema escuro
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTEÚDO -->
+      <main class="resultados-page">
+        <div class="container">
+          <div class="page-header">
+            <span class="page-tag">Busca avançada</span>
+            <h2>Buscar Licitações</h2>
+            <p>Pesquise oportunidades por palavra-chave, modalidade, órgão e UF.</p>
           </div>
 
-          <form id="searchForm" action="/resultados" method="get" class="search-grid">
-
-            <div class="field field-full">
-              <label for="palavra_chave">Palavra-chave</label>
-              <input type="text" id="palavra_chave" name="palavra_chave">
+          <!-- FILTROS -->
+          <section class="filtros-card">
+            <div class="card-header">
+              <h3>Filtros de Busca</h3>
+              <p>Refine os resultados para encontrar licitações mais relevantes.</p>
             </div>
 
-            <div class="field">
-              <label for="modalidade">Modalidade</label>
-              <select id="modalidade" name="modalidade">
-                <option value="">Todas</option>
-                <option value="1">1 - Concorrência</option>
-                <option value="2">2 - Concurso</option>
-                <option value="3">3 - Leilão</option>
-                <option value="4">4 - Pregão</option>
-                <option value="5">5 - Diálogo Competitivo</option>
-                <option value="6">6 - Dispensa</option>
-                <option value="7">7 - Inexigibilidade</option>
-              </select>
+            <form id="searchForm" action="/resultados" method="get" class="search-grid">
+              <div class="field field-full">
+                <label for="palavra_chave">Palavra-chave</label>
+                <input type="text" id="palavra_chave" name="palavra_chave">
+              </div>
+
+              <div class="field">
+                <label for="modalidade">Modalidade</label>
+                <select id="modalidade" name="modalidade">
+                  <option value="">Todas</option>
+                  <option value="1">1 - Concorrência</option>
+                  <option value="2">2 - Concurso</option>
+                  <option value="3">3 - Leilão</option>
+                  <option value="4">4 - Pregão</option>
+                  <option value="5">5 - Diálogo Competitivo</option>
+                  <option value="6">6 - Dispensa</option>
+                  <option value="7">7 - Inexigibilidade</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="orgao">Órgão</label>
+                <input type="text" id="orgao" name="orgao">
+              </div>
+
+              <div class="field">
+                <label for="uf">UF</label>
+                <input type="text" id="uf" name="uf" maxlength="2">
+              </div>
+
+              <input type="hidden" id="page" name="page" value="1">
+              <input type="hidden" id="per_page" name="per_page" value="10">
+
+              <div class="field actions-row">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+              </div>
+            </form>
+
+            <div id="status"></div>
+            <div id="error" class="error-text"></div>
+          </section>
+
+          <!-- RESULTADOS -->
+          <section class="resultados-card">
+            <div class="resultados-top">
+              <h3>Resultados da Busca</h3>
+              <p id="resumo">Preencha os filtros para buscar.</p>
             </div>
 
-            <div class="field">
-              <label for="orgao">Órgão</label>
-              <input type="text" id="orgao" name="orgao">
+            <div class="table-wrapper">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Processo</th>
+                    <th>Órgão</th>
+                    <th>Modalidade</th>
+                    <th>Objeto</th>
+                    <th>Data</th>
+                    <th>Fonte</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+
+                <tbody id="resultsBody">
+                  <tr>
+                    <td colspan="7" class="empty-row">Nenhuma busca realizada</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div class="field">
-              <label for="uf">UF</label>
-              <input type="text" id="uf" name="uf" maxlength="2">
-            </div>
-
-            <input type="hidden" id="page" name="page" value="1">
-            <input type="hidden" id="per_page" name="per_page" value="10">
-
-            <div class="field actions-row">
-              <button class="btn btn-primary" type="submit">Buscar</button>
-            </div>
-
-          </form>
-
-          <div id="status"></div>
-          <div id="error" class="error-text"></div>
-        </section>
-
-        <!-- RESULTADOS -->
-        <section class="resultados-card">
-          <div class="resultados-top">
-            <h3>Resultados da Busca</h3>
-            <p id="resumo">Preencha os filtros para buscar.</p>
-          </div>
-
-          <div class="table-wrapper">
-            <table class="results-table">
-              <thead>
-                <tr>
-                  <th>Processo</th>
-                  <th>Órgão</th>
-                  <th>Modalidade</th>
-                  <th>Objeto</th>
-                  <th>Data</th>
-                  <th>Fonte</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-
-              <tbody id="resultsBody">
-                <tr>
-                  <td colspan="7" class="empty-row">Nenhuma busca realizada</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div id="pagination" class="pagination"></div>
-        </section>
-
-      </div>
-    </main>
-
+            <div id="pagination" class="pagination"></div>
+          </section>
+        </div>
+      </main>
+    </div>
   </div>
-</div>
 
-<script>
-  function toggleSidebar() {
-  const sidebar = document.getElementById("sidebarMenu");
-  const overlay = document.getElementById("sidebarOverlay");
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebarMenu");
+      const overlay = document.getElementById("sidebarOverlay");
 
-  if (!sidebar || !overlay) return;
+      if (!sidebar || !overlay) return;
 
-  const abriu = sidebar.classList.contains("show-mobile");
+      const aberto = sidebar.classList.contains("show-mobile");
 
-  if (abriu) {
-    sidebar.classList.remove("show-mobile");
-    overlay.classList.remove("show");
-  } else {
-    sidebar.classList.add("show-mobile");
-    overlay.classList.add("show");
-  }
-}
+      if (aberto) {
+        sidebar.classList.remove("show-mobile");
+        overlay.classList.remove("show");
+        document.body.style.overflow = "";
+      } else {
+        sidebar.classList.add("show-mobile");
+        overlay.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+    }
 
-function fecharSidebar() {
-  const sidebar = document.getElementById("sidebarMenu");
-  const overlay = document.getElementById("sidebarOverlay");
+    function fecharSidebar() {
+      const sidebar = document.getElementById("sidebarMenu");
+      const overlay = document.getElementById("sidebarOverlay");
 
-  if (!sidebar || !overlay) return;
+      if (!sidebar || !overlay) return;
 
-  sidebar.classList.remove("show-mobile");
-  overlay.classList.remove("show");
-}
+      sidebar.classList.remove("show-mobile");
+      overlay.classList.remove("show");
+      document.body.style.overflow = "";
+    }
 
-document.addEventListener("click", function (e) {
-  const sidebar = document.getElementById("sidebarMenu");
-  const button = document.querySelector(".mobile-menu-toggle");
-  const overlay = document.getElementById("sidebarOverlay");
+    document.addEventListener("click", function (e) {
+      const sidebar = document.getElementById("sidebarMenu");
+      const button = document.querySelector(".mobile-menu-toggle");
+      const overlay = document.getElementById("sidebarOverlay");
 
-  if (!sidebar || !button || !overlay) return;
+      if (!sidebar || !button || !overlay) return;
 
-  const clicouDentroSidebar = sidebar.contains(e.target);
-  const clicouNoBotao = button.contains(e.target);
-  const clicouNoOverlay = overlay.contains(e.target);
+      const clicouDentroSidebar = sidebar.contains(e.target);
+      const clicouNoBotao = button.contains(e.target);
+      const clicouNoOverlay = overlay.contains(e.target);
 
-  if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
-    fecharSidebar();
-  }
-});
-
-const temaSalvo = localStorage.getItem("tema");
-const botaoTema = document.getElementById("theme-toggle");
-
-if (temaSalvo === "dark") {
-  document.body.classList.add("dark");
-}
-
-function atualizarTextoTema() {
-  if (!botaoTema) return;
-
-  botaoTema.textContent = document.body.classList.contains("dark")
-    ? "☀️ Tema claro"
-    : "🌙 Tema escuro";
-}
-
-function alternarTema() {
-  document.body.classList.toggle("dark");
-
-  localStorage.setItem(
-    "tema",
-    document.body.classList.contains("dark") ? "dark" : "light"
-  );
-
-  atualizarTextoTema();
-}
-
-atualizarTextoTema();
-
-function getParam(name, fallback = "") {
-  const p = new URLSearchParams(window.location.search);
-  return p.get(name) ?? fallback;
-}
-
-function setFormFromQuery() {
-  document.getElementById("palavra_chave").value = getParam("palavra_chave", "");
-  document.getElementById("modalidade").value = getParam("modalidade", "");
-  document.getElementById("orgao").value = getParam("orgao", "");
-  document.getElementById("uf").value = (getParam("uf", "") || "").toUpperCase();
-
-  document.getElementById("page").value = getParam("page", "1");
-  document.getElementById("per_page").value = getParam("per_page", "10");
-}
-
-function resumoTexto(txt, max = 120) {
-  if (!txt) return "-";
-  return txt.length > max ? txt.slice(0, max) + "..." : txt;
-}
-
-function formatDateTime(iso) {
-  if (!iso) return "-";
-  const data = new Date(iso);
-  if (Number.isNaN(data.getTime())) return iso;
-  return data.toLocaleString("pt-BR");
-}
-
-function traduzirModalidade(codigo) {
-  const mapa = {
-    "1": "Concorrência",
-    "2": "Concurso",
-    "3": "Leilão",
-    "4": "Pregão",
-    "5": "Diálogo Competitivo",
-    "6": "Dispensa",
-    "7": "Inexigibilidade",
-    "pregao": "Pregão",
-    "concorrencia": "Concorrência",
-    "tomada": "Tomada de Preços",
-    "convite": "Convite",
-    "leilao": "Leilão",
-    "concurso": "Concurso",
-    "dispensa": "Dispensa",
-    "inexigibilidade": "Inexigibilidade"
-  };
-
-  if (codigo === null || codigo === undefined || codigo === "") {
-    return "-";
-  }
-
-  const chave = String(codigo).trim().toLowerCase();
-  return mapa[chave] || codigo;
-}
-
-function buildPageUrl(page) {
-  const p = new URLSearchParams(window.location.search);
-  p.set("page", page);
-  return `/resultados?${p.toString()}`;
-}
-
-function renderPagination(page, total) {
-  const el = document.getElementById("pagination");
-  el.innerHTML = "";
-
-  for (let i = 1; i <= total; i++) {
-    const btn = document.createElement("a");
-    btn.href = buildPageUrl(i);
-    btn.textContent = i;
-    if (i === page) btn.classList.add("active");
-    el.appendChild(btn);
-  }
-}
-
-function renderRows(items) {
-  const tbody = document.getElementById("resultsBody");
-  tbody.innerHTML = "";
-
-  if (!items || !items.length) {
-    tbody.innerHTML = "<tr><td colspan='7' class='empty-row'>Nenhum resultado</td></tr>";
-    return;
-  }
-
-  items.forEach(it => {
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${it.numero_processo || "-"}</td>
-      <td>${it.orgao_licitante || "-"}</td>
-      <td>${traduzirModalidade(it.modalidade)}</td>
-      <td>${resumoTexto(it.objeto)}</td>
-      <td>${formatDateTime(it.data_abertura_propostas)}</td>
-      <td>${it.fonte_dados || "-"}</td>
-      <td><a href="/detalhes?id=${it.id}" class="action-link">Ver</a></td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-
-async function carregar() {
-  const params = new URLSearchParams(window.location.search);
-
-  try {
-    const res = await fetch("/api/licitacoes/buscar?" + params.toString(), {
-      credentials: "include"
+      if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
+        fecharSidebar();
+      }
     });
 
-    const data = await res.json();
+    const temaSalvo = localStorage.getItem("tema");
+    const botaoTema = document.getElementById("theme-toggle");
 
-    renderRows(data.resultados || []);
-
-    const pagina = data?.pagination?.page || 1;
-    const totalPaginas = data?.pagination?.total_pages || 1;
-
-    renderPagination(pagina, totalPaginas);
-  } catch (error) {
-    console.error("Erro ao carregar resultados:", error);
-    renderRows([]);
-    renderPagination(1, 1);
-  }
-}
-
-async function logout(e) {
-  e.preventDefault();
-
-  await fetch("/api/auth/logout", {
-    method: "POST",
-    credentials: "include"
-  });
-
-  window.location.href = "/login.html";
-}
-
-document.getElementById("searchForm").addEventListener("submit", () => {
-  document.getElementById("page").value = "1";
-});
-
-setFormFromQuery();
-
-const temBusca =
-  getParam("palavra_chave") ||
-  getParam("modalidade") ||
-  getParam("orgao") ||
-  getParam("uf");
-
-if (temBusca) {
-  carregar();
-}
-
-// Fecha ao clicar em link (mobile)
-document.querySelectorAll(".sidebar-link").forEach(link => {
-  link.addEventListener("click", () => {
-    if (window.innerWidth <= 768) {
-      fecharSidebar();
+    if (temaSalvo === "dark") {
+      document.body.classList.add("dark");
     }
-  });
-});
-</script>
+
+    function atualizarTextoTema() {
+      if (!botaoTema) return;
+
+      botaoTema.textContent = document.body.classList.contains("dark")
+        ? "☀️ Tema claro"
+        : "🌙 Tema escuro";
+    }
+
+    function alternarTema() {
+      document.body.classList.toggle("dark");
+
+      localStorage.setItem(
+        "tema",
+        document.body.classList.contains("dark") ? "dark" : "light"
+      );
+
+      atualizarTextoTema();
+    }
+
+    atualizarTextoTema();
+
+    function getParam(name, fallback = "") {
+      const p = new URLSearchParams(window.location.search);
+      return p.get(name) ?? fallback;
+    }
+
+    function setFormFromQuery() {
+      document.getElementById("palavra_chave").value = getParam("palavra_chave", "");
+      document.getElementById("modalidade").value = getParam("modalidade", "");
+      document.getElementById("orgao").value = getParam("orgao", "");
+      document.getElementById("uf").value = (getParam("uf", "") || "").toUpperCase();
+
+      document.getElementById("page").value = getParam("page", "1");
+      document.getElementById("per_page").value = getParam("per_page", "10");
+    }
+
+    function resumoTexto(txt, max = 120) {
+      if (!txt) return "-";
+      return txt.length > max ? txt.slice(0, max) + "..." : txt;
+    }
+
+    function formatDateTime(iso) {
+      if (!iso) return "-";
+      const data = new Date(iso);
+      if (Number.isNaN(data.getTime())) return iso;
+      return data.toLocaleString("pt-BR");
+    }
+
+    function traduzirModalidade(codigo) {
+      const mapa = {
+        "1": "Concorrência",
+        "2": "Concurso",
+        "3": "Leilão",
+        "4": "Pregão",
+        "5": "Diálogo Competitivo",
+        "6": "Dispensa",
+        "7": "Inexigibilidade",
+        "pregao": "Pregão",
+        "concorrencia": "Concorrência",
+        "tomada": "Tomada de Preços",
+        "convite": "Convite",
+        "leilao": "Leilão",
+        "concurso": "Concurso",
+        "dispensa": "Dispensa",
+        "inexigibilidade": "Inexigibilidade"
+      };
+
+      if (codigo === null || codigo === undefined || codigo === "") {
+        return "-";
+      }
+
+      const chave = String(codigo).trim().toLowerCase();
+      return mapa[chave] || codigo;
+    }
+
+    function buildPageUrl(page) {
+      const p = new URLSearchParams(window.location.search);
+      p.set("page", page);
+      return `/resultados?${p.toString()}`;
+    }
+
+    function renderPagination(page, total) {
+      const el = document.getElementById("pagination");
+      el.innerHTML = "";
+
+      for (let i = 1; i <= total; i++) {
+        const btn = document.createElement("a");
+        btn.href = buildPageUrl(i);
+        btn.textContent = i;
+        if (i === page) btn.classList.add("active");
+        el.appendChild(btn);
+      }
+    }
+
+    function renderRows(items) {
+      const tbody = document.getElementById("resultsBody");
+      tbody.innerHTML = "";
+
+      if (!items || !items.length) {
+        tbody.innerHTML = "<tr><td colspan='7' class='empty-row'>Nenhum resultado</td></tr>";
+        return;
+      }
+
+      items.forEach(it => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${it.numero_processo || "-"}</td>
+          <td>${it.orgao_licitante || "-"}</td>
+          <td>${traduzirModalidade(it.modalidade)}</td>
+          <td>${resumoTexto(it.objeto)}</td>
+          <td>${formatDateTime(it.data_abertura_propostas)}</td>
+          <td>${it.fonte_dados || "-"}</td>
+          <td><a href="/detalhes?id=${it.id}" class="action-link">Ver</a></td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function carregar() {
+      const params = new URLSearchParams(window.location.search);
+
+      try {
+        const res = await fetch("/api/licitacoes/buscar?" + params.toString(), {
+          credentials: "include"
+        });
+
+        const data = await res.json();
+
+        renderRows(data.resultados || []);
+
+        const pagina = data?.pagination?.page || 1;
+        const totalPaginas = data?.pagination?.total_pages || 1;
+
+        renderPagination(pagina, totalPaginas);
+      } catch (error) {
+        console.error("Erro ao carregar resultados:", error);
+        renderRows([]);
+        renderPagination(1, 1);
+      }
+    }
+
+    async function logout(e) {
+      e.preventDefault();
+
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      window.location.href = "/login.html";
+    }
+
+    document.getElementById("searchForm").addEventListener("submit", () => {
+      document.getElementById("page").value = "1";
+    });
+
+    setFormFromQuery();
+
+    const temBusca =
+      getParam("palavra_chave") ||
+      getParam("modalidade") ||
+      getParam("orgao") ||
+      getParam("uf");
+
+    if (temBusca) {
+      carregar();
+    }
+
+    document.querySelectorAll(".sidebar-link").forEach(link => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 768) {
+          fecharSidebar();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

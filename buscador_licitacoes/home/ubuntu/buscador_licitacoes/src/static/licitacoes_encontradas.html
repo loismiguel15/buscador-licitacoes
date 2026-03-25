@@ -16,511 +16,530 @@
 </head>
 <body>
 
-<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 
-<div class="app-layout">
-  <aside class="sidebar" id="sidebarMenu">
-    <div class="sidebar-top">
-      <a href="/dashboard" class="sidebar-brand">
-        <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
-        <div class="sidebar-brand-text">
-          <h2>Buscador de Licitações</h2>
-          <span>Admin Panel</span>
-        </div>
-      </a>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="/dashboard" class="sidebar-link" onclick="fecharSidebar()">
-        <span>🏠</span>
-        <span>Dashboard</span>
-      </a>
-
-      <a href="/licitacoes_encontradas" class="sidebar-link active" onclick="fecharSidebar()">
-        <span>📄</span>
-        <span>Minhas Licitações</span>
-      </a>
-
-      <a href="/resultados" class="sidebar-link" onclick="fecharSidebar()">
-        <span>🔎</span>
-        <span>Buscar Licitações</span>
-      </a>
-
-      <a href="/dashboard#secaoUsuarios" class="sidebar-link" onclick="fecharSidebar()">
-        <span>👥</span>
-        <span>Usuários</span>
-      </a>
-
-      <a href="/dashboard#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
-        <span>⚙️</span>
-        <span>Preferências</span>
-      </a>
-
-      <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
-        <span>💳</span>
-        <span>Assinatura</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <a href="#" class="sidebar-link sidebar-link-logout" onclick="logout(event)">
-        <span>🚪</span>
-        <span>Sair</span>
-      </a>
-    </div>
-  </aside>
-
-  <div class="main-area">
-
-    <header class="topbar-dashboard">
-      <div class="topbar-search">
-        <input type="text" placeholder="Pesquisar no painel...">
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebarMenu">
+      <div class="sidebar-top">
+        <a href="/dashboard" class="sidebar-brand">
+          <img src="/static/img/logo1.png" class="sidebar-logo" alt="Logo Buscador de Licitações">
+          <div class="sidebar-brand-text">
+            <h2>Buscador de Licitações</h2>
+            <span>Admin Panel</span>
+          </div>
+        </a>
       </div>
 
-      <div class="topbar-actions">
-        <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+      <nav class="sidebar-nav">
+        <a href="/dashboard" class="sidebar-link" onclick="fecharSidebar()">
+          <span>🏠</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="/licitacoes_encontradas" class="sidebar-link active" onclick="fecharSidebar()">
+          <span>📄</span>
+          <span>Minhas Licitações</span>
+        </a>
+
+        <a href="/resultados" class="sidebar-link" onclick="fecharSidebar()">
+          <span>🔎</span>
+          <span>Buscar Licitações</span>
+        </a>
+
+        <a href="/dashboard#secaoUsuarios" class="sidebar-link" onclick="fecharSidebar()">
+          <span>👥</span>
+          <span>Usuários</span>
+        </a>
+
+        <a href="/dashboard#secaoPreferencias" class="sidebar-link" onclick="fecharSidebar()">
+          <span>⚙️</span>
+          <span>Preferências</span>
+        </a>
+
+        <a href="/pagamento/assinar" class="sidebar-link" onclick="fecharSidebar()">
+          <span>💳</span>
+          <span>Assinatura</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="#" class="sidebar-link sidebar-link-logout" onclick="logout(event)">
+          <span>🚪</span>
+          <span>Sair</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar-dashboard">
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          onclick="toggleSidebar()"
+          aria-label="Abrir menu">
           ☰
         </button>
 
-        <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
-          🌙 Tema escuro
-        </button>
-
-        <div class="topbar-user">
-          <div class="topbar-user-text">
-            <strong>Licitações</strong>
-            <span>Resultados personalizados</span>
-          </div>
-          <div class="user-avatar">BL</div>
-        </div>
-      </div>
-    </header>
-
-    <main class="minhas-page">
-      <div class="container minhas-container">
-
-        <div class="page-header page-header-modern">
-          <div>
-            <span class="page-tag">Oportunidades personalizadas</span>
-            <h2>Licitações Encontradas para Você</h2>
-            <p>
-              Visualize licitações filtradas de acordo com seus interesses e refine a busca
-              por palavra-chave, UF, modalidade e data de publicação.
-            </p>
-          </div>
-
-          <div class="page-highlight-card">
-            <strong>Busca inteligente ativa</strong>
-            <span>
-              Use os filtros para localizar oportunidades mais alinhadas ao perfil da sua empresa.
-            </span>
-          </div>
+        <div class="topbar-search">
+          <input type="text" placeholder="Pesquisar no painel...">
         </div>
 
-        <section class="filtros-card filtros-card-modern">
-          <div class="card-header">
+        <div class="topbar-actions">
+          <button class="btn btn-outline" type="button" onclick="alternarTema()" id="theme-toggle">
+            🌙 Tema escuro
+          </button>
+
+          <div class="topbar-user">
+            <div class="topbar-user-text">
+              <strong>Licitações</strong>
+              <span>Resultados personalizados</span>
+            </div>
+            <div class="user-avatar">BL</div>
+          </div>
+        </div>
+      </header>
+
+      <main class="minhas-page">
+        <div class="container minhas-container">
+
+          <div class="page-header page-header-modern">
             <div>
-              <span class="section-badge">Filtros</span>
-              <h3>Filtrar resultados</h3>
-              <p>Use os filtros abaixo para encontrar oportunidades mais alinhadas ao seu perfil.</p>
+              <span class="page-tag">Oportunidades personalizadas</span>
+              <h2>Licitações Encontradas para Você</h2>
+              <p>
+                Visualize licitações filtradas de acordo com seus interesses e refine a busca
+                por palavra-chave, UF, modalidade e data de publicação.
+              </p>
+            </div>
+
+            <div class="page-highlight-card">
+              <strong>Busca inteligente ativa</strong>
+              <span>
+                Use os filtros para localizar oportunidades mais alinhadas ao perfil da sua empresa.
+              </span>
             </div>
           </div>
 
-          <div class="filtros-grid">
-            <div class="field field-wide">
-              <label for="filtro_palavra">Buscar palavra</label>
-              <input type="text" id="filtro_palavra" placeholder="Ex: software, limpeza, obra">
+          <section class="filtros-card filtros-card-modern">
+            <div class="card-header">
+              <div>
+                <span class="section-badge">Filtros</span>
+                <h3>Filtrar resultados</h3>
+                <p>Use os filtros abaixo para encontrar oportunidades mais alinhadas ao seu perfil.</p>
+              </div>
             </div>
 
-            <div class="field">
-              <label for="filtro_uf">UF</label>
-              <select id="filtro_uf">
-                <option value="">Carregando...</option>
-              </select>
+            <div class="filtros-grid">
+              <div class="field field-wide">
+                <label for="filtro_palavra">Buscar palavra</label>
+                <input type="text" id="filtro_palavra" placeholder="Ex: software, limpeza, obra">
+              </div>
+
+              <div class="field">
+                <label for="filtro_uf">UF</label>
+                <select id="filtro_uf">
+                  <option value="">Carregando...</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="filtro_modalidade">Modalidade</label>
+                <select id="filtro_modalidade">
+                  <option value="">Carregando...</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="filtro_data_inicio">Data de publicação</label>
+                <input type="date" id="filtro_data_inicio">
+              </div>
+
+              <div class="field action-field">
+                <button type="button" onclick="carregar(1)" class="btn btn-primary btn-filter-main">Filtrar</button>
+              </div>
+
+              <div class="field action-field">
+                <button type="button" onclick="limparFiltros()" class="btn btn-secondary">Limpar filtros</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="resultados-card resultados-card-modern">
+            <div class="resultados-top">
+              <div>
+                <span class="section-badge section-badge-soft">Resultados</span>
+                <h3>Resultados encontrados</h3>
+                <p class="muted">Lista de licitações recomendadas para sua empresa.</p>
+              </div>
             </div>
 
-            <div class="field">
-              <label for="filtro_modalidade">Modalidade</label>
-              <select id="filtro_modalidade">
-                <option value="">Carregando...</option>
-              </select>
+            <div class="table-wrapper">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Órgão</th>
+                    <th>UF</th>
+                    <th>Modalidade</th>
+                    <th>Objeto</th>
+                    <th>Data Publicação</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaResultados">
+                  <tr>
+                    <td colspan="6" class="empty-row">Carregando licitações...</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div class="field">
-              <label for="filtro_data_inicio">Data de publicação</label>
-              <input type="date" id="filtro_data_inicio">
-            </div>
+            <div class="pagination" id="pagination"></div>
+          </section>
 
-            <div class="field action-field">
-              <button type="button" onclick="carregar(1)" class="btn btn-primary btn-filter-main">Filtrar</button>
-            </div>
+        </div>
+      </main>
 
-            <div class="field action-field">
-              <button type="button" onclick="limparFiltros()" class="btn btn-secondary">Limpar filtros</button>
-            </div>
-          </div>
-        </section>
-
-        <section class="resultados-card resultados-card-modern">
-          <div class="resultados-top">
-            <div>
-              <span class="section-badge section-badge-soft">Resultados</span>
-              <h3>Resultados encontrados</h3>
-              <p class="muted">Lista de licitações recomendadas para sua empresa.</p>
-            </div>
-          </div>
-
-          <div class="table-wrapper">
-            <table class="results-table">
-              <thead>
-                <tr>
-                  <th>Órgão</th>
-                  <th>UF</th>
-                  <th>Modalidade</th>
-                  <th>Objeto</th>
-                  <th>Data Publicação</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody id="tabelaResultados">
-                <tr>
-                  <td colspan="6" class="empty-row">Carregando licitações...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="pagination" id="pagination"></div>
-        </section>
-
-      </div>
-    </main>
-
-    <footer>
-      <div class="container footer-box">
-        <p>&copy; 2026 Buscador de Licitações</p>
-      </div>
-    </footer>
+      <footer>
+        <div class="container footer-box">
+          <p>&copy; 2026 Buscador de Licitações</p>
+        </div>
+      </footer>
+    </div>
   </div>
-</div>
 
-<script>
-  const temaSalvo = localStorage.getItem("tema");
-  const botaoTema = document.getElementById("theme-toggle");
+  <script>
+    const temaSalvo = localStorage.getItem("tema");
+    const botaoTema = document.getElementById("theme-toggle");
 
-  if (temaSalvo === "dark") {
-    document.body.classList.add("dark");
-  }
-
-  function atualizarTextoTema() {
-    if (!botaoTema) return;
-
-    if (document.body.classList.contains("dark")) {
-      botaoTema.textContent = "☀️ Tema claro";
-    } else {
-      botaoTema.textContent = "🌙 Tema escuro";
-    }
-  }
-
-  function alternarTema() {
-    document.body.classList.toggle("dark");
-
-    if (document.body.classList.contains("dark")) {
-      localStorage.setItem("tema", "dark");
-    } else {
-      localStorage.setItem("tema", "light");
+    if (temaSalvo === "dark") {
+      document.body.classList.add("dark");
     }
 
-    atualizarTextoTema();
-  }
+    function atualizarTextoTema() {
+      if (!botaoTema) return;
 
-  function toggleSidebar() {
-    const sidebar = document.getElementById("sidebarMenu");
-    const overlay = document.getElementById("sidebarOverlay");
-    if (!sidebar || !overlay) return;
+      if (document.body.classList.contains("dark")) {
+        botaoTema.textContent = "☀️ Tema claro";
+      } else {
+        botaoTema.textContent = "🌙 Tema escuro";
+      }
+    }
 
-    sidebar.classList.toggle("show-mobile");
-    overlay.classList.toggle("show");
-  }
+    function alternarTema() {
+      document.body.classList.toggle("dark");
 
-  function fecharSidebar() {
-    const sidebar = document.getElementById("sidebarMenu");
-    const overlay = document.getElementById("sidebarOverlay");
-    if (!sidebar || !overlay) return;
+      if (document.body.classList.contains("dark")) {
+        localStorage.setItem("tema", "dark");
+      } else {
+        localStorage.setItem("tema", "light");
+      }
 
-    sidebar.classList.remove("show-mobile");
-    overlay.classList.remove("show");
-  }
+      atualizarTextoTema();
+    }
 
-  document.addEventListener("click", function (event) {
-    const sidebar = document.getElementById("sidebarMenu");
-    const button = document.querySelector(".mobile-menu-toggle");
-    const overlay = document.getElementById("sidebarOverlay");
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebarMenu");
+      const overlay = document.getElementById("sidebarOverlay");
+      if (!sidebar || !overlay) return;
 
-    if (!sidebar || !button || !overlay) return;
+      const aberto = sidebar.classList.contains("show-mobile");
 
-    const clicouDentroSidebar = sidebar.contains(event.target);
-    const clicouNoBotao = button.contains(event.target);
-    const clicouNoOverlay = overlay.contains(event.target);
+      if (aberto) {
+        sidebar.classList.remove("show-mobile");
+        overlay.classList.remove("show");
+        document.body.style.overflow = "";
+      } else {
+        sidebar.classList.add("show-mobile");
+        overlay.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+    }
 
-    if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
+    function fecharSidebar() {
+      const sidebar = document.getElementById("sidebarMenu");
+      const overlay = document.getElementById("sidebarOverlay");
+      if (!sidebar || !overlay) return;
+
       sidebar.classList.remove("show-mobile");
       overlay.classList.remove("show");
-    }
-  });
-
-  atualizarTextoTema();
-
-  let paginaAtual = 1;
-
-  const MAPA_MODALIDADES = {
-    "1": "Concorrência",
-    "2": "Concurso",
-    "3": "Leilão",
-    "4": "Pregão",
-    "5": "Diálogo Competitivo",
-    "6": "Dispensa",
-    "7": "Inexigibilidade"
-  };
-
-  function resumo(texto, max = 120) {
-    if (!texto) return "-";
-    return texto.length > max ? texto.substring(0, max) + "..." : texto;
-  }
-
-  function formatarData(data) {
-    if (!data) return "-";
-    return new Date(data).toLocaleDateString("pt-BR");
-  }
-
-  async function verificarSessao() {
-    const res = await fetch("/api/auth/status", { credentials: "include" });
-    const data = await res.json();
-
-    if (!data.logged_in) {
-      window.location.href = "/login.html";
-      return false;
+      document.body.style.overflow = "";
     }
 
-    return true;
-  }
+    document.addEventListener("click", function (event) {
+      const sidebar = document.getElementById("sidebarMenu");
+      const button = document.querySelector(".mobile-menu-toggle");
+      const overlay = document.getElementById("sidebarOverlay");
 
-  async function carregarFiltrosDoPainel() {
-    const selectUf = document.getElementById("filtro_uf");
-    const selectModalidade = document.getElementById("filtro_modalidade");
+      if (!sidebar || !button || !overlay) return;
 
-    selectUf.innerHTML = '<option value="">Carregando...</option>';
-    selectModalidade.innerHTML = '<option value="">Carregando...</option>';
+      const clicouDentroSidebar = sidebar.contains(event.target);
+      const clicouNoBotao = button.contains(event.target);
+      const clicouNoOverlay = overlay.contains(event.target);
 
-    try {
-      const res = await fetch("/api/preferencias", {
-        credentials: "include"
-      });
+      if (!clicouDentroSidebar && !clicouNoBotao && !clicouNoOverlay) {
+        fecharSidebar();
+      }
+    });
 
+    atualizarTextoTema();
+
+    let paginaAtual = 1;
+
+    const MAPA_MODALIDADES = {
+      "1": "Concorrência",
+      "2": "Concurso",
+      "3": "Leilão",
+      "4": "Pregão",
+      "5": "Diálogo Competitivo",
+      "6": "Dispensa",
+      "7": "Inexigibilidade"
+    };
+
+    function resumo(texto, max = 120) {
+      if (!texto) return "-";
+      return texto.length > max ? texto.substring(0, max) + "..." : texto;
+    }
+
+    function formatarData(data) {
+      if (!data) return "-";
+      return new Date(data).toLocaleDateString("pt-BR");
+    }
+
+    async function verificarSessao() {
+      const res = await fetch("/api/auth/status", { credentials: "include" });
       const data = await res.json();
 
-      const ufs = Array.isArray(data.ufs) ? data.ufs : [];
-      const modalidadesCodigos = Array.isArray(data.modalidades) ? data.modalidades : [];
-
-      const estados = [...new Set(
-        ufs
-          .map(uf => String(uf).trim().toUpperCase())
-          .filter(Boolean)
-      )].sort();
-
-      const modalidades = [...new Set(
-        modalidadesCodigos
-          .map(codigo => String(codigo).trim())
-          .filter(Boolean)
-          .map(codigo => MAPA_MODALIDADES[codigo])
-          .filter(Boolean)
-      )].sort();
-
-      selectUf.innerHTML = '<option value="">Todas</option>';
-      for (const uf of estados) {
-        const option = document.createElement("option");
-        option.value = uf;
-        option.textContent = uf;
-        selectUf.appendChild(option);
+      if (!data.logged_in) {
+        window.location.href = "/login.html";
+        return false;
       }
 
-      if (!estados.length) {
-        selectUf.innerHTML = '<option value="">Todas</option>';
-      }
-
-      selectModalidade.innerHTML = '<option value="">Todas</option>';
-      for (const modalidade of modalidades) {
-        const option = document.createElement("option");
-        option.value = modalidade;
-        option.textContent = modalidade;
-        selectModalidade.appendChild(option);
-      }
-
-      if (!modalidades.length) {
-        selectModalidade.innerHTML = '<option value="">Todas</option>';
-      }
-
-    } catch (erro) {
-      console.error("Erro ao carregar filtros do painel:", erro);
-      document.getElementById("filtro_uf").innerHTML = '<option value="">Todas</option>';
-      document.getElementById("filtro_modalidade").innerHTML = '<option value="">Todas</option>';
+      return true;
     }
-  }
 
-  async function carregar(page = 1) {
-    paginaAtual = page;
+    async function carregarFiltrosDoPainel() {
+      const selectUf = document.getElementById("filtro_uf");
+      const selectModalidade = document.getElementById("filtro_modalidade");
 
-    const ok = await verificarSessao();
-    if (!ok) return;
+      selectUf.innerHTML = '<option value="">Carregando...</option>';
+      selectModalidade.innerHTML = '<option value="">Carregando...</option>';
 
-    const palavra = document.getElementById("filtro_palavra").value.trim();
-    const uf = document.getElementById("filtro_uf").value;
-    const modalidade = document.getElementById("filtro_modalidade").value;
-    const dataInicio = document.getElementById("filtro_data_inicio").value;
-
-    const params = new URLSearchParams();
-    params.append("page", page);
-    params.append("per_page", 20);
-
-    if (palavra) params.append("palavra_chave", palavra);
-    if (uf) params.append("uf", uf);
-    if (modalidade) params.append("modalidade", modalidade);
-    if (dataInicio) params.append("data_inicio", dataInicio);
-
-    const tbody = document.getElementById("tabelaResultados");
-    tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Carregando licitações...</td></tr>";
-
-    try {
-      const res = await fetch("/api/licitacoes/minhas?" + params.toString(), {
-        credentials: "include"
-      });
-
-      const texto = await res.text();
-      console.log("STATUS:", res.status);
-      console.log("RESPOSTA BRUTA:", texto);
-
-      let data = {};
       try {
-        data = JSON.parse(texto);
-      } catch (e) {
-        throw new Error("Resposta não veio em JSON: " + texto);
-      }
+        const res = await fetch("/api/preferencias", {
+          credentials: "include"
+        });
 
-      if (!res.ok) {
-        tbody.innerHTML = `<tr><td colspan="6" class="empty-row">${data.error || "Erro ao carregar licitações"}</td></tr>`;
+        const data = await res.json();
+
+        const ufs = Array.isArray(data.ufs) ? data.ufs : [];
+        const modalidadesCodigos = Array.isArray(data.modalidades) ? data.modalidades : [];
+
+        const estados = [...new Set(
+          ufs
+            .map(uf => String(uf).trim().toUpperCase())
+            .filter(Boolean)
+        )].sort();
+
+        const modalidades = [...new Set(
+          modalidadesCodigos
+            .map(codigo => String(codigo).trim())
+            .filter(Boolean)
+            .map(codigo => MAPA_MODALIDADES[codigo])
+            .filter(Boolean)
+        )].sort();
+
+        selectUf.innerHTML = '<option value="">Todas</option>';
+        for (const uf of estados) {
+          const option = document.createElement("option");
+          option.value = uf;
+          option.textContent = uf;
+          selectUf.appendChild(option);
+        }
+
+        if (!estados.length) {
+          selectUf.innerHTML = '<option value="">Todas</option>';
+        }
+
+        selectModalidade.innerHTML = '<option value="">Todas</option>';
+        for (const modalidade of modalidades) {
+          const option = document.createElement("option");
+          option.value = modalidade;
+          option.textContent = modalidade;
+          selectModalidade.appendChild(option);
+        }
+
+        if (!modalidades.length) {
+          selectModalidade.innerHTML = '<option value="">Todas</option>';
+        }
+
+      } catch (erro) {
+        console.error("Erro ao carregar filtros do painel:", erro);
+        document.getElementById("filtro_uf").innerHTML = '<option value="">Todas</option>';
+        document.getElementById("filtro_modalidade").innerHTML = '<option value="">Todas</option>';
+      }
+    }
+
+    async function carregar(page = 1) {
+      paginaAtual = page;
+
+      const ok = await verificarSessao();
+      if (!ok) return;
+
+      const palavra = document.getElementById("filtro_palavra").value.trim();
+      const uf = document.getElementById("filtro_uf").value;
+      const modalidade = document.getElementById("filtro_modalidade").value;
+      const dataInicio = document.getElementById("filtro_data_inicio").value;
+
+      const params = new URLSearchParams();
+      params.append("page", page);
+      params.append("per_page", 20);
+
+      if (palavra) params.append("palavra_chave", palavra);
+      if (uf) params.append("uf", uf);
+      if (modalidade) params.append("modalidade", modalidade);
+      if (dataInicio) params.append("data_inicio", dataInicio);
+
+      const tbody = document.getElementById("tabelaResultados");
+      tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Carregando licitações...</td></tr>";
+
+      try {
+        const res = await fetch("/api/licitacoes/minhas?" + params.toString(), {
+          credentials: "include"
+        });
+
+        const texto = await res.text();
+        console.log("STATUS:", res.status);
+        console.log("RESPOSTA BRUTA:", texto);
+
+        let data = {};
+        try {
+          data = JSON.parse(texto);
+        } catch (e) {
+          throw new Error("Resposta não veio em JSON: " + texto);
+        }
+
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="6" class="empty-row">${data.error || "Erro ao carregar licitações"}</td></tr>`;
+          document.getElementById("pagination").innerHTML = "";
+          return;
+        }
+
+        render(data.resultados || []);
+        renderPagination(data.pagination || { page: 1, total_pages: 1 });
+
+      } catch (erro) {
+        console.error("Erro ao buscar licitações:", erro);
+        tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Erro ao carregar licitações</td></tr>";
         document.getElementById("pagination").innerHTML = "";
+      }
+    }
+
+    function render(lista) {
+      const tbody = document.getElementById("tabelaResultados");
+      tbody.innerHTML = "";
+
+      if (!lista.length) {
+        tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Nenhuma licitação encontrada</td></tr>";
         return;
       }
 
-      render(data.resultados || []);
-      renderPagination(data.pagination || { page: 1, total_pages: 1 });
+      for (const lic of lista) {
+        const tr = document.createElement("tr");
 
-    } catch (erro) {
-      console.error("Erro ao buscar licitações:", erro);
-      tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Erro ao carregar licitações</td></tr>";
-      document.getElementById("pagination").innerHTML = "";
-    }
-  }
+        const temAbrirLicitacao = !!lic.link_fonte;
+        const temEdital = !!(lic.link_fonte || lic.link_edital);
 
-  function render(lista) {
-    const tbody = document.getElementById("tabelaResultados");
-    tbody.innerHTML = "";
+        tr.innerHTML = `
+          <td>${lic.orgao_licitante || "-"}</td>
+          <td>${lic.localidade_uf || "-"}</td>
+          <td>${lic.modalidade || "-"}</td>
+          <td>${resumo(lic.objeto)}</td>
+          <td>${formatarData(lic.data_publicacao)}</td>
+          <td class="actions-cell">
+            <a class="action-link" href="/detalhes?id=${lic.id}">
+              Detalhes
+            </a>
 
-    if (!lista.length) {
-      tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Nenhuma licitação encontrada</td></tr>";
-      return;
-    }
+            ${temAbrirLicitacao
+              ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="${lic.link_fonte}">
+                   Abrir licitação
+                 </a>`
+              : ""}
 
-    for (const lic of lista) {
-      const tr = document.createElement("tr");
+            ${temEdital
+              ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="/api/licitacoes/visualizar-edital/${lic.id}">
+                   Ver edital
+                 </a>`
+              : ""}
 
-      const temAbrirLicitacao = !!lic.link_fonte;
-      const temEdital = !!(lic.link_fonte || lic.link_edital);
+            ${temEdital
+              ? `<a class="action-link download-link" href="/api/licitacoes/baixar-edital/${lic.id}">
+                   Baixar edital
+                 </a>`
+              : ""}
+          </td>
+        `;
 
-      tr.innerHTML = `
-        <td>${lic.orgao_licitante || "-"}</td>
-        <td>${lic.localidade_uf || "-"}</td>
-        <td>${lic.modalidade || "-"}</td>
-        <td>${resumo(lic.objeto)}</td>
-        <td>${formatarData(lic.data_publicacao)}</td>
-        <td class="actions-cell">
-
-          <a class="action-link" href="/detalhes?id=${lic.id}">
-            Detalhes
-          </a>
-
-          ${temAbrirLicitacao
-            ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="${lic.link_fonte}">
-                 Abrir licitação
-               </a>`
-            : ""}
-
-          ${temEdital
-            ? `<a class="action-link secondary-link" target="_blank" rel="noopener noreferrer" href="/api/licitacoes/visualizar-edital/${lic.id}">
-                 Ver edital
-               </a>`
-            : ""}
-
-          ${temEdital
-            ? `<a class="action-link download-link" href="/api/licitacoes/baixar-edital/${lic.id}">
-                 Baixar edital
-               </a>`
-            : ""}
-        </td>
-      `;
-
-      tbody.appendChild(tr);
-    }
-  }
-
-  function renderPagination(pagination) {
-    const el = document.getElementById("pagination");
-    el.innerHTML = "";
-
-    for (let i = 1; i <= pagination.total_pages; i++) {
-      const btn = document.createElement("button");
-      btn.innerText = i;
-      btn.className = "page-btn";
-
-      if (i === pagination.page) {
-        btn.disabled = true;
+        tbody.appendChild(tr);
       }
-
-      btn.onclick = () => carregar(i);
-      el.appendChild(btn);
     }
-  }
 
-  function limparFiltros() {
-    document.getElementById("filtro_palavra").value = "";
-    document.getElementById("filtro_uf").value = "";
-    document.getElementById("filtro_modalidade").value = "";
-    document.getElementById("filtro_data_inicio").value = "";
+    function renderPagination(pagination) {
+      const el = document.getElementById("pagination");
+      el.innerHTML = "";
 
-    carregar(1);
-  }
+      for (let i = 1; i <= pagination.total_pages; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        btn.className = "page-btn";
 
-  async function logout(event) {
-    event.preventDefault();
+        if (i === pagination.page) {
+          btn.disabled = true;
+        }
 
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include"
+        btn.onclick = () => carregar(i);
+        el.appendChild(btn);
+      }
+    }
+
+    function limparFiltros() {
+      document.getElementById("filtro_palavra").value = "";
+      document.getElementById("filtro_uf").value = "";
+      document.getElementById("filtro_modalidade").value = "";
+      document.getElementById("filtro_data_inicio").value = "";
+
+      carregar(1);
+    }
+
+    async function logout(event) {
+      event.preventDefault();
+
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      window.location.href = "/login.html";
+    }
+
+    async function iniciarPagina() {
+      const ok = await verificarSessao();
+      if (!ok) return;
+
+      await carregarFiltrosDoPainel();
+      await carregar(1);
+    }
+
+    iniciarPagina();
+
+    document.querySelectorAll(".sidebar-link").forEach(link => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 768) {
+          fecharSidebar();
+        }
+      });
     });
-
-    window.location.href = "/login.html";
-  }
-
-  async function iniciarPagina() {
-    const ok = await verificarSessao();
-    if (!ok) return;
-
-    await carregarFiltrosDoPainel();
-    await carregar(1);
-  }
-
-  iniciarPagina();
-</script>
+  </script>
 
 </body>
 </html>

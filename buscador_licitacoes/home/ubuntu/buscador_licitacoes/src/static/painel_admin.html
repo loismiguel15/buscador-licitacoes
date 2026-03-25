@@ -72,9 +72,9 @@
 
   <div class="main-area">
 
-    <header class="topbar-dashboard">
+        <header class="topbar-dashboard">
       <button class="mobile-menu-toggle" type="button" onclick="toggleSidebar()" aria-label="Abrir menu">
-        ⋮
+        ☰ 
       </button>
 
       <div class="topbar-search">
@@ -351,23 +351,35 @@
     atualizarTextoTema();
   }
 
-  function toggleSidebar() {
-    const sidebar = document.getElementById("sidebarMenu");
-    const overlay = document.getElementById("sidebarOverlay");
-    if (!sidebar || !overlay) return;
+ 
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebarMenu");
+      const overlay = document.getElementById("sidebarOverlay");
+      if (!sidebar || !overlay) return;
 
-    sidebar.classList.toggle("show-mobile");
-    overlay.classList.toggle("show");
-  }
+      const opened = sidebar.classList.contains("show-mobile");
 
-  function fecharSidebar() {
-    const sidebar = document.getElementById("sidebarMenu");
-    const overlay = document.getElementById("sidebarOverlay");
-    if (!sidebar || !overlay) return;
+      if (opened) {
+        sidebar.classList.remove("show-mobile");
+        overlay.classList.remove("show");
+        document.body.classList.remove("sidebar-open");
+      } else {
+        sidebar.classList.add("show-mobile");
+        overlay.classList.add("show");
+        document.body.classList.add("sidebar-open");
+      }
+    }
 
-    sidebar.classList.remove("show-mobile");
-    overlay.classList.remove("show");
-  }
+    function fecharSidebar() {
+      const sidebar = document.getElementById("sidebarMenu");
+      const overlay = document.getElementById("sidebarOverlay");
+      if (!sidebar || !overlay) return;
+
+      sidebar.classList.remove("show-mobile");
+      overlay.classList.remove("show");
+      document.body.classList.remove("sidebar-open");
+    }
+
 
   document.addEventListener("click", function (event) {
     const sidebar = document.getElementById("sidebarMenu");
