@@ -565,3 +565,15 @@ body.dark .mobile-menu-toggle {
     left: 0 !important;
   }
 }
+.main-area {
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar {
+  z-index: 2200;
+}
+
+.mobile-menu-toggle {
+  z-index: 3000;
+}

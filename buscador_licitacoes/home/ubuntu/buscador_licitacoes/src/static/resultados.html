@@ -70,13 +70,8 @@
     <!-- TOPBAR -->
     <header class="topbar-dashboard">
 
-      <button
-        class="mobile-menu-toggle"
-        type="button"
-        onclick="toggleSidebar()"
-        aria-label="Abrir menu"
-      >
-        ⋮
+      <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        ☰
       </button>
 
       <div class="topbar-search">
@@ -190,14 +185,21 @@
 </div>
 
 <script>
-function toggleSidebar() {
+  function toggleSidebar() {
   const sidebar = document.getElementById("sidebarMenu");
   const overlay = document.getElementById("sidebarOverlay");
 
   if (!sidebar || !overlay) return;
 
-  sidebar.classList.toggle("show-mobile");
-  overlay.classList.toggle("show");
+  const abriu = sidebar.classList.contains("show-mobile");
+
+  if (abriu) {
+    sidebar.classList.remove("show-mobile");
+    overlay.classList.remove("show");
+  } else {
+    sidebar.classList.add("show-mobile");
+    overlay.classList.add("show");
+  }
 }
 
 function fecharSidebar() {
@@ -402,4 +404,13 @@ const temBusca =
 if (temBusca) {
   carregar();
 }
+
+// Fecha ao clicar em link (mobile)
+document.querySelectorAll(".sidebar-link").forEach(link => {
+  link.addEventListener("click", () => {
+    if (window.innerWidth <= 768) {
+      fecharSidebar();
+    }
+  });
+});
 </script>
