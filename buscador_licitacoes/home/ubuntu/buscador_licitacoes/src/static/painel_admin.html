@@ -119,7 +119,6 @@
           </div>
         </div>
 
-        <div id="msgPreferencias" class="msg hidden-block"></div>
         <div id="msg" class="msg hidden-block"></div>
 
         <section class="dashboard-highlight-cards">
@@ -233,6 +232,8 @@
                 <button type="submit" id="btnSalvarPreferencias" class="btn btn-primary btn-featured-save">
                   Salvar Preferências
                 </button>
+
+                <div id="msgPreferencias" class="msg msg-preferencias"></div>
               </div>
             </form>
           </div>
@@ -414,11 +415,16 @@
   const btnSalvarPreferencias = document.getElementById("btnSalvarPreferencias");
   const keywordsInput = document.getElementById("keywords");
 
-  function showMsg(text, ok) {
-    msg.textContent = text;
-    msg.className = "msg " + (ok ? "ok" : "err");
-    msg.style.display = "block";
-  }
+  function showMsgPreferencias(text, ok) {
+  msgPreferencias.textContent = text;
+  msgPreferencias.className = "msg msg-preferencias " + (ok ? "ok" : "err");
+  msgPreferencias.style.display = "block";
+
+  msgPreferencias.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
 
   function showMsgPreferencias(text, ok) {
     msgPreferencias.textContent = text;
@@ -463,11 +469,23 @@
   }
 
   function toggleDropdown(id) {
-    const menu = document.getElementById(id);
-    if (!menu) return;
-    const aberto = menu.style.display === "block";
-    menu.style.display = aberto ? "none" : "block";
+  const menu = document.getElementById(id);
+  if (!menu) return;
+
+  document.querySelectorAll(".dropdown-content").forEach(item => {
+    if (item.id !== id) {
+      item.style.display = "none";
+    }
+  });
+
+  const aberto = menu.style.display === "block";
+  menu.style.display = aberto ? "none" : "block";
+
+  if (aberto) {
+    atualizarTextoUFs();
+    atualizarTextoModalidades();
   }
+}
 
   function atualizarResumoUsuarios(plano) {
     if (!usuariosAtivosTexto) return;
