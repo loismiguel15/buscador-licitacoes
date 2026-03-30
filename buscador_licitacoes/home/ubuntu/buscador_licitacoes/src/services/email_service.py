@@ -14,14 +14,13 @@ SMTP_USE_SSL = os.getenv("SMTP_USE_SSL", "0") == "1"
 
 AREA_CLIENTE_URL = os.getenv(
     "AREA_CLIENTE_URL",
-    "http://200.235.74.36:5000/licitacoes_encontradas"
+    "https://buscador-licitacoes.onrender.com/licitacoes_encontradas"
 ).strip()
 
 EMAIL_LOGO_URL = os.getenv(
     "EMAIL_LOGO_URL",
-    ""
+    "https://buscador-licitacoes.onrender.com/static/img/logo1.png"
 ).strip()
-
 
 def enviar_email(destinatario: str, assunto: str, html: str, texto: str | None = None):
     if not SMTP_HOST:

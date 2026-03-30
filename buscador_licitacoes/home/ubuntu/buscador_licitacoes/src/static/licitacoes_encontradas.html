@@ -380,59 +380,93 @@
     }
 
     async function carregar(page = 1) {
-      paginaAtual = page;
+  paginaAtual = page;
 
-      const ok = await verificarSessao();
-      if (!ok) return;
+  const ok = await verificarSessao();
+  if (!ok) return;
 
-      const palavra = document.getElementById("filtro_palavra").value.trim();
-      const uf = document.getElementById("filtro_uf").value;
-      const modalidade = document.getElementById("filtro_modalidade").value;
-      const dataInicio = document.getElementById("filtro_data_inicio").value;
+  const palavra = document.getElementById("filtro_palavra").value.trim();
+  const uf = document.getElementById("filtro_uf").value;
+  const modalidade = document.getElementById("filtro_modalidade").value;
+  const dataInicio = document.getElementById("filtro_data_inicio").value;
 
-      const params = new URLSearchParams();
-      params.append("page", page);
-      params.append("per_page", 20);
+  const params = new URLSearchParams();
+  params.append("page", page);
+  params.append("per_page", 20);
 
-      if (palavra) params.append("palavra_chave", palavra);
-      if (uf) params.append("uf", uf);
-      if (modalidade) params.append("modalidade", modalidade);
-      if (dataInicio) params.append("data_inicio", dataInicio);
+  if (palavra) params.append("palavra_chave", palavra);
+  if (uf) params.append("uf", uf);
+  if (modalidade) params.append("modalidade", modalidade);
+  if (dataInicio) params.append("data_inicio", dataInicio);
 
-      const tbody = document.getElementById("tabelaResultados");
-      tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Carregando licitações...</td></tr>";
+  const tbody = document.getElementById("tabelaResultados");
+  tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Carregando licitações...</td></tr>";
 
-      try {
-        const res = await fetch("/api/licitacoes/minhas?" + params.toString(), {
-          credentials: "include"
-        });
+  try {
+    const res = await fetch("/api/licitacoes/minhas?" + params.toString(), {
+      credentials: "include"
+    });
 
-        const texto = await res.text();
-        console.log("STATUS:", res.status);
-        console.log("RESPOSTA BRUTA:", texto);
+    const texto = await res.text();
+    console.log("STATUS:", res.status);
+    console.log("RESPOSTA BRUTA:", texto);
 
-        let data = {};
-        try {
-          data = JSON.parse(texto);
-        } catch (e) {
-          throw new Error("Resposta não veio em JSON: " + texto);
-        }
-
-        if (!res.ok) {
-          tbody.innerHTML = `<tr><td colspan="6" class="empty-row">${data.error || "Erro ao carregar licitações"}</td></tr>`;
-          document.getElementById("pagination").innerHTML = "";
-          return;
-        }
-
-        render(data.resultados || []);
-        renderPagination(data.pagination || { page: 1, total_pages: 1 });
-
-      } catch (erro) {
-        console.error("Erro ao buscar licitações:", erro);
-        tbody.innerHTML = "<tr><td colspan='6' class='empty-row'>Erro ao carregar licitações</td></tr>";
-        document.getElementById("pagination").innerHTML = "";
-      }
+    let data = {};
+    try {
+      data = texto ? JSON.parse(texto) : {};
+    } catch (e) {
+      throw new Error("Resposta não veio em JSON: " + texto);
     }
+
+    // 🔐 NÃO LOGADO
+    if (res.status === 401) {
+      window.location.href = "/login.html";
+      return;
+    }
+
+    // 💰 BLOQUEADO (TRIAL / ASSINATURA)
+    if (res.status === 403) {
+      if (data.redirect) {
+        window.location.href = data.redirect;
+        return;
+      }
+
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-row">
+        ${data.message || "Seu acesso foi bloqueado. Assine para continuar."}
+      </td></tr>`;
+
+      document.getElementById("pagination").innerHTML = "";
+      return;
+    }
+
+    // ❌ OUTROS ERROS
+    if (!res.ok) {
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-row">
+        ${data.error || data.message || "Erro ao carregar licitações"}
+      </td></tr>`;
+
+      document.getElementById("pagination").innerHTML = "";
+      return;
+    }
+
+    // ✅ SUCESSO
+    render(data.resultados || []);
+    renderPagination(data.pagination || { page: 1, total_pages: 1 });
+
+  } catch (erro) {
+    console.error("Erro ao buscar licitações:", erro);
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan='6' class='empty-row'>
+          Erro ao carregar licitações
+        </td>
+      </tr>
+    `;
+
+    document.getElementById("pagination").innerHTML = "";
+  }
+}
 
     function render(lista) {
       const tbody = document.getElementById("tabelaResultados");

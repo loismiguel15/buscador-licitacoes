@@ -8,6 +8,7 @@ from rapidfuzz import fuzz
 
 from src.models import db, Licitacao, LicitacaoCliente
 from src.services.edital_service import baixar_edital_em_memoria
+from src.routes._session_guard import login_required, assinatura_required
 
 licitacao_bp = Blueprint("licitacao", __name__)
 
@@ -61,6 +62,8 @@ def licitacao_to_dict(lic):
 
 
 @licitacao_bp.route("/buscar", methods=["GET"])
+@login_required
+@assinatura_required
 def buscar_licitacoes():
     palavra_chave = request.args.get("palavra_chave", default=None, type=str)
     if not palavra_chave:
@@ -274,6 +277,8 @@ def buscar_licitacoes():
 
 
 @licitacao_bp.route("/minhas", methods=["GET"])
+@login_required
+@assinatura_required
 def minhas_licitacoes():
     cliente_id = session.get("cliente_id")
 
@@ -421,6 +426,8 @@ def minhas_licitacoes():
 
 
 @licitacao_bp.route("/limpar-teste", methods=["POST"])
+@login_required
+@assinatura_required
 def limpar_licitacoes_teste():
     try:
         deleted = Licitacao.query.filter(
@@ -444,6 +451,8 @@ def limpar_licitacoes_teste():
 
 
 @licitacao_bp.route("/visualizar-edital/<int:licitacao_id>", methods=["GET"])
+@login_required
+@assinatura_required
 def visualizar_edital(licitacao_id):
     try:
         lic = Licitacao.query.get(licitacao_id)
@@ -464,6 +473,8 @@ def visualizar_edital(licitacao_id):
 
 
 @licitacao_bp.route("/baixar-edital/<int:licitacao_id>", methods=["GET"])
+@login_required
+@assinatura_required
 def baixar_edital_licitacao(licitacao_id):
     try:
         lic = Licitacao.query.get(licitacao_id)
@@ -499,6 +510,8 @@ def baixar_edital_licitacao(licitacao_id):
 
 
 @licitacao_bp.route("/<int:licitacao_id>", methods=["GET"])
+@login_required
+@assinatura_required
 def get_licitacao_detalhes(licitacao_id):
     try:
         licitacao = Licitacao.query.get(licitacao_id)

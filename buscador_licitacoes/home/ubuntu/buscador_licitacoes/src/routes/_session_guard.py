@@ -1,20 +1,22 @@
 from functools import wraps
-from flask import session, jsonify
+from flask import session, jsonify, redirect
+from src.services.acesso_service import cliente_tem_acesso
 
-def login_required(fn):
-    @wraps(fn)
+def assinatura_required(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
-        if "user_id" not in session:
-            return jsonify({"error": "Não autenticado"}), 401
-        return fn(*args, **kwargs)
-    return wrapper
+        cliente_id = session.get("cliente_id")
 
-def master_required(fn):
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        if "user_id" not in session:
-            return jsonify({"error": "Não autenticado"}), 401
-        if session.get("user_tipo") != "master":
-            return jsonify({"error": "Acesso permitido apenas para usuário master"}), 403
-        return fn(*args, **kwargs)
+        if not cliente_id:
+            return jsonify({"error": "Sessão inválida"}), 401
+
+        if not cliente_tem_acesso(cliente_id):
+            return jsonify({
+                "error": "acesso_bloqueado",
+                "message": "Seu período de teste expirou ou sua assinatura está inativa.",
+                "redirect": "/assinatura.html"
+            }), 403
+
+        return func(*args, **kwargs)
+
     return wrapper
