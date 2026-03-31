@@ -237,7 +237,12 @@ def debug_testar_download_edital(licitacao_id):
         "resultado_download": resultado,
         "root_path": app.root_path,
     }, 200
+from src.services.monitoramento_service import processar_monitoramento
 
+@app.route("/forcar-monitoramento")
+def forcar_monitoramento():
+    resultado = processar_monitoramento()
+    return resultado
 
 if __name__ == "__main__":
     enable_scheduler = os.getenv("ENABLE_SCHEDULER", "0") == "1"
@@ -249,9 +254,3 @@ if __name__ == "__main__":
 
     app.run(host="0.0.0.0", port=5000, debug=False)
 
-from src.services.monitoramento_service import processar_monitoramento
-
-@app.route("/forcar-monitoramento")
-def forcar_monitoramento():
-    resultado = processar_monitoramento()
-    return resultado
