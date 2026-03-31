@@ -248,3 +248,10 @@ if __name__ == "__main__":
         print("[SCHEDULER] Desativado. Use /api/pncp-debug/monitorar para testar manualmente.")
 
     app.run(host="0.0.0.0", port=5000, debug=False)
+
+from src.services.monitoramento_service import processar_monitoramento
+
+@app.route("/forcar-monitoramento")
+def forcar_monitoramento():
+    resultado = processar_monitoramento()
+    return resultado
