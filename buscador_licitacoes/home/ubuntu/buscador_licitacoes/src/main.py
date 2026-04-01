@@ -247,14 +247,15 @@ def debug_testar_download_edital(licitacao_id):
 @app.route("/forcar-monitoramento", methods=["GET"])
 def forcar_monitoramento():
     try:
-        with app.app_context():
-            resultado = processar_monitoramento()
-            return jsonify({
-                "ok": True,
-                "resultado": resultado
-            }), 200
+        resultado = processar_monitoramento()
+        return jsonify({
+            "ok": True,
+            "resultado": resultado
+        }), 200
     except Exception as e:
         db.session.rollback()
+        print("[ERRO /forcar-monitoramento]", str(e))
+        print(traceback.format_exc())
         return jsonify({
             "ok": False,
             "erro": str(e),
