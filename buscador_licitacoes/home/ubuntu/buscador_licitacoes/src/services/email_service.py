@@ -1,16 +1,10 @@
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+import requests
 
 
-SMTP_HOST = os.getenv("SMTP_HOST", "").strip()
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER = os.getenv("SMTP_USER", "").strip()
-SMTP_PASS = os.getenv("SMTP_PASS", "").strip()
-SMTP_FROM = os.getenv("SMTP_FROM", "").strip()
-SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "1") == "1"
-SMTP_USE_SSL = os.getenv("SMTP_USE_SSL", "0") == "1"
+EMAIL_PROVIDER = os.getenv("EMAIL_PROVIDER", "resend").strip().lower()
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
+EMAIL_FROM = os.getenv("EMAIL_FROM", "").strip()
 
 AREA_CLIENTE_URL = os.getenv(
     "AREA_CLIENTE_URL",
@@ -22,53 +16,49 @@ EMAIL_LOGO_URL = os.getenv(
     "https://buscador-licitacoes.onrender.com/static/img/logo1.png"
 ).strip()
 
+
 def enviar_email(destinatario: str, assunto: str, html: str, texto: str | None = None):
-    if not SMTP_HOST:
-        raise RuntimeError("SMTP_HOST não configurado")
-
-    if not SMTP_FROM:
-        raise RuntimeError("SMTP_FROM não configurado")
-
     if not destinatario:
         raise RuntimeError("Destinatário não informado")
 
-    msg = MIMEMultipart("alternative")
-    msg["From"] = SMTP_FROM
-    msg["To"] = destinatario
-    msg["Subject"] = assunto
+    if EMAIL_PROVIDER != "resend":
+        raise RuntimeError("EMAIL_PROVIDER inválido. Use 'resend'.")
+
+    if not RESEND_API_KEY:
+        raise RuntimeError("RESEND_API_KEY não configurada")
+
+    if not EMAIL_FROM:
+        raise RuntimeError("EMAIL_FROM não configurado")
+
+    payload = {
+        "from": EMAIL_FROM,
+        "to": [destinatario],
+        "subject": assunto,
+        "html": html,
+    }
 
     if texto:
-        msg.attach(MIMEText(texto, "plain", "utf-8"))
-
-    msg.attach(MIMEText(html, "html", "utf-8"))
+        payload["text"] = texto
 
     try:
-        if SMTP_USE_SSL:
-            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=30) as server:
-                server.ehlo()
-
-                if SMTP_USER and SMTP_PASS:
-                    server.login(SMTP_USER, SMTP_PASS)
-
-                server.sendmail(SMTP_FROM, [destinatario], msg.as_string())
-        else:
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as server:
-                server.ehlo()
-
-                if SMTP_USE_TLS:
-                    server.starttls()
-                    server.ehlo()
-
-                if SMTP_USER and SMTP_PASS:
-                    server.login(SMTP_USER, SMTP_PASS)
-
-                server.sendmail(SMTP_FROM, [destinatario], msg.as_string())
-
-    except Exception as e:
-        raise RuntimeError(
-            f"Erro ao enviar email via SMTP "
-            f"(host={SMTP_HOST}, porta={SMTP_PORT}, ssl={SMTP_USE_SSL}, tls={SMTP_USE_TLS}): {e}"
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=30,
         )
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Erro de conexão com Resend: {e}")
+
+    if not response.ok:
+        raise RuntimeError(
+            f"Erro ao enviar email via Resend | status={response.status_code} | body={response.text}"
+        )
+
+    return response.json()
 
 
 def _render_logo_html():
@@ -337,7 +327,7 @@ def enviar_email_teste(destinatario: str):
     </p>
 
     <p style="margin:0 0 22px 0;font-size:15px;line-height:1.7;color:#5b6575;">
-        Se você recebeu esta mensagem, o SMTP do <b>Buscador de Licitações</b> está funcionando corretamente.
+        Se você recebeu esta mensagem, o sistema <b>Buscador de Licitações</b> está enviando emails corretamente.
     </p>
 
     <div style="
@@ -367,7 +357,7 @@ def enviar_email_teste(destinatario: str):
 
     texto = (
         "Teste de email\n\n"
-        "Se você recebeu esta mensagem, o SMTP do sistema está funcionando.\n\n"
+        "Se você recebeu esta mensagem, o sistema está funcionando.\n\n"
         f"Área do cliente: {AREA_CLIENTE_URL}"
     )
 
