@@ -13,7 +13,11 @@ from flask import Flask, send_from_directory, jsonify, session, redirect
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from src.models import db
-from src.services.monitoramento_service import processar_monitoramento
+from src.services.monitoramento_service import (
+    processar_monitoramento,
+    buscar_licitacoes_para_cliente,
+    _obter_registro_execucao,
+)
 
 # Blueprints
 from src.routes.auth import auth_bp
@@ -38,6 +42,21 @@ if database_url:
         database_url = database_url.replace("postgres://", "postgresql://", 1)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_pre_ping": True,
+        "pool_recycle": 280,
+        "pool_timeout": 30,
+        "max_overflow": 10,
+        "connect_args": {
+            "sslmode": "require",
+            "connect_timeout": 30,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
+    }
+
     print("🔥 USANDO POSTGRES:", database_url)
 else:
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -181,6 +200,63 @@ def licitacoes_encontradas():
 
 
 # ==========================
+# Debug leve
+# ==========================
+@app.route("/debug-db", methods=["GET"])
+def debug_db():
+    try:
+        registro = _obter_registro_execucao()
+
+        return jsonify({
+            "ok": True,
+            "ultima_execucao": registro.ultima_execucao.isoformat() if registro.ultima_execucao else None
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("[ERRO /debug-db]", str(e))
+        print(traceback.format_exc())
+        return jsonify({
+            "ok": False,
+            "erro": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
+@app.route("/debug-busca-manual", methods=["GET"])
+def debug_busca_manual():
+    try:
+        from src.models import Cliente
+
+        cliente = Cliente.query.filter_by(ativo=True).first()
+        if not cliente:
+            return jsonify({
+                "ok": False,
+                "erro": "Nenhum cliente ativo encontrado"
+            }), 404
+
+        licitacoes = buscar_licitacoes_para_cliente(cliente, None)
+
+        return jsonify({
+            "ok": True,
+            "cliente_id": cliente.id,
+            "empresa": cliente.nome_empresa,
+            "quantidade": len(licitacoes),
+            "ids": [lic.id for lic in licitacoes[:10]]
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("[ERRO /debug-busca-manual]", str(e))
+        print(traceback.format_exc())
+        return jsonify({
+            "ok": False,
+            "erro": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
+# ==========================
 # Static / SPA fallback
 # NÃO capturar /api/*
 # ==========================
@@ -215,7 +291,7 @@ def serve(path):
 
 
 # ==========================
-# Debug
+# Debug edital
 # ==========================
 @app.route("/debug/testar-download-edital/<int:licitacao_id>", methods=["GET"])
 def debug_testar_download_edital(licitacao_id):
@@ -239,28 +315,6 @@ def debug_testar_download_edital(licitacao_id):
         "resultado_download": resultado,
         "root_path": app.root_path,
     }, 200
-
-
-# ==========================
-# TESTE MONITORAMENTO
-# ==========================
-@app.route("/forcar-monitoramento", methods=["GET"])
-def forcar_monitoramento():
-    try:
-        resultado = processar_monitoramento()
-        return jsonify({
-            "ok": True,
-            "resultado": resultado
-        }), 200
-    except Exception as e:
-        db.session.rollback()
-        print("[ERRO /forcar-monitoramento]", str(e))
-        print(traceback.format_exc())
-        return jsonify({
-            "ok": False,
-            "erro": str(e),
-            "traceback": traceback.format_exc()
-        }), 500
 
 
 # ==========================
