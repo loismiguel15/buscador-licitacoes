@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 from dotenv import load_dotenv
 from src.services.acesso_service import cliente_tem_acesso
 
@@ -90,6 +91,7 @@ def job_monitoramento():
         except Exception as e:
             db.session.rollback()
             print(f"[MONITORAMENTO ERRO] {e}")
+            print(traceback.format_exc())
 
 
 def iniciar_scheduler():
@@ -237,13 +239,32 @@ def debug_testar_download_edital(licitacao_id):
         "resultado_download": resultado,
         "root_path": app.root_path,
     }, 200
-from src.services.monitoramento_service import processar_monitoramento
 
-@app.route("/forcar-monitoramento")
+
+# ==========================
+# TESTE MONITORAMENTO
+# ==========================
+@app.route("/forcar-monitoramento", methods=["GET"])
 def forcar_monitoramento():
-    resultado = processar_monitoramento()
-    return resultado
+    try:
+        with app.app_context():
+            resultado = processar_monitoramento()
+            return jsonify({
+                "ok": True,
+                "resultado": resultado
+            }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "ok": False,
+            "erro": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
 
+
+# ==========================
+# Main
+# ==========================
 if __name__ == "__main__":
     enable_scheduler = os.getenv("ENABLE_SCHEDULER", "0") == "1"
 
@@ -253,4 +274,3 @@ if __name__ == "__main__":
         print("[SCHEDULER] Desativado. Use /api/pncp-debug/monitorar para testar manualmente.")
 
     app.run(host="0.0.0.0", port=5000, debug=False)
-
