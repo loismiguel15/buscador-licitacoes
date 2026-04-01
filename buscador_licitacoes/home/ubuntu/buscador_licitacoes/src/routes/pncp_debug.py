@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from datetime import date, timedelta
+import traceback
 
 from src.models import db, EmailLog
 from src.services.pncp_client import fetch_contratacoes_publicacao
@@ -9,14 +10,17 @@ from src.services.email_service import enviar_email
 pncp_debug_bp = Blueprint("pncp_debug", __name__)
 
 
+# =========================================
+# 🔍 TESTE BRUTO PNCP (LEVE)
+# =========================================
 @pncp_debug_bp.route("/raw", methods=["GET"])
 def raw_pncp():
     try:
-        dias = int(request.args.get("dias", 3))
-        limite = int(request.args.get("limite", 10))
+        dias = int(request.args.get("dias", 1))
+        limite = int(request.args.get("limite", 5))
         codigo_modalidade = int(request.args.get("modalidade", 6))
 
-        limite = max(1, min(limite, 100))
+        limite = max(1, min(limite, 20))
 
         hoje = date.today()
         ini = (hoje - timedelta(days=dias)).strftime("%Y%m%d")
@@ -38,16 +42,29 @@ def raw_pncp():
                 "dataFinal": fim,
             },
             "total_recebidos": len(itens),
-            "primeiro_item": itens[0] if itens else None
+            "amostra": itens[:3]
         }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
 
 
+# =========================================
+# ⚡ MONITORAMENTO MANUAL (CONTROLADO)
+# =========================================
 @pncp_debug_bp.route("/monitorar", methods=["GET"])
 def debug_monitoramento():
     try:
+        force = request.args.get("force", "0")
+
+        if force != "1":
+            return jsonify({
+                "error": "Use ?force=1 para executar monitoramento"
+            }), 400
+
         resultado = processar_monitoramento()
 
         return jsonify({
@@ -58,14 +75,21 @@ def debug_monitoramento():
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            "error": str(e)
+            "error": str(e),
+            "traceback": traceback.format_exc()
         }), 500
 
 
+# =========================================
+# 📧 LOGS DE EMAIL (LIMITADO)
+# =========================================
 @pncp_debug_bp.route("/email-logs", methods=["GET"])
 def email_logs():
     try:
-        logs = EmailLog.query.order_by(EmailLog.id.desc()).limit(20).all()
+        limite = int(request.args.get("limite", 10))
+        limite = max(1, min(limite, 50))
+
+        logs = EmailLog.query.order_by(EmailLog.id.desc()).limit(limite).all()
 
         return jsonify([
             {
@@ -82,13 +106,22 @@ def email_logs():
         ]), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
 
 
+# =========================================
+# ✉️ TESTE DE EMAIL
+# =========================================
 @pncp_debug_bp.route("/email-teste", methods=["GET"])
 def email_teste():
     try:
-        destinatario = request.args.get("email", "lois.miguelluma@gmail.com").strip()
+        destinatario = request.args.get(
+            "email",
+            "lois.miguelluma@gmail.com"
+        ).strip()
 
         html = """
         <html>
@@ -115,5 +148,6 @@ def email_teste():
 
     except Exception as e:
         return jsonify({
-            "error": str(e)
+            "error": str(e),
+            "traceback": traceback.format_exc()
         }), 500

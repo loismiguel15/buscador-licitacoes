@@ -9,13 +9,21 @@ BASE_ARQUIVOS = "https://pncp.gov.br/pncp-api/v1"
 session = requests.Session()
 
 retry_strategy = Retry(
-    total=3,
-    backoff_factor=1.5,
+    total=2,
+    connect=2,
+    read=2,
+    backoff_factor=1,
     status_forcelist=[429, 500, 502, 503, 504],
-    allowed_methods=["GET"],
+    allowed_methods=frozenset(["GET"]),
+    raise_on_status=False,
 )
 
-adapter = HTTPAdapter(max_retries=retry_strategy)
+adapter = HTTPAdapter(
+    max_retries=retry_strategy,
+    pool_connections=10,
+    pool_maxsize=10,
+)
+
 session.mount("https://", adapter)
 session.mount("http://", adapter)
 
@@ -43,13 +51,16 @@ def fetch_contratacoes_publicacao(
     data_final: str,
     codigo_modalidade: int,
     pagina: int = 1,
-    tamanho: int = 50,
+    tamanho: int = 20,
     uf: str | None = None,
 ) -> dict:
     url = f"{BASE}/v1/contratacoes/publicacao"
 
     if tamanho > 50:
         tamanho = 50
+
+    if tamanho < 1:
+        tamanho = 1
 
     params = {
         "dataInicial": data_inicial,
@@ -63,7 +74,15 @@ def fetch_contratacoes_publicacao(
         params["uf"] = uf.strip().upper()
 
     try:
-        response = session.get(url, params=params, timeout=60)
+        response = session.get(
+            url,
+            params=params,
+            timeout=(10, 25)
+        )
+    except requests.exceptions.Timeout:
+        raise Exception(
+            f"Timeout ao consultar PNCP | url={url} | params={params}"
+        )
     except requests.exceptions.RequestException as e:
         raise Exception(f"Erro de conexão com PNCP: {e}")
 
@@ -110,7 +129,7 @@ def extrair_partes_numero_controle(numero_controle: str):
         return None
 
     orgao = m.group(1)
-    sequencial = str(int(m.group(2)))  # remove zeros à esquerda
+    sequencial = str(int(m.group(2)))
     ano = m.group(3)
 
     return {
@@ -120,7 +139,7 @@ def extrair_partes_numero_controle(numero_controle: str):
     }
 
 
-def montar_links_arquivos_pncp(numero_controle: str, max_arquivos: int = 15):
+def montar_links_arquivos_pncp(numero_controle: str, max_arquivos: int = 10):
     """
     Monta links candidatos de arquivos públicos do PNCP.
     Não garante que todos existam.
@@ -142,14 +161,18 @@ def montar_links_arquivos_pncp(numero_controle: str, max_arquivos: int = 15):
     return links
 
 
-def descobrir_primeiro_pdf_pncp(numero_controle: str, max_arquivos: int = 15):
+def descobrir_primeiro_pdf_pncp(numero_controle: str, max_arquivos: int = 10):
     """
     Descobre o primeiro arquivo válido do PNCP.
     O PNCP muitas vezes retorna application/octet-stream em vez de application/pdf.
     """
     for url in montar_links_arquivos_pncp(numero_controle, max_arquivos=max_arquivos):
         try:
-            response = session.get(url, timeout=30, allow_redirects=True)
+            response = session.get(
+                url,
+                timeout=(5, 15),
+                allow_redirects=True
+            )
         except requests.exceptions.RequestException:
             continue
 

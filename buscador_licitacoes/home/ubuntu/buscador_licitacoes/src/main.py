@@ -120,32 +120,14 @@ def iniciar_scheduler():
     scheduler.add_job(
         func=job_monitoramento,
         trigger="cron",
-        hour=8,
+        hour="8,10,12,14,16,18",
         minute=0,
-        id="monitoramento_08h",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
-        func=job_monitoramento,
-        trigger="cron",
-        hour=12,
-        minute=0,
-        id="monitoramento_12h",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
-        func=job_monitoramento,
-        trigger="cron",
-        hour=16,
-        minute=0,
-        id="monitoramento_16h",
+        id="monitoramento_recorrente",
         replace_existing=True,
     )
 
     scheduler.start()
-    print("[SCHEDULER] Monitoramento agendado para 08:00, 12:00 e 16:00")
+    print("[SCHEDULER] Monitoramento agendado para 08:00, 10:00, 12:00, 14:00, 16:00 e 18:00")
 
 
 # ==========================

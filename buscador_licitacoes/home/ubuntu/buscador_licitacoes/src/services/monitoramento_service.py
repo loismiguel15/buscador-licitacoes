@@ -22,15 +22,22 @@ from src.services.email_service import enviar_email, montar_email_licitacoes
 
 
 # =========================================
-# CONFIG
+# CONFIG (OTIMIZADO)
 # =========================================
 
 MAX_ITENS_EMAIL = 5
 TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
 
 # paginação do PNCP
-TAMANHO_PAGINA_PNCP = 50
-MAX_PAGINAS_PNCP = 10
+TAMANHO_PAGINA_PNCP = 20
+MAX_PAGINAS_PNCP = 3
+
+# limita processamento por execução
+MAX_CLIENTES_POR_EXECUCAO = 5
+MAX_UFS_POR_CLIENTE = 3
+MAX_KEYWORDS_POR_CLIENTE = 5
+MAX_LICITACOES_NOVAS_POR_CLIENTE = 30
+MAX_ITENS_PROCESSADOS_POR_CLIENTE = 100
 
 # modalidades mais úteis por padrão
 MODALIDADES_PADRAO = [4, 6, 8, 9]
@@ -248,9 +255,12 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
     keywords = list(dict.fromkeys(
         termo.strip() for termo in keywords if termo and termo.strip()
     ))
+    keywords = keywords[:MAX_KEYWORDS_POR_CLIENTE]
 
     if not ufs:
         ufs = [None]
+    else:
+        ufs = ufs[:MAX_UFS_POR_CLIENTE]
 
     if not modalidades:
         modalidades = MODALIDADES_PADRAO
@@ -264,6 +274,7 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
     total_paginas_consultadas = 0
     total_itens_recebidos = 0
     erro_busca = None
+    contador_itens = 0
 
     for uf in ufs:
         for modalidade in modalidades:
@@ -302,6 +313,10 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
                 encontrou_item_novo_na_pagina = False
 
                 for item in itens:
+                    contador_itens += 1
+                    if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+                        break
+
                     termos_encontrados = _termos_que_combinam_com_item(item, keywords)
 
                     if not termos_encontrados:
@@ -335,11 +350,32 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
                         novas_licitacoes.append(licitacao)
                         licitacoes_ids_adicionadas.add(licitacao.id)
 
+                    if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+                        break
+
+                if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+                    break
+
+                if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+                    break
+
                 if len(itens) < TAMANHO_PAGINA_PNCP:
                     break
 
                 if ultima_execucao and not encontrou_item_novo_na_pagina:
                     break
+
+            if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+                break
+
+            if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+                break
+
+        if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+            break
+
+        if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+            break
 
     _registrar_historico_busca(
         cliente=cliente,
@@ -527,7 +563,12 @@ def processar_monitoramento():
     registro_execucao = _obter_registro_execucao()
     ultima_execucao = registro_execucao.ultima_execucao
 
-    clientes = Cliente.query.filter_by(ativo=True).all()
+    clientes = (
+        Cliente.query
+        .filter_by(ativo=True)
+        .limit(MAX_CLIENTES_POR_EXECUCAO)
+        .all()
+    )
 
     total_clientes = 0
     total_novas = 0
