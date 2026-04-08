@@ -267,23 +267,86 @@ body.dark .btn-cta-light {
 }
 
 #theme-toggle {
-  min-width: auto;
-  padding: 10px 14px;
-  font-size: 0.92rem;
-  border-radius: 12px;
-  font-weight: 800;
-  letter-spacing: 0.1px;
+  position: relative;
+  width: 88px;
+  min-width: 88px;
+  height: 42px;
+  min-height: 42px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(11, 44, 95, 0.10);
+  background:
+    linear-gradient(180deg, #f6f8fc 0%, #e2e9f5 100%);
+  color: transparent !important;
+  font-size: 0;
+  letter-spacing: 0;
+  line-height: 0;
+  overflow: hidden;
 }
 
 body.dark #theme-toggle {
-  background: rgba(138, 180, 255, 0.08);
+  background:
+    linear-gradient(180deg, #31457f 0%, #243766 100%);
   border-color: rgba(138, 180, 255, 0.18);
-  color: #dbe8ff;
 }
 
 #theme-toggle:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-soft);
+}
+
+#theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, transparent 8px, #fff6d6 8px 10px, transparent 10px),
+    conic-gradient(from 0deg,
+      transparent 0deg 12deg, #fff6d6 12deg 18deg,
+      transparent 18deg 42deg, #fff6d6 42deg 48deg,
+      transparent 48deg 72deg, #fff6d6 72deg 78deg,
+      transparent 78deg 102deg, #fff6d6 102deg 108deg,
+      transparent 108deg 132deg, #fff6d6 132deg 138deg,
+      transparent 138deg 162deg, #fff6d6 162deg 168deg,
+      transparent 168deg 192deg, #fff6d6 192deg 198deg,
+      transparent 198deg 222deg, #fff6d6 222deg 228deg,
+      transparent 228deg 252deg, #fff6d6 252deg 258deg,
+      transparent 258deg 282deg, #fff6d6 282deg 288deg,
+      transparent 288deg 312deg, #fff6d6 312deg 318deg,
+      transparent 318deg 342deg, #fff6d6 342deg 348deg,
+      transparent 348deg 360deg),
+    linear-gradient(180deg, #ffb321 0%, #ff8d00 100%);
+  box-shadow:
+    0 6px 14px rgba(11, 44, 95, 0.18),
+    inset 0 2px 2px rgba(255, 233, 178, 0.55);
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+body.dark #theme-toggle::before {
+  transform: translateX(46px);
+  background:
+    radial-gradient(circle at 52% 48%, transparent 10px, #ffffff 10px 13px, transparent 13px),
+    radial-gradient(circle at 65% 32%, rgba(255,255,255,0.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 73% 44%, rgba(255,255,255,0.9) 0 1.8px, transparent 2.8px),
+    radial-gradient(circle at 78% 29%, rgba(255,255,255,0.95) 0 1.4px, transparent 2.4px),
+    linear-gradient(180deg, #6aa1ff 0%, #4e79ea 100%);
+  box-shadow:
+    0 8px 16px rgba(7, 18, 37, 0.28),
+    inset 0 2px 2px rgba(189, 215, 255, 0.35);
+}
+
+#theme-toggle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 57px 16px, rgba(255, 255, 255, 0.16) 0 7px, transparent 8px),
+    radial-gradient(circle at 68px 22px, rgba(255, 255, 255, 0.10) 0 4px, transparent 5px);
+  opacity: 1;
+  transition: opacity 0.25s ease;
 }
 
 main {
@@ -957,8 +1020,9 @@ body.dark .btn-secondary {
 }
 
 #theme-toggle {
-  border-radius: 999px;
-  padding-inline: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 20px rgba(11, 44, 95, 0.10);
 }
 
 .card,
@@ -1027,5 +1091,22 @@ footer {
 
   .btn {
     min-height: 46px;
+  }
+
+  #theme-toggle {
+    width: 78px;
+    min-width: 78px;
+    height: 36px;
+    min-height: 36px;
+  }
+
+  #theme-toggle::before {
+    inset: 3px auto 3px 3px;
+    width: 30px;
+    height: 30px;
+  }
+
+  body.dark #theme-toggle::before {
+    transform: translateX(42px);
   }
 }

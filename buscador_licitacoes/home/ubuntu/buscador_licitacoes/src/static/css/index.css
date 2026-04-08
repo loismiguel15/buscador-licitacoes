@@ -990,6 +990,9 @@ body.dark .final-cta-box {
 
   .nav-actions #theme-toggle {
     grid-column: 1 / -1 !important;
+    min-height: 38px !important;
+    padding: 7px 12px !important;
+    font-size: 0.82rem !important;
   }
 
   .nav-actions .btn,
