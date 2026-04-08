@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import unicodedata
 from rapidfuzz import fuzz
+from sqlalchemy import func
 
 from src.models import (
     db,
@@ -226,6 +227,36 @@ def _resolver_limites(modo_leve: bool = False, overrides: dict | None = None):
                 limites[chave] = int(valor)
 
     return limites
+
+
+def _selecionar_clientes_para_monitoramento(max_clientes: int):
+    ultimas_execucoes = (
+        db.session.query(
+            HistoricoBusca.cliente_id.label("cliente_id"),
+            func.max(HistoricoBusca.executado_em).label("ultima_execucao_cliente"),
+        )
+        .group_by(HistoricoBusca.cliente_id)
+        .subquery()
+    )
+
+    return (
+        db.session.query(Cliente)
+        .join(
+            ClientePreferencias,
+            (ClientePreferencias.cliente_id == Cliente.id) & (ClientePreferencias.ativo == True),
+        )
+        .outerjoin(
+            ultimas_execucoes,
+            ultimas_execucoes.c.cliente_id == Cliente.id,
+        )
+        .filter(Cliente.ativo == True)
+        .order_by(
+            ultimas_execucoes.c.ultima_execucao_cliente.asc().nullsfirst(),
+            Cliente.id.asc(),
+        )
+        .limit(max_clientes)
+        .all()
+    )
 
 
 # =========================================
@@ -607,12 +638,7 @@ def processar_monitoramento(modo_leve: bool = False, overrides: dict | None = No
     ultima_execucao = registro_execucao.ultima_execucao
     limites = _resolver_limites(modo_leve=modo_leve, overrides=overrides)
 
-    clientes = (
-        Cliente.query
-        .filter_by(ativo=True)
-        .limit(limites["max_clientes"])
-        .all()
-    )
+    clientes = _selecionar_clientes_para_monitoramento(limites["max_clientes"])
 
     total_clientes = 0
     total_novas = 0
@@ -641,6 +667,7 @@ def processar_monitoramento(modo_leve: bool = False, overrides: dict | None = No
     return {
         "modo_leve": modo_leve,
         "limites": limites,
+        "clientes_ids_processados": [cliente.id for cliente in clientes],
         "clientes_processados": total_clientes,
         "novas_licitacoes": total_novas,
         "licitacoes_enviadas_por_email": total_emails,
