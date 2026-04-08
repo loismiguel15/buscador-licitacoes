@@ -12,6 +12,16 @@ from flask import jsonify
 
 auth_bp = Blueprint("auth", __name__)
 LIMITE_USUARIOS_ATIVOS = 3
+CNPJ_LOOKUP_TTL_MINUTOS = 15
+RATE_LIMIT_STORAGE = {}
+RATE_LIMIT_RULES = {
+    "cnpj_lookup": {"max_attempts": 20, "window_seconds": 300},
+    "register": {"max_attempts": 10, "window_seconds": 3600},
+    "login": {"max_attempts": 10, "window_seconds": 900},
+    "forgot_password": {"max_attempts": 5, "window_seconds": 900},
+    "verify_reset_code": {"max_attempts": 8, "window_seconds": 900},
+    "reset_password": {"max_attempts": 5, "window_seconds": 900},
+}
 
 # -------------------------
 # Helpers
@@ -136,12 +146,72 @@ def gerar_codigo_reset() -> str:
     return f"{random.randint(0, 999999):06d}"
 
 
+def _get_client_ip() -> str:
+    forwarded_for = request.headers.get("X-Forwarded-For", "")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def _cleanup_rate_limit_bucket(now):
+    expirados = [
+        chave for chave, bucket in RATE_LIMIT_STORAGE.items()
+        if bucket["reset_at"] <= now
+    ]
+    for chave in expirados:
+        RATE_LIMIT_STORAGE.pop(chave, None)
+
+
+def check_rate_limit(action: str, identifier: str):
+    rule = RATE_LIMIT_RULES[action]
+    now = datetime.utcnow()
+    _cleanup_rate_limit_bucket(now)
+
+    bucket_key = f"{action}:{identifier}"
+    bucket = RATE_LIMIT_STORAGE.get(bucket_key)
+
+    if not bucket or bucket["reset_at"] <= now:
+        bucket = {
+            "count": 0,
+            "reset_at": now + timedelta(seconds=rule["window_seconds"])
+        }
+        RATE_LIMIT_STORAGE[bucket_key] = bucket
+
+    bucket["count"] += 1
+    if bucket["count"] > rule["max_attempts"]:
+        retry_after = max(1, int((bucket["reset_at"] - now).total_seconds()))
+        return retry_after
+
+    return None
+
+
+def throttle_or_response(action: str, identifier: str):
+    retry_after = check_rate_limit(action, identifier)
+    if retry_after is None:
+        return None
+
+    response = jsonify({
+        "error": "Muitas tentativas. Tente novamente em instantes."
+    })
+    response.status_code = 429
+    response.headers["Retry-After"] = str(retry_after)
+    return response
+
+
+def reset_rate_limit(action: str, identifier: str):
+    RATE_LIMIT_STORAGE.pop(f"{action}:{identifier}", None)
+
+
 # -------------------------
 # Lookup do CNPJ
 # -------------------------
 
 @auth_bp.route("/cnpj/lookup", methods=["GET"])
 def cnpj_lookup():
+    throttled = throttle_or_response("cnpj_lookup", _get_client_ip())
+    if throttled:
+        return throttled
+
     cnpj = request.args.get("cnpj", "")
     cnpj_digits = only_digits(cnpj)
 
@@ -178,7 +248,8 @@ def cnpj_lookup():
         "situacao": situacao,
         "municipio": municipio,
         "uf": uf,
-        "data": data
+        "data": data,
+        "validated_at": datetime.utcnow().isoformat()
     }
 
     return jsonify({
@@ -198,6 +269,11 @@ def cnpj_lookup():
 
 @auth_bp.route("/register", methods=["POST"])
 def register():
+    client_ip = _get_client_ip()
+    throttled = throttle_or_response("register", client_ip)
+    if throttled:
+        return throttled
+
     data = request.get_json(silent=True) or {}
 
     nome_empresa = (data.get("nome_empresa") or "").strip()
@@ -248,6 +324,18 @@ def register():
             "error": "Validação do CNPJ expirou ou não foi encontrada. Consulte o CNPJ novamente antes de criar a conta."
         }), 400
 
+    validated_at_raw = lookup_cache.get("validated_at")
+    try:
+        validated_at = datetime.fromisoformat(validated_at_raw) if validated_at_raw else None
+    except ValueError:
+        validated_at = None
+
+    if not validated_at or validated_at < datetime.utcnow() - timedelta(minutes=CNPJ_LOOKUP_TTL_MINUTOS):
+        session.pop("cnpj_lookup_validado", None)
+        return jsonify({
+            "error": "Validação do CNPJ expirou. Consulte o CNPJ novamente antes de criar a conta."
+        }), 400
+
     situacao = (lookup_cache.get("situacao") or "").strip().upper()
     if situacao != "ATIVA":
         return jsonify({
@@ -259,6 +347,8 @@ def register():
         nome_empresa = nome_api
 
     try:
+        novo_token = secrets.token_hex(32)
+
         novo_cliente = Cliente(
             nome_empresa=nome_empresa,
             cnpj=cnpj_digits,
@@ -288,16 +378,23 @@ def register():
         )
         novo_usuario_master.set_password(senha_master)
         novo_usuario_master.ultimo_login = datetime.utcnow()
+        novo_usuario_master.session_token = novo_token
+        novo_usuario_master.ultimo_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+        novo_usuario_master.ultimo_user_agent = request.headers.get("User-Agent")
+        novo_usuario_master.sessao_expira_em = datetime.utcnow() + timedelta(hours=12)
 
         db.session.add(novo_usuario_master)
         db.session.commit()
 
         session["user_id"] = novo_usuario_master.id
+        session["session_token"] = novo_usuario_master.session_token
         session["user_email"] = novo_usuario_master.email
         session["user_tipo"] = novo_usuario_master.tipo.value
         session["cliente_id"] = novo_usuario_master.cliente_id
+        session.permanent = True
 
         session.pop("cnpj_lookup_validado", None)
+        reset_rate_limit("register", client_ip)
 
         return jsonify({
             "message": "Conta criada com sucesso! Você já está logado.",
@@ -326,10 +423,14 @@ def register():
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip().lower()
     senha = data.get("senha") or ""
+    rate_limit_key = f"{_get_client_ip()}:{email or 'sem-email'}"
+
+    throttled = throttle_or_response("login", rate_limit_key)
+    if throttled:
+        return throttled
 
     if not email or not senha:
         return jsonify({"error": "Email e senha são obrigatórios."}), 400
@@ -359,13 +460,15 @@ def login():
     except Exception as e:
         db.session.rollback()
         current_app.logger.exception("Erro atualizando sessão de login")
-        return jsonify({"error": f"Erro ao realizar login: {str(e)}"}), 500
+        return jsonify({"error": "Erro ao realizar login. Tente novamente."}), 500
 
     session["user_id"] = usuario.id
     session["session_token"] = usuario.session_token
     session["user_email"] = usuario.email
     session["user_tipo"] = tipo_usuario
     session["cliente_id"] = usuario.cliente_id
+    session.permanent = True
+    reset_rate_limit("login", rate_limit_key)
 
     # somente usuário comum precisa trocar senha no primeiro acesso
     precisa_trocar_senha = (
@@ -620,6 +723,11 @@ def seguranca_usuario(usuario_id):
 def forgot_password():
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip().lower()
+    rate_limit_key = f"{_get_client_ip()}:{email or 'sem-email'}"
+
+    throttled = throttle_or_response("forgot_password", rate_limit_key)
+    if throttled:
+        return throttled
 
     if not email or not is_valid_email(email):
         return jsonify({"error": "Informe um e-mail válido."}), 400
@@ -648,6 +756,7 @@ def forgot_password():
             codigo=codigo
         )
 
+        reset_rate_limit("forgot_password", rate_limit_key)
         return jsonify(mensagem_padrao), 200
 
     except Exception:
@@ -666,6 +775,11 @@ def verify_reset_code():
 
     email = (data.get("email") or "").strip().lower()
     code = (data.get("code") or "").strip()
+    rate_limit_key = f"{_get_client_ip()}:{email or 'sem-email'}"
+
+    throttled = throttle_or_response("verify_reset_code", rate_limit_key)
+    if throttled:
+        return throttled
 
     if not email or not code:
         return jsonify({"error": "E-mail e código são obrigatórios."}), 400
@@ -684,6 +798,7 @@ def verify_reset_code():
     if not usuario.reset_code_expires_at or usuario.reset_code_expires_at < datetime.utcnow():
         return jsonify({"error": "Código inválido ou expirado."}), 400
 
+    reset_rate_limit("verify_reset_code", rate_limit_key)
     return jsonify({"message": "Código validado com sucesso."}), 200
 
 
@@ -699,6 +814,11 @@ def reset_password():
     code = (data.get("code") or "").strip()
     nova_senha = data.get("nova_senha") or ""
     confirma_nova_senha = data.get("confirma_nova_senha") or ""
+    rate_limit_key = f"{_get_client_ip()}:{email or 'sem-email'}"
+
+    throttled = throttle_or_response("reset_password", rate_limit_key)
+    if throttled:
+        return throttled
 
     if not email or not code or not nova_senha or not confirma_nova_senha:
         return jsonify({"error": "Todos os campos são obrigatórios."}), 400
@@ -733,6 +853,7 @@ def reset_password():
 
         db.session.commit()
 
+        reset_rate_limit("reset_password", rate_limit_key)
         return jsonify({"message": "Senha redefinida com sucesso. Faça login com a nova senha."}), 200
 
     except Exception:

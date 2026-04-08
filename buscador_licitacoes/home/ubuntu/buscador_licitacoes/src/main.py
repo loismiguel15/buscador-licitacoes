@@ -1,15 +1,18 @@
 import os
+import secrets
 import sys
 import traceback
+from datetime import timedelta
 from dotenv import load_dotenv
-from src.services.acesso_service import cliente_tem_acesso
 
 load_dotenv()
 
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from flask import Flask, send_from_directory, jsonify, session, redirect
+from src.services.acesso_service import cliente_tem_acesso
+
+from flask import Flask, send_from_directory, jsonify, session, redirect, request, current_app
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from src.models import db
@@ -28,9 +31,16 @@ from src.routes.preferencias import preferencias_bp
 from src.routes.assinaturas import assinaturas_bp
 from src.routes.webhooks import webhooks_bp
 from src.routes.pagamento import pagamento_bp
+from src.routes._session_guard import assinatura_required_page
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), "static"))
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "asdf#FGSgvasgf$5$WGT")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY") or secrets.token_hex(32)
+if not os.getenv("SECRET_KEY"):
+    app.logger.warning("SECRET_KEY não configurada via ambiente. Usando chave efêmera apenas para esta execução.")
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = os.getenv("SESSION_COOKIE_SAMESITE", "Lax")
+app.config["SESSION_COOKIE_SECURE"] = os.getenv("SESSION_COOKIE_SECURE", "0") == "1"
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=12)
 
 # ==========================
 # Database config
@@ -57,7 +67,7 @@ if database_url:
         },
     }
 
-    print("🔥 USANDO POSTGRES:", database_url)
+    app.logger.info("Usando Postgres configurado por DATABASE_URL")
 else:
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     DB_PATH = os.path.join(BASE_DIR, "app.db")
@@ -67,7 +77,7 @@ else:
         "connect_args": {"timeout": 30}
     }
 
-    print("⚠️ USANDO SQLITE LOCAL:", app.config["SQLALCHEMY_DATABASE_URI"])
+    app.logger.warning("Usando SQLite local em %s", app.config["SQLALCHEMY_DATABASE_URI"])
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -77,6 +87,61 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
+
+SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+PUBLIC_CSRF_EXEMPT_PATHS = {
+    "/api/auth/login",
+    "/api/auth/register",
+    "/api/auth/forgot-password",
+    "/api/auth/verify-reset-code",
+    "/api/auth/reset-password",
+}
+
+
+def _same_origin(valor_origem: str) -> bool:
+    if not valor_origem:
+        return False
+
+    origem_limpa = valor_origem.rstrip("/")
+    base_url = request.host_url.rstrip("/")
+    return origem_limpa == base_url
+
+
+@app.before_request
+def protect_authenticated_requests():
+    if request.method in SAFE_METHODS:
+        return None
+
+    if request.path.startswith("/api/webhooks/"):
+        return None
+
+    if request.path in PUBLIC_CSRF_EXEMPT_PATHS and "user_id" not in session:
+        return None
+
+    if "user_id" not in session:
+        return None
+
+    origem = request.headers.get("Origin")
+    referer = request.headers.get("Referer")
+
+    if origem and _same_origin(origem):
+        return None
+
+    if referer:
+        referer_base = referer.split("/", 3)
+        if len(referer_base) >= 3:
+            if _same_origin("/".join(referer_base[:3])):
+                return None
+
+    current_app.logger.warning(
+        "Requisição bloqueada por validação de origem. path=%s method=%s origin=%s referer=%s",
+        request.path,
+        request.method,
+        origem,
+        referer,
+    )
+    return jsonify({"error": "Requisição bloqueada por segurança."}), 403
 
 # ==========================
 # Register Blueprints
@@ -106,11 +171,10 @@ def job_monitoramento():
     with app.app_context():
         try:
             resultado = processar_monitoramento()
-            print(f"[MONITORAMENTO OK] {resultado}")
-        except Exception as e:
+            app.logger.info("Monitoramento executado com sucesso: %s", resultado)
+        except Exception:
             db.session.rollback()
-            print(f"[MONITORAMENTO ERRO] {e}")
-            print(traceback.format_exc())
+            app.logger.exception("Erro durante monitoramento agendado")
 
 
 def iniciar_scheduler():
@@ -127,57 +191,33 @@ def iniciar_scheduler():
     )
 
     scheduler.start()
-    print("[SCHEDULER] Monitoramento agendado para 08:00, 10:00, 12:00, 14:00, 16:00 e 18:00")
+    app.logger.info("Monitoramento agendado para 08:00, 10:00, 12:00, 14:00, 16:00 e 18:00")
 
 
 # ==========================
 # Rotas protegidas
 # ==========================
 @app.route("/dashboard", methods=["GET"])
+@assinatura_required_page
 def dashboard():
-    if "user_id" not in session:
-        return redirect("/login.html")
-
-    cliente_id = session.get("cliente_id")
-    if not cliente_tem_acesso(cliente_id):
-        return redirect("/assinatura.html")
-
     return send_from_directory(app.static_folder, "painel_admin.html")
 
 
 @app.route("/resultados", methods=["GET"])
+@assinatura_required_page
 def resultados():
-    if "user_id" not in session:
-        return redirect("/login.html")
-
-    cliente_id = session.get("cliente_id")
-    if not cliente_tem_acesso(cliente_id):
-        return redirect("/assinatura.html")
-
     return send_from_directory(app.static_folder, "resultados.html")
 
 
 @app.route("/detalhes", methods=["GET"])
+@assinatura_required_page
 def detalhes():
-    if "user_id" not in session:
-        return redirect("/login.html")
-
-    cliente_id = session.get("cliente_id")
-    if not cliente_tem_acesso(cliente_id):
-        return redirect("/assinatura.html")
-
     return send_from_directory(app.static_folder, "detalhes_licitacao.html")
 
 
 @app.route("/licitacoes_encontradas", methods=["GET"])
+@assinatura_required_page
 def licitacoes_encontradas():
-    if "user_id" not in session:
-        return redirect("/login.html")
-
-    cliente_id = session.get("cliente_id")
-    if not cliente_tem_acesso(cliente_id):
-        return redirect("/assinatura.html")
-
     return send_from_directory(app.static_folder, "licitacoes_encontradas.html")
 
 
@@ -186,6 +226,9 @@ def licitacoes_encontradas():
 # ==========================
 @app.route("/debug-db", methods=["GET"])
 def debug_db():
+    if os.getenv("ENABLE_DEBUG_ROUTES", "0") != "1":
+        return jsonify({"error": "Endpoint não encontrado."}), 404
+
     try:
         registro = _obter_registro_execucao()
 
@@ -194,19 +237,20 @@ def debug_db():
             "ultima_execucao": registro.ultima_execucao.isoformat() if registro.ultima_execucao else None
         }), 200
 
-    except Exception as e:
+    except Exception:
         db.session.rollback()
-        print("[ERRO /debug-db]", str(e))
-        print(traceback.format_exc())
+        current_app.logger.exception("Erro em /debug-db")
         return jsonify({
             "ok": False,
-            "erro": str(e),
-            "traceback": traceback.format_exc()
+            "erro": "Erro interno ao consultar debug."
         }), 500
 
 
 @app.route("/debug-busca-manual", methods=["GET"])
 def debug_busca_manual():
+    if os.getenv("ENABLE_DEBUG_ROUTES", "0") != "1":
+        return jsonify({"error": "Endpoint não encontrado."}), 404
+
     try:
         from src.models import Cliente
 
@@ -227,14 +271,12 @@ def debug_busca_manual():
             "ids": [lic.id for lic in licitacoes[:10]]
         }), 200
 
-    except Exception as e:
+    except Exception:
         db.session.rollback()
-        print("[ERRO /debug-busca-manual]", str(e))
-        print(traceback.format_exc())
+        current_app.logger.exception("Erro em /debug-busca-manual")
         return jsonify({
             "ok": False,
-            "erro": str(e),
-            "traceback": traceback.format_exc()
+            "erro": "Erro interno ao executar debug."
         }), 500
 
 
@@ -277,6 +319,9 @@ def serve(path):
 # ==========================
 @app.route("/debug/testar-download-edital/<int:licitacao_id>", methods=["GET"])
 def debug_testar_download_edital(licitacao_id):
+    if os.getenv("ENABLE_DEBUG_ROUTES", "0") != "1":
+        return jsonify({"error": "Endpoint não encontrado."}), 404
+
     from src.models import Licitacao
     from src.services.edital_service import baixar_edital
 
@@ -308,6 +353,6 @@ if __name__ == "__main__":
     if enable_scheduler:
         iniciar_scheduler()
     else:
-        print("[SCHEDULER] Desativado. Use /api/pncp-debug/monitorar para testar manualmente.")
+        app.logger.info("Scheduler desativado. Use /api/pncp-debug/monitorar para testar manualmente.")
 
     app.run(host="0.0.0.0", port=5000, debug=False)

@@ -1,8 +1,9 @@
+import os
 import re
 import unicodedata
 from datetime import datetime
 
-from flask import Blueprint, request, jsonify, session, send_file, redirect
+from flask import Blueprint, request, jsonify, session, send_file, redirect, current_app
 from sqlalchemy import and_, or_, case, func
 from rapidfuzz import fuzz
 
@@ -59,6 +60,21 @@ def licitacao_to_dict(lic):
         "data_coleta": lic.data_coleta.isoformat() if lic.data_coleta else None,
         "data_ultima_atualizacao": lic.data_ultima_atualizacao.isoformat() if lic.data_ultima_atualizacao else None,
     }
+
+
+def obter_licitacao_do_cliente(licitacao_id, cliente_id):
+    if not cliente_id:
+        return None
+
+    return (
+        db.session.query(Licitacao)
+        .join(LicitacaoCliente, LicitacaoCliente.licitacao_id == Licitacao.id)
+        .filter(
+            Licitacao.id == licitacao_id,
+            LicitacaoCliente.cliente_id == cliente_id,
+        )
+        .first()
+    )
 
 
 @licitacao_bp.route("/buscar", methods=["GET"])
@@ -269,8 +285,8 @@ def buscar_licitacoes():
             }
         }), 200
 
-    except Exception as e:
-        print(f"Erro na busca: {e}")
+    except Exception:
+        current_app.logger.exception("Erro na busca de licitações")
         return jsonify({
             "error": "Erro ao realizar a busca."
         }), 500
@@ -390,14 +406,15 @@ def minhas_licitacoes():
         )
 
     try:
-        print("========== FILTRO MINHAS ==========")
-        print("cliente_id:", cliente_id)
-        print("palavra_chave:", palavra_chave)
-        print("uf:", uf)
-        print("modalidade:", modalidade)
-        print("data_inicio:", data_inicio)
-        print("total filtrado:", query.count())
-        print("===================================")
+        current_app.logger.info(
+            "Consulta /minhas cliente_id=%s palavra_chave=%s uf=%s modalidade=%s data_inicio=%s total_filtrado=%s",
+            cliente_id,
+            palavra_chave,
+            uf,
+            modalidade,
+            data_inicio,
+            query.count(),
+        )
 
         pagination = query.paginate(
             page=page,
@@ -418,8 +435,8 @@ def minhas_licitacoes():
             }
         })
 
-    except Exception as e:
-        print(f"Erro em /minhas: {e}")
+    except Exception:
+        current_app.logger.exception("Erro em /api/licitacoes/minhas")
         return jsonify({
             "error": "Erro ao realizar a busca."
         }), 500
@@ -429,6 +446,9 @@ def minhas_licitacoes():
 @login_required
 @assinatura_required
 def limpar_licitacoes_teste():
+    if os.getenv("ENABLE_DEBUG_ROUTES", "0") != "1":
+        return jsonify({"error": "Endpoint não encontrado."}), 404
+
     try:
         deleted = Licitacao.query.filter(
             Licitacao.fonte_dados == "TESTE"
@@ -441,9 +461,9 @@ def limpar_licitacoes_teste():
             "removidos": deleted
         }), 200
 
-    except Exception as e:
+    except Exception:
         db.session.rollback()
-        print(f"Erro ao limpar testes: {e}")
+        current_app.logger.exception("Erro ao limpar licitações de teste")
 
         return jsonify({
             "error": "Erro ao remover licitações de teste."
@@ -455,7 +475,8 @@ def limpar_licitacoes_teste():
 @assinatura_required
 def visualizar_edital(licitacao_id):
     try:
-        lic = Licitacao.query.get(licitacao_id)
+        cliente_id = session.get("cliente_id")
+        lic = obter_licitacao_do_cliente(licitacao_id, cliente_id)
 
         if not lic:
             return jsonify({"error": "Licitação não encontrada."}), 404
@@ -467,8 +488,8 @@ def visualizar_edital(licitacao_id):
 
         return redirect(url_edital)
 
-    except Exception as e:
-        print(f"Erro ao visualizar edital {licitacao_id}: {e}")
+    except Exception:
+        current_app.logger.exception("Erro ao visualizar edital %s", licitacao_id)
         return jsonify({"error": "Erro ao visualizar edital."}), 500
 
 
@@ -477,7 +498,8 @@ def visualizar_edital(licitacao_id):
 @assinatura_required
 def baixar_edital_licitacao(licitacao_id):
     try:
-        lic = Licitacao.query.get(licitacao_id)
+        cliente_id = session.get("cliente_id")
+        lic = obter_licitacao_do_cliente(licitacao_id, cliente_id)
 
         if not lic:
             return jsonify({"error": "Licitação não encontrada."}), 404
@@ -504,8 +526,8 @@ def baixar_edital_licitacao(licitacao_id):
             download_name=nome_arquivo
         )
 
-    except Exception as e:
-        print(f"Erro ao baixar edital {licitacao_id}: {e}")
+    except Exception:
+        current_app.logger.exception("Erro ao baixar edital %s", licitacao_id)
         return jsonify({"error": "Erro ao baixar edital."}), 500
 
 
@@ -514,7 +536,8 @@ def baixar_edital_licitacao(licitacao_id):
 @assinatura_required
 def get_licitacao_detalhes(licitacao_id):
     try:
-        licitacao = Licitacao.query.get(licitacao_id)
+        cliente_id = session.get("cliente_id")
+        licitacao = obter_licitacao_do_cliente(licitacao_id, cliente_id)
 
         if not licitacao:
             return jsonify({
@@ -529,8 +552,8 @@ def get_licitacao_detalhes(licitacao_id):
             "licitacao": result_dict
         }), 200
 
-    except Exception as e:
-        print(f"Erro ao buscar detalhes {licitacao_id}: {e}")
+    except Exception:
+        current_app.logger.exception("Erro ao buscar detalhes da licitação %s", licitacao_id)
 
         return jsonify({
             "error": "Erro ao obter detalhes da licitação."
