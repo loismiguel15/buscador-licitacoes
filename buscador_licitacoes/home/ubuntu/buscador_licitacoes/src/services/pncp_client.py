@@ -8,14 +8,18 @@ BASE = "https://pncp.gov.br/api/consulta"
 BASE_ARQUIVOS = "https://pncp.gov.br/pncp-api/v1"
 CONNECT_TIMEOUT_SECONDS = float(os.getenv("PNCP_CONNECT_TIMEOUT_SECONDS", "5"))
 READ_TIMEOUT_SECONDS = float(os.getenv("PNCP_READ_TIMEOUT_SECONDS", "12"))
+PNCP_RETRY_TOTAL = int(os.getenv("PNCP_RETRY_TOTAL", "0"))
+PNCP_RETRY_CONNECT = int(os.getenv("PNCP_RETRY_CONNECT", "0"))
+PNCP_RETRY_READ = int(os.getenv("PNCP_RETRY_READ", "0"))
+PNCP_RETRY_BACKOFF_FACTOR = float(os.getenv("PNCP_RETRY_BACKOFF_FACTOR", "0"))
 
 session = requests.Session()
 
 retry_strategy = Retry(
-    total=2,
-    connect=2,
-    read=2,
-    backoff_factor=1,
+    total=PNCP_RETRY_TOTAL,
+    connect=PNCP_RETRY_CONNECT,
+    read=PNCP_RETRY_READ,
+    backoff_factor=PNCP_RETRY_BACKOFF_FACTOR,
     status_forcelist=[429, 500, 502, 503, 504],
     allowed_methods=frozenset(["GET"]),
     raise_on_status=False,
