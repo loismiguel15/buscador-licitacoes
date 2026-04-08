@@ -97,6 +97,9 @@ PUBLIC_CSRF_EXEMPT_PATHS = {
     "/api/auth/verify-reset-code",
     "/api/auth/reset-password",
 }
+AUTHENTICATED_CSRF_EXEMPT_PATHS = {
+    "/api/auth/logout",
+}
 
 
 def _same_origin(valor_origem: str) -> bool:
@@ -114,6 +117,9 @@ def protect_authenticated_requests():
         return None
 
     if request.path.startswith("/api/webhooks/"):
+        return None
+
+    if request.path in AUTHENTICATED_CSRF_EXEMPT_PATHS:
         return None
 
     if request.path in PUBLIC_CSRF_EXEMPT_PATHS and "user_id" not in session:

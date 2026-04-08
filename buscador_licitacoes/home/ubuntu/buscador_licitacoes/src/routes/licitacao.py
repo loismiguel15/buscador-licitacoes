@@ -37,6 +37,18 @@ def texto_parecido(texto, termo, limite=90):
     return max(score1, score2) >= limite
 
 
+def montar_filtro_palavra(palavra):
+    like = f"%{palavra}%"
+    return or_(
+        Licitacao.objeto.ilike(like),
+        Licitacao.orgao_licitante.ilike(like),
+        Licitacao.numero_processo.ilike(like),
+        Licitacao.modalidade.ilike(like),
+        Licitacao.localidade_municipio.ilike(like),
+        Licitacao.texto_integral_aviso.ilike(like),
+    )
+
+
 def licitacao_to_dict(lic):
     return {
         "id": lic.id,
@@ -115,16 +127,7 @@ def buscar_licitacoes():
 
         filtros_palavras = []
         for palavra in palavras:
-            like = f"%{palavra}%"
-            filtros_palavras.append(
-                or_(
-                    Licitacao.objeto.ilike(like),
-                    Licitacao.orgao_licitante.ilike(like),
-                    Licitacao.numero_processo.ilike(like),
-                    Licitacao.modalidade.ilike(like),
-                    Licitacao.localidade_municipio.ilike(like),
-                )
-            )
+            filtros_palavras.append(montar_filtro_palavra(palavra))
 
         if filtros_palavras:
             filters.append(and_(*filtros_palavras))
@@ -165,6 +168,7 @@ def buscar_licitacoes():
             relevancia += case((Licitacao.modalidade.ilike(like), 3), else_=0)
             relevancia += case((Licitacao.numero_processo.ilike(like), 2), else_=0)
             relevancia += case((Licitacao.localidade_municipio.ilike(like), 2), else_=0)
+            relevancia += case((Licitacao.texto_integral_aviso.ilike(like), 1), else_=0)
 
         query = query.order_by(
             relevancia.desc(),
@@ -186,7 +190,7 @@ def buscar_licitacoes():
 
         itens = pagination.items
 
-        if not itens and palavra_chave and len(palavras) == 1:
+        if not itens and palavra_chave:
             consulta_ampla = Licitacao.query
 
             if modalidade:
@@ -212,7 +216,7 @@ def buscar_licitacoes():
             candidatos = consulta_ampla.order_by(
                 Licitacao.data_publicacao.desc(),
                 Licitacao.id.desc()
-            ).limit(300).all()
+            ).limit(2000).all()
 
             itens_parecidos = []
             for lic in candidatos:
@@ -221,7 +225,8 @@ def buscar_licitacoes():
                     texto_parecido(lic.orgao_licitante or "", palavra_chave) or
                     texto_parecido(lic.modalidade or "", palavra_chave) or
                     texto_parecido(lic.numero_processo or "", palavra_chave) or
-                    texto_parecido(lic.localidade_municipio or "", palavra_chave)
+                    texto_parecido(lic.localidade_municipio or "", palavra_chave) or
+                    texto_parecido(lic.texto_integral_aviso or "", palavra_chave)
                 ):
                     itens_parecidos.append(lic)
 
@@ -239,6 +244,8 @@ def buscar_licitacoes():
                     score += 2
                 if texto_parecido(lic.localidade_municipio or "", termo):
                     score += 2
+                if texto_parecido(lic.texto_integral_aviso or "", termo):
+                    score += 1
 
                 return score
 
@@ -341,16 +348,7 @@ def minhas_licitacoes():
 
         filtros_palavras = []
         for palavra in palavras:
-            like = f"%{palavra}%"
-            filtros_palavras.append(
-                or_(
-                    Licitacao.objeto.ilike(like),
-                    Licitacao.orgao_licitante.ilike(like),
-                    Licitacao.numero_processo.ilike(like),
-                    Licitacao.modalidade.ilike(like),
-                    Licitacao.localidade_municipio.ilike(like),
-                )
-            )
+            filtros_palavras.append(montar_filtro_palavra(palavra))
 
         if filtros_palavras:
             filters.append(and_(*filtros_palavras))
@@ -391,6 +389,7 @@ def minhas_licitacoes():
             relevancia += case((Licitacao.modalidade.ilike(like), 3), else_=0)
             relevancia += case((Licitacao.numero_processo.ilike(like), 2), else_=0)
             relevancia += case((Licitacao.localidade_municipio.ilike(like), 2), else_=0)
+            relevancia += case((Licitacao.texto_integral_aviso.ilike(like), 1), else_=0)
 
         query = query.order_by(
             relevancia.desc(),
