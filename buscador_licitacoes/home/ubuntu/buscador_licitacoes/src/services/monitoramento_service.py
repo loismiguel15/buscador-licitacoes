@@ -230,28 +230,32 @@ def _resolver_limites(modo_leve: bool = False, overrides: dict | None = None):
 
 
 def _selecionar_clientes_para_monitoramento(max_clientes: int):
-    ultimas_execucoes = (
+    ultimas_execucoes_ok = (
         db.session.query(
             HistoricoBusca.cliente_id.label("cliente_id"),
-            func.max(HistoricoBusca.executado_em).label("ultima_execucao_cliente"),
+            func.max(HistoricoBusca.executado_em).label("ultima_execucao_ok_cliente"),
         )
+        .filter(HistoricoBusca.status == "ok")
         .group_by(HistoricoBusca.cliente_id)
         .subquery()
     )
 
     return (
-        db.session.query(Cliente)
+        db.session.query(
+            Cliente,
+            ultimas_execucoes_ok.c.ultima_execucao_ok_cliente.label("ultima_execucao_cliente"),
+        )
         .join(
             ClientePreferencias,
             (ClientePreferencias.cliente_id == Cliente.id) & (ClientePreferencias.ativo == True),
         )
         .outerjoin(
-            ultimas_execucoes,
-            ultimas_execucoes.c.cliente_id == Cliente.id,
+            ultimas_execucoes_ok,
+            ultimas_execucoes_ok.c.cliente_id == Cliente.id,
         )
         .filter(Cliente.ativo == True)
         .order_by(
-            ultimas_execucoes.c.ultima_execucao_cliente.asc().nullsfirst(),
+            ultimas_execucoes_ok.c.ultima_execucao_ok_cliente.asc().nullsfirst(),
             Cliente.id.asc(),
         )
         .limit(max_clientes)
@@ -635,7 +639,7 @@ def enviar_lembretes_prazo():
 def processar_monitoramento(modo_leve: bool = False, overrides: dict | None = None):
     agora = _agora_brasil_naive()
     registro_execucao = _obter_registro_execucao()
-    ultima_execucao = registro_execucao.ultima_execucao
+    ultima_execucao_global = registro_execucao.ultima_execucao
     limites = _resolver_limites(modo_leve=modo_leve, overrides=overrides)
 
     clientes = _selecionar_clientes_para_monitoramento(limites["max_clientes"])
@@ -644,12 +648,12 @@ def processar_monitoramento(modo_leve: bool = False, overrides: dict | None = No
     total_novas = 0
     total_emails = 0
 
-    for cliente in clientes:
+    for cliente, ultima_execucao_cliente in clientes:
         total_clientes += 1
 
         novas_licitacoes = buscar_licitacoes_para_cliente(
             cliente=cliente,
-            ultima_execucao=ultima_execucao,
+            ultima_execucao=ultima_execucao_cliente,
             limites=limites,
         )
 
@@ -667,11 +671,11 @@ def processar_monitoramento(modo_leve: bool = False, overrides: dict | None = No
     return {
         "modo_leve": modo_leve,
         "limites": limites,
-        "clientes_ids_processados": [cliente.id for cliente in clientes],
+        "clientes_ids_processados": [cliente.id for cliente, _ in clientes],
         "clientes_processados": total_clientes,
         "novas_licitacoes": total_novas,
         "licitacoes_enviadas_por_email": total_emails,
         "lembretes_enviados": total_lembretes,
-        "ultima_execucao_anterior": ultima_execucao.isoformat() if ultima_execucao else None,
+        "ultima_execucao_anterior": ultima_execucao_global.isoformat() if ultima_execucao_global else None,
         "nova_ultima_execucao": agora.isoformat(),
     }
