@@ -145,7 +145,7 @@
             </div>
 
             <div class="table-wrapper">
-              <table class="results-table">
+              <table class="results-table mobile-cards">
                 <thead>
                   <tr>
                     <th>Processo</th>
@@ -334,13 +334,13 @@
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td>${it.numero_processo || "-"}</td>
-          <td>${it.orgao_licitante || "-"}</td>
-          <td>${traduzirModalidade(it.modalidade)}</td>
-          <td>${resumoTexto(it.objeto)}</td>
-          <td>${formatDateTime(it.data_abertura_propostas)}</td>
-          <td>${it.fonte_dados || "-"}</td>
-          <td><a href="/detalhes?id=${it.id}" class="action-link">Ver</a></td>
+          <td data-label="Processo">${it.numero_processo || "-"}</td>
+          <td data-label="Órgão">${it.orgao_licitante || "-"}</td>
+          <td data-label="Modalidade">${traduzirModalidade(it.modalidade)}</td>
+          <td data-label="Objeto">${resumoTexto(it.objeto)}</td>
+          <td data-label="Data">${formatDateTime(it.data_abertura_propostas)}</td>
+          <td data-label="Fonte">${it.fonte_dados || "-"}</td>
+          <td data-label="Ações"><a href="/detalhes?id=${it.id}" class="action-link">Ver</a></td>
         `;
 
         tbody.appendChild(tr);

@@ -118,6 +118,43 @@
   gap: 12px;
 }
 
+/* ===================================
+   2026 DETALHES REFRESH
+   =================================== */
+
+.detalhes-page {
+  padding-top: 34px;
+}
+
+.detalhes-card {
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(243, 247, 243, 0.96));
+}
+
+body.dark .detalhes-card {
+  background:
+    linear-gradient(180deg, rgba(12, 27, 24, 0.96), rgba(10, 22, 20, 0.96));
+}
+
+.detalhes-item {
+  border-radius: 20px;
+}
+
+.texto-integral {
+  border-radius: 18px;
+}
+
+@media (max-width: 768px) {
+  .detalhes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detalhes-item-full {
+    grid-column: auto;
+  }
+}
+
 @media (max-width: 980px) {
   .detalhes-grid {
     grid-template-columns: 1fr;

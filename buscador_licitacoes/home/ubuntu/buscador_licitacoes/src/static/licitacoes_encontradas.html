@@ -174,7 +174,7 @@
             </div>
 
             <div class="table-wrapper">
-              <table class="results-table">
+              <table class="results-table mobile-cards">
                 <thead>
                   <tr>
                     <th>Órgão</th>
@@ -484,12 +484,12 @@
         const temEdital = !!(lic.link_fonte || lic.link_edital);
 
         tr.innerHTML = `
-          <td>${lic.orgao_licitante || "-"}</td>
-          <td>${lic.localidade_uf || "-"}</td>
-          <td>${lic.modalidade || "-"}</td>
-          <td>${resumo(lic.objeto)}</td>
-          <td>${formatarData(lic.data_publicacao)}</td>
-          <td class="actions-cell">
+          <td data-label="Órgão">${lic.orgao_licitante || "-"}</td>
+          <td data-label="UF">${lic.localidade_uf || "-"}</td>
+          <td data-label="Modalidade">${lic.modalidade || "-"}</td>
+          <td data-label="Objeto">${resumo(lic.objeto)}</td>
+          <td data-label="Data Publicação">${formatarData(lic.data_publicacao)}</td>
+          <td data-label="Ações" class="actions-cell">
             <a class="action-link" href="/detalhes?id=${lic.id}">
               Detalhes
             </a>

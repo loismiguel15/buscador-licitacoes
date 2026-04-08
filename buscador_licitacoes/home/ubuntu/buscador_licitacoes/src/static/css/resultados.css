@@ -681,6 +681,61 @@ body.dark .mobile-menu-toggle {
     padding: 9px 12px !important;
     font-size: 0.88rem !important;
   }
+
+  .results-table.mobile-cards,
+  .results-table.mobile-cards thead,
+  .results-table.mobile-cards tbody,
+  .results-table.mobile-cards tr,
+  .results-table.mobile-cards th,
+  .results-table.mobile-cards td {
+    display: block;
+    width: 100%;
+  }
+
+  .results-table.mobile-cards {
+    min-width: 0 !important;
+    background: transparent;
+  }
+
+  .results-table.mobile-cards thead {
+    display: none;
+  }
+
+  .results-table.mobile-cards tbody {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .results-table.mobile-cards tr {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    padding: 14px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .results-table.mobile-cards td {
+    white-space: normal !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 10px;
+  }
+
+  .results-table.mobile-cards td:last-child {
+    margin-bottom: 0;
+  }
+
+  .results-table.mobile-cards td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-soft);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
 }
 
 @media (max-width: 480px) {
@@ -721,4 +776,72 @@ body.dark .mobile-menu-toggle {
     font-size: 0.82rem !important;
     padding: 10px !important;
   }
+}
+
+/* ===================================
+   2026 RESULTADOS REFRESH
+   =================================== */
+
+.app-layout {
+  background: transparent;
+}
+
+.sidebar {
+  width: 272px;
+  min-width: 272px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, #081b3a 0%, #0b2c5f 100%);
+  box-shadow: 18px 0 40px rgba(11, 44, 95, 0.14);
+}
+
+body.dark .sidebar {
+  background:
+    radial-gradient(circle at top right, rgba(138, 180, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, #071225 0%, #0b1730 100%);
+}
+
+.main-area {
+  background:
+    radial-gradient(circle at top right, rgba(22, 61, 122, 0.06), transparent 26%),
+    linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+}
+
+body.dark .main-area {
+  background:
+    radial-gradient(circle at top right, rgba(93, 146, 245, 0.08), transparent 24%),
+    linear-gradient(180deg, #0d1627 0%, #0f1b30 100%);
+}
+
+.topbar-dashboard {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+body.dark .topbar-dashboard {
+  background: rgba(9, 15, 28, 0.84);
+}
+
+.page-header h2 {
+  max-width: 760px;
+}
+
+.filtros-card,
+.resultados-card {
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(246, 250, 255, 0.96));
+}
+
+body.dark .filtros-card,
+body.dark .resultados-card {
+  background:
+    linear-gradient(180deg, rgba(17, 27, 46, 0.96), rgba(13, 21, 37, 0.96));
+}
+
+.results-table th {
+  letter-spacing: 0.01em;
+}
+
+.action-link {
+  border-radius: 12px;
 }

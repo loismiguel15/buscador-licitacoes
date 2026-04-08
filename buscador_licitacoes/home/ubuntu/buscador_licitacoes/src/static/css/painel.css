@@ -1392,6 +1392,61 @@ body.dark .mobile-menu-toggle {
     text-align: center !important;
     padding-bottom: 18px !important;
   }
+
+  .table-wrapper.mobile-cards table,
+  .table-wrapper.mobile-cards thead,
+  .table-wrapper.mobile-cards tbody,
+  .table-wrapper.mobile-cards tr,
+  .table-wrapper.mobile-cards th,
+  .table-wrapper.mobile-cards td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-wrapper.mobile-cards table {
+    min-width: 0 !important;
+    background: transparent;
+  }
+
+  .table-wrapper.mobile-cards thead {
+    display: none;
+  }
+
+  .table-wrapper.mobile-cards tbody {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .table-wrapper.mobile-cards tr {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    padding: 14px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .table-wrapper.mobile-cards td {
+    white-space: normal !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 10px;
+  }
+
+  .table-wrapper.mobile-cards td:last-child {
+    margin-bottom: 0;
+  }
+
+  .table-wrapper.mobile-cards td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-soft);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
 }
 
 /* =========================
@@ -1520,5 +1575,135 @@ body.dark .mobile-menu-toggle {
 
   .btn-featured-save {
     width: 100% !important;
+  }
+}
+
+/* ===================================
+   2026 ADMIN REFRESH
+   =================================== */
+
+.app-layout {
+  background: transparent;
+}
+
+.sidebar {
+  width: 272px;
+  min-width: 272px;
+  padding: 22px 18px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, #081b3a 0%, #0b2c5f 100%);
+  box-shadow: 18px 0 40px rgba(11, 44, 95, 0.14);
+}
+
+body.dark .sidebar {
+  background:
+    radial-gradient(circle at top right, rgba(138, 180, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, #071225 0%, #0b1730 100%);
+}
+
+.sidebar-link {
+  border-radius: 16px;
+}
+
+.sidebar-link.active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.main-area {
+  background:
+    radial-gradient(circle at top right, rgba(22, 61, 122, 0.06), transparent 26%),
+    linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+}
+
+body.dark .main-area {
+  background:
+    radial-gradient(circle at top right, rgba(93, 146, 245, 0.08), transparent 24%),
+    linear-gradient(180deg, #0d1627 0%, #0f1b30 100%);
+}
+
+.topbar-dashboard {
+  padding: 18px 24px;
+  background: rgba(255, 255, 255, 0.82);
+  border-bottom-color: rgba(11, 44, 95, 0.08);
+}
+
+body.dark .topbar-dashboard {
+  background: rgba(9, 15, 28, 0.84);
+}
+
+.painel-page {
+  padding-top: 28px;
+}
+
+.page-tag,
+.section-badge,
+.highlight-label {
+  background: rgba(11, 44, 95, 0.08);
+  color: var(--primary);
+}
+
+.panel-card,
+.panel-card-featured,
+.highlight-card,
+.trial-banner {
+  border-radius: 28px;
+}
+
+.panel-card-featured {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 250, 255, 0.96));
+}
+
+body.dark .panel-card-featured {
+  background:
+    linear-gradient(180deg, rgba(17, 27, 46, 0.96), rgba(13, 21, 37, 0.96));
+}
+
+.dashboard-highlight-cards {
+  gap: 16px;
+}
+
+.users-summary,
+.featured-save-note {
+  border-radius: 18px;
+}
+
+.btn-featured-save {
+  background: linear-gradient(135deg, #0b2c5f, #163d7a);
+}
+
+body.dark .btn-featured-save {
+  background: linear-gradient(135deg, #5d92f5, #7fb0ff);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 252px !important;
+    min-width: 252px !important;
+    left: -268px !important;
+    padding: 16px 12px !important;
+  }
+
+  .sidebar-brand {
+    align-items: center;
+    gap: 10px !important;
+  }
+
+  .sidebar-brand-text h2 {
+    font-size: 0.96rem !important;
+  }
+
+  .sidebar-brand-text span {
+    font-size: 0.74rem !important;
+  }
+
+  .sidebar-link {
+    padding: 11px 12px !important;
+    font-size: 0.92rem !important;
+  }
+
+  .sidebar-bottom {
+    padding-top: 14px !important;
   }
 }

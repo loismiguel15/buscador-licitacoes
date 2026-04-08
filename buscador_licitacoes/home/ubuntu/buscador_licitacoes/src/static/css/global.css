@@ -748,3 +748,284 @@ body.dark .mobile-menu button:hover {
     width: min(1180px, calc(100% - 24px)) !important;
   }
 }
+
+/* ===================================
+   2026 VISUAL REFRESH
+   =================================== */
+
+:root {
+  --bg:
+    radial-gradient(circle at top left, rgba(43, 108, 176, 0.12), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(96, 165, 250, 0.10), transparent 22%),
+    linear-gradient(180deg, #f8fbff 0%, #eef3fb 52%, #e8eef7 100%);
+  --surface: rgba(255, 255, 255, 0.84);
+  --surface-card: rgba(255, 255, 255, 0.92);
+  --surface-glass: rgba(255, 255, 255, 0.76);
+  --surface-soft: #eef4ff;
+  --footer-bg: rgba(248, 251, 255, 0.72);
+
+  --primary: #0b2c5f;
+  --primary-2: #163d7a;
+  --secondary: #2b6cb0;
+
+  --text: #142033;
+  --text-soft: #5b6575;
+
+  --border: rgba(11, 44, 95, 0.11);
+  --border-soft: rgba(11, 44, 95, 0.08);
+  --border-card: rgba(11, 44, 95, 0.10);
+  --border-footer: rgba(11, 44, 95, 0.08);
+
+  --input-bg: rgba(255, 255, 255, 0.88);
+  --input-focus: #7fa8e6;
+
+  --badge-bg: rgba(11, 44, 95, 0.08);
+  --badge-border: rgba(11, 44, 95, 0.12);
+
+  --btn-outline-bg: rgba(255, 255, 255, 0.8);
+  --btn-outline-hover: rgba(255, 255, 255, 1);
+  --btn-soft-border: rgba(11, 44, 95, 0.12);
+  --btn-soft-hover: rgba(11, 44, 95, 0.08);
+  --btn-soft-hover-border: rgba(11, 44, 95, 0.18);
+
+  --success: #0f8a3b;
+  --error: #c62828;
+
+  --shadow: 0 24px 80px rgba(11, 44, 95, 0.10);
+  --shadow-soft: 0 16px 42px rgba(11, 44, 95, 0.08);
+  --shadow-primary: 0 16px 36px rgba(11, 44, 95, 0.22);
+  --shadow-primary-hover: 0 20px 44px rgba(11, 44, 95, 0.28);
+  --radius: 24px;
+}
+
+body.dark {
+  --bg:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 24%),
+    radial-gradient(circle at 85% 0%, rgba(96, 165, 250, 0.10), transparent 18%),
+    linear-gradient(180deg, #0b1220 0%, #111827 52%, #162234 100%);
+  --surface: rgba(12, 20, 34, 0.84);
+  --surface-card: rgba(11, 18, 30, 0.92);
+  --surface-glass: rgba(10, 18, 30, 0.78);
+  --surface-soft: rgba(17, 34, 58, 0.85);
+  --footer-bg: rgba(9, 15, 28, 0.72);
+
+  --primary: #e5edf8;
+  --primary-2: #8ab4ff;
+  --secondary: #7fb0ff;
+
+  --text: #e5edf8;
+  --text-soft: #a8b3c7;
+
+  --border: rgba(138, 180, 255, 0.10);
+  --border-soft: rgba(138, 180, 255, 0.06);
+  --border-card: rgba(138, 180, 255, 0.08);
+  --border-footer: rgba(138, 180, 255, 0.06);
+
+  --input-bg: rgba(9, 17, 30, 0.92);
+  --input-focus: #5d92f5;
+
+  --badge-bg: rgba(93, 146, 245, 0.10);
+  --badge-border: rgba(127, 176, 255, 0.16);
+
+  --btn-outline-bg: rgba(9, 17, 30, 0.72);
+  --btn-outline-hover: rgba(14, 24, 42, 0.92);
+  --btn-soft-border: rgba(138, 180, 255, 0.10);
+  --btn-soft-hover: rgba(138, 180, 255, 0.06);
+  --btn-soft-hover-border: rgba(138, 180, 255, 0.14);
+
+  --success: #4ade80;
+  --error: #f87171;
+
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  --shadow-soft: 0 16px 42px rgba(0, 0, 0, 0.26);
+  --shadow-primary: 0 16px 36px rgba(93, 146, 245, 0.18);
+  --shadow-primary-hover: 0 20px 44px rgba(93, 146, 245, 0.22);
+}
+
+html {
+  background: #eef2f5;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  letter-spacing: -0.03em;
+}
+
+header {
+  background: var(--surface-glass);
+  border-bottom: 1px solid var(--border-soft);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+}
+
+body.dark header {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.topbar {
+  min-height: 88px;
+  gap: 24px;
+}
+
+.brand {
+  gap: 14px;
+}
+
+.logo {
+  height: 48px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(19, 39, 36, 0.10);
+}
+
+.brand-text h1 {
+  color: var(--primary);
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.brand-text span {
+  color: var(--text-soft);
+  font-size: 0.84rem;
+}
+
+nav a {
+  position: relative;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: center;
+  background: linear-gradient(90deg, var(--secondary), transparent);
+  transition: transform 0.22s ease;
+}
+
+nav a:hover::after {
+  transform: scaleX(1);
+}
+
+.btn {
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.btn-outline {
+  background: var(--btn-outline-bg);
+  border-color: var(--border);
+  color: var(--primary);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0b2c5f, #163d7a);
+}
+
+body.dark .btn-primary {
+  background: linear-gradient(135deg, #5d92f5, #7fb0ff);
+  color: #ffffff;
+}
+
+.btn-soft,
+.btn-secondary {
+  background: rgba(11, 44, 95, 0.07);
+  color: var(--primary);
+  border: 1px solid rgba(11, 44, 95, 0.10);
+}
+
+body.dark .btn-soft,
+body.dark .btn-secondary {
+  background: rgba(214, 239, 227, 0.06);
+  border-color: rgba(214, 239, 227, 0.10);
+}
+
+#theme-toggle {
+  border-radius: 999px;
+  padding-inline: 16px;
+}
+
+.card,
+.panel-card,
+.highlight-card,
+.resultados-card,
+.filtros-card,
+.page-highlight-card,
+.detalhes-card,
+.assinatura-card,
+.login-card,
+.modal-card {
+  box-shadow: var(--shadow);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select,
+textarea {
+  border-radius: 16px;
+  border-color: var(--border);
+  background: var(--input-bg);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 0 4px rgba(43, 108, 176, 0.12);
+}
+
+body.dark input[type="text"]:focus,
+body.dark input[type="email"]:focus,
+body.dark input[type="password"]:focus,
+body.dark input[type="date"]:focus,
+body.dark select:focus,
+body.dark textarea:focus {
+  box-shadow: 0 0 0 4px rgba(93, 146, 245, 0.14);
+}
+
+.page-tag,
+.section-tag,
+.section-badge,
+.section-badge-soft,
+.badge {
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+footer {
+  background: var(--footer-bg);
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    min-height: auto;
+  }
+
+  .logo {
+    height: 42px;
+  }
+
+  .btn {
+    min-height: 46px;
+  }
+}

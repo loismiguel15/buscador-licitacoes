@@ -254,7 +254,7 @@
                 <span id="usuariosAtivosTexto">Carregando...</span>
               </div>
 
-              <div class="table-wrapper">
+              <div class="table-wrapper mobile-cards">
                 <table>
                   <thead>
                     <tr>
@@ -632,14 +632,14 @@
           !podeAdicionarUsuario(plano);
 
         tr.innerHTML = `
-          <td>${usuario.nome}</td>
-          <td>${usuario.email}</td>
-          <td>
+          <td data-label="Nome">${usuario.nome}</td>
+          <td data-label="E-mail">${usuario.email}</td>
+          <td data-label="Status">
             <span class="status-pill ${usuario.ativo ? "is-active" : "is-inactive"}">
               ${statusTexto}
             </span>
           </td>
-          <td>
+          <td data-label="Ação">
             ${
               usuario.tipo === "comum"
                 ? `<button
@@ -653,7 +653,7 @@
                 : `<span class="master-badge">Master</span>`
             }
           </td>
-          <td>
+          <td data-label="Detalhes">
             <button
               type="button"
               class="mini-btn button-info"

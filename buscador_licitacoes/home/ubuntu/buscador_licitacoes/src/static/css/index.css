@@ -1292,3 +1292,130 @@ body.dark .final-cta-box {
     text-align: center !important;
   }
 }
+
+/* ===================================
+   2026 LANDING REFRESH
+   =================================== */
+
+.top-notice {
+  padding-top: 18px;
+}
+
+.top-notice-box {
+  border-radius: 22px;
+  padding: 16px 20px;
+  background:
+    linear-gradient(135deg, rgba(11, 44, 95, 0.08), rgba(43, 108, 176, 0.08)),
+    rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+}
+
+.hero {
+  padding: 30px 0 34px;
+}
+
+.hero-box {
+  gap: 22px;
+  align-items: start;
+}
+
+.hero-content {
+  border-radius: 34px;
+  padding: 48px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 26%),
+    linear-gradient(135deg, #0b2c5f 0%, #163d7a 52%, #1f4d94 100%);
+}
+
+body.dark .hero-content {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.10), transparent 28%),
+    linear-gradient(135deg, #173663 0%, #214f8f 52%, #1a4175 100%);
+}
+
+.hero-tag {
+  background: rgba(255, 248, 235, 0.12);
+  color: #f6e1bf;
+}
+
+.hero-content h2 {
+  max-width: 760px;
+}
+
+.hero-highlights {
+  margin-top: 28px;
+}
+
+.highlight-item {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.dashboard-card,
+.mini-card,
+.stat-card,
+.step-card,
+.feature-card,
+.faq-card,
+.trust-item,
+.value-point {
+  border-radius: 24px;
+}
+
+.dashboard-card {
+  background:
+    radial-gradient(circle at top right, rgba(43, 108, 176, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(246, 250, 255, 0.94));
+}
+
+body.dark .dashboard-card {
+  background:
+    radial-gradient(circle at top right, rgba(138, 180, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(17, 27, 46, 0.94), rgba(11, 24, 44, 0.94));
+}
+
+.mini-card-dark,
+.pricing-card {
+  background: linear-gradient(135deg, #0b2c5f 0%, #163d7a 58%, #2458a4 100%);
+}
+
+body.dark .mini-card-dark,
+body.dark .pricing-card {
+  background: linear-gradient(135deg, #173663 0%, #214f8f 58%, #1b437b 100%);
+}
+
+.how-banner-box,
+.value-banner-box,
+.final-cta-box {
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(242, 246, 242, 0.96));
+}
+
+body.dark .how-banner-box,
+body.dark .value-banner-box,
+body.dark .final-cta-box {
+  background:
+    linear-gradient(180deg, rgba(12, 27, 24, 0.94), rgba(11, 22, 20, 0.96));
+}
+
+@media (max-width: 980px) {
+  .hero-content {
+    padding: 34px 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 20px;
+  }
+
+  .hero-content {
+    padding: 28px 20px !important;
+    border-radius: 26px !important;
+  }
+
+  .top-notice-box {
+    border-radius: 18px !important;
+  }
+}

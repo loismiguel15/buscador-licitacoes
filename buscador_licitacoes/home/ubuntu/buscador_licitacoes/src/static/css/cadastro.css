@@ -125,6 +125,43 @@
   animation: cadastroCenterBreath 8s ease-in-out infinite;
 }
 
+/* ===================================
+   2026 CADASTRO REFRESH
+   =================================== */
+
+.cadastro-page {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(43, 108, 176, 0.14), transparent 26%),
+    radial-gradient(circle at 90% 10%, rgba(96, 165, 250, 0.12), transparent 22%),
+    linear-gradient(135deg, #f8fbff 0%, #eef3fb 46%, #e8eef7 100%);
+}
+
+body.dark .cadastro-page {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(93, 146, 245, 0.12), transparent 24%),
+    radial-gradient(circle at 90% 10%, rgba(138, 180, 255, 0.10), transparent 18%),
+    linear-gradient(135deg, #0b1220 0%, #0f1a2d 46%, #12213a 100%);
+}
+
+.cadastro-wrapper {
+  width: min(1220px, calc(100% - 40px));
+  gap: 22px;
+}
+
+.cadastro-side {
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.10), transparent 28%),
+    linear-gradient(135deg, #0b2c5f 0%, #163d7a 52%, #1f4d94 100%);
+}
+
+.cadastro-card,
+.cadastro-form-card,
+.cadastro-main,
+.cadastro-panel {
+  border-radius: 30px;
+}
+
 .cadastro-wrapper {
   position: relative;
   z-index: 1;

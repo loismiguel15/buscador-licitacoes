@@ -15,79 +15,111 @@
 <style>
 
 body{
-background:#f5f7fb;
+background:
+radial-gradient(circle at 12% 18%, rgba(43,108,176,0.14), transparent 26%),
+radial-gradient(circle at 90% 10%, rgba(96,165,250,0.12), transparent 22%),
+linear-gradient(135deg, #f8fbff 0%, #eef3fb 46%, #e8eef7 100%);
 font-family:'Inter',sans-serif;
 display:flex;
 align-items:center;
 justify-content:center;
 min-height:100vh;
+padding:20px;
+color:#132724;
 }
 
 .card{
-background:white;
-padding:40px;
-border-radius:12px;
-width:420px;
-box-shadow:0 8px 30px rgba(0,0,0,0.1);
+background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(243,247,243,0.98));
+padding:38px 34px;
+border-radius:28px;
+width:min(460px, 100%);
+box-shadow:0 24px 80px rgba(19,39,36,0.12);
+border:1px solid rgba(19,39,36,0.10);
 }
 
 h2{
 margin-bottom:10px;
 font-family:'Manrope',sans-serif;
+font-size:2rem;
+color:#0b2c5f;
+letter-spacing:-0.03em;
 }
 
 .desc{
-color:#666;
-margin-bottom:25px;
+color:#5d6c6a;
+margin-bottom:24px;
 font-size:14px;
+line-height:1.6;
 }
 
 label{
 display:block;
-margin-bottom:6px;
-font-weight:500;
+margin-bottom:8px;
+font-weight:700;
+color:#132724;
 }
 
 input{
 width:100%;
-padding:10px;
+padding:13px 14px;
 margin-bottom:18px;
-border:1px solid #ddd;
-border-radius:6px;
-font-size:14px;
+border:1px solid rgba(19,39,36,0.12);
+border-radius:16px;
+font-size:15px;
+background:rgba(255,255,255,0.92);
+}
+
+input:focus{
+outline:none;
+border-color:#7fa8e6;
+box-shadow:0 0 0 4px rgba(43,108,176,0.12);
 }
 
 button{
 width:100%;
-padding:12px;
-background:#2563eb;
+padding:14px;
+background:linear-gradient(135deg, #0b2c5f, #163d7a);
 color:white;
 border:none;
-border-radius:6px;
+border-radius:16px;
 font-size:15px;
+font-weight:800;
 cursor:pointer;
+box-shadow:0 16px 36px rgba(22,58,54,0.22);
 }
 
 button:hover{
-background:#1d4ed8;
+transform:translateY(-1px);
 }
 
 .msg{
 margin-top:15px;
-padding:10px;
-border-radius:6px;
+padding:12px 14px;
+border-radius:14px;
 display:none;
 font-size:14px;
+font-weight:700;
 }
 
 .msg.ok{
-background:#e6fffa;
-color:#065f46;
+background:#e9f8ef;
+color:#146c43;
 }
 
 .msg.err{
-background:#fee2e2;
-color:#991b1b;
+background:#fff0f0;
+color:#b83232;
+}
+
+@media (max-width: 640px){
+.card{
+padding:28px 20px;
+border-radius:22px;
+}
+
+h2{
+font-size:1.7rem;
+}
 }
 
 </style>
