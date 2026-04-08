@@ -351,6 +351,8 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
 
     total_paginas_consultadas = 0
     total_itens_recebidos = 0
+    total_itens_com_termo = 0
+    total_itens_novos_por_data = 0
     erro_busca = None
     contador_itens = 0
 
@@ -400,11 +402,15 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
                     if not termos_encontrados:
                         continue
 
+                    total_itens_com_termo += 1
+
                     data_publicacao_item = _parse_data_publicacao_item(item)
 
                     if ultima_execucao and data_publicacao_item:
                         if data_publicacao_item <= ultima_execucao:
                             continue
+
+                    total_itens_novos_por_data += 1
 
                     encontrou_item_novo_na_pagina = True
 
@@ -454,6 +460,14 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
 
         if len(novas_licitacoes) >= limites["max_licitacoes_novas"]:
             break
+
+    print(
+        "Resumo busca cliente="
+        f"{cliente.id} | keywords={keywords} | ufs={ufs} | modalidades={modalidades} "
+        f"| paginas={total_paginas_consultadas} | itens_recebidos={total_itens_recebidos} "
+        f"| itens_com_termo={total_itens_com_termo} | itens_novos_por_data={total_itens_novos_por_data} "
+        f"| novas_licitacoes={len(novas_licitacoes)} | status={'erro' if erro_busca else 'ok'}"
+    )
 
     _registrar_historico_busca(
         cliente=cliente,

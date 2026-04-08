@@ -6,12 +6,12 @@ from urllib3.util.retry import Retry
 
 BASE = "https://pncp.gov.br/api/consulta"
 BASE_ARQUIVOS = "https://pncp.gov.br/pncp-api/v1"
-CONNECT_TIMEOUT_SECONDS = float(os.getenv("PNCP_CONNECT_TIMEOUT_SECONDS", "5"))
-READ_TIMEOUT_SECONDS = float(os.getenv("PNCP_READ_TIMEOUT_SECONDS", "12"))
-PNCP_RETRY_TOTAL = int(os.getenv("PNCP_RETRY_TOTAL", "0"))
-PNCP_RETRY_CONNECT = int(os.getenv("PNCP_RETRY_CONNECT", "0"))
-PNCP_RETRY_READ = int(os.getenv("PNCP_RETRY_READ", "0"))
-PNCP_RETRY_BACKOFF_FACTOR = float(os.getenv("PNCP_RETRY_BACKOFF_FACTOR", "0"))
+CONNECT_TIMEOUT_SECONDS = float(os.getenv("PNCP_CONNECT_TIMEOUT_SECONDS", "8"))
+READ_TIMEOUT_SECONDS = float(os.getenv("PNCP_READ_TIMEOUT_SECONDS", "25"))
+PNCP_RETRY_TOTAL = int(os.getenv("PNCP_RETRY_TOTAL", "2"))
+PNCP_RETRY_CONNECT = int(os.getenv("PNCP_RETRY_CONNECT", "2"))
+PNCP_RETRY_READ = int(os.getenv("PNCP_RETRY_READ", "2"))
+PNCP_RETRY_BACKOFF_FACTOR = float(os.getenv("PNCP_RETRY_BACKOFF_FACTOR", "1.0"))
 
 session = requests.Session()
 
@@ -85,6 +85,16 @@ def fetch_contratacoes_publicacao(
             url,
             params=params,
             timeout=(CONNECT_TIMEOUT_SECONDS, READ_TIMEOUT_SECONDS)
+        )
+    except requests.exceptions.ReadTimeout:
+        raise Exception(
+            "Timeout de leitura ao consultar PNCP "
+            f"| url={url} | params={params} | timeout_leitura={READ_TIMEOUT_SECONDS}s"
+        )
+    except requests.exceptions.ConnectTimeout:
+        raise Exception(
+            "Timeout de conexao ao consultar PNCP "
+            f"| url={url} | params={params} | timeout_conexao={CONNECT_TIMEOUT_SECONDS}s"
         )
     except requests.exceptions.Timeout:
         raise Exception(
