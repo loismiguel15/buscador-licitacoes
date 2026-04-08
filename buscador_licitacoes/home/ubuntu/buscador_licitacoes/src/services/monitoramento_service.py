@@ -37,6 +37,7 @@ MAX_PAGINAS_PNCP = int(os.getenv("MONITORAMENTO_MAX_PAGINAS_PNCP", "1"))
 MAX_CLIENTES_POR_EXECUCAO = int(os.getenv("MONITORAMENTO_MAX_CLIENTES_POR_EXECUCAO", "2"))
 MAX_UFS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_UFS_POR_CLIENTE", "2"))
 MAX_KEYWORDS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_KEYWORDS_POR_CLIENTE", "3"))
+MAX_MODALIDADES_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_MODALIDADES_POR_CLIENTE", "2"))
 MAX_LICITACOES_NOVAS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_LICITACOES_NOVAS_POR_CLIENTE", "20"))
 MAX_ITENS_PROCESSADOS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_ITENS_PROCESSADOS_POR_CLIENTE", "40"))
 
@@ -47,6 +48,7 @@ MODO_LEVE_LIMITES = {
     "max_clientes": 1,
     "max_ufs": 1,
     "max_keywords": 2,
+    "max_modalidades": 1,
     "max_paginas": 1,
     "max_licitacoes_novas": 10,
     "max_itens_processados": 20,
@@ -208,6 +210,7 @@ def _resolver_limites(modo_leve: bool = False, overrides: dict | None = None):
         "max_clientes": MAX_CLIENTES_POR_EXECUCAO,
         "max_ufs": MAX_UFS_POR_CLIENTE,
         "max_keywords": MAX_KEYWORDS_POR_CLIENTE,
+        "max_modalidades": MAX_MODALIDADES_POR_CLIENTE,
         "max_paginas": MAX_PAGINAS_PNCP,
         "max_licitacoes_novas": MAX_LICITACOES_NOVAS_POR_CLIENTE,
         "max_itens_processados": MAX_ITENS_PROCESSADOS_POR_CLIENTE,
@@ -299,6 +302,11 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
 
     if not modalidades:
         modalidades = MODALIDADES_PADRAO
+    else:
+        modalidades = modalidades[:limites["max_modalidades"]]
+
+    if not modalidades:
+        modalidades = MODALIDADES_PADRAO[:limites["max_modalidades"]]
 
     novas_licitacoes = []
     licitacoes_ids_adicionadas = set()

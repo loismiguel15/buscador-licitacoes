@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, request, jsonify
 from datetime import date, timedelta
 import traceback
@@ -60,11 +61,17 @@ def debug_monitoramento():
     try:
         force = request.args.get("force", "0")
         modo = request.args.get("modo", "leve").strip().lower()
+        permitir_modo_completo = os.getenv("ENABLE_PNCP_COMPLETO", "0") == "1"
 
         if force != "1":
             return jsonify({
                 "error": "Use ?force=1 para executar monitoramento"
             }), 400
+
+        if modo == "completo" and not permitir_modo_completo:
+            return jsonify({
+                "error": "Modo completo desabilitado neste ambiente para proteger o servico web."
+            }), 403
 
         resultado = processar_monitoramento(
             modo_leve=(modo != "completo")
