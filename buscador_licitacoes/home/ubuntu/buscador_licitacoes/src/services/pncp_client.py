@@ -1,3 +1,4 @@
+import os
 import re
 import requests
 from requests.adapters import HTTPAdapter
@@ -5,6 +6,8 @@ from urllib3.util.retry import Retry
 
 BASE = "https://pncp.gov.br/api/consulta"
 BASE_ARQUIVOS = "https://pncp.gov.br/pncp-api/v1"
+CONNECT_TIMEOUT_SECONDS = float(os.getenv("PNCP_CONNECT_TIMEOUT_SECONDS", "5"))
+READ_TIMEOUT_SECONDS = float(os.getenv("PNCP_READ_TIMEOUT_SECONDS", "12"))
 
 session = requests.Session()
 
@@ -77,7 +80,7 @@ def fetch_contratacoes_publicacao(
         response = session.get(
             url,
             params=params,
-            timeout=(10, 25)
+            timeout=(CONNECT_TIMEOUT_SECONDS, READ_TIMEOUT_SECONDS)
         )
     except requests.exceptions.Timeout:
         raise Exception(
@@ -170,7 +173,7 @@ def descobrir_primeiro_pdf_pncp(numero_controle: str, max_arquivos: int = 10):
         try:
             response = session.get(
                 url,
-                timeout=(5, 15),
+                timeout=(CONNECT_TIMEOUT_SECONDS, READ_TIMEOUT_SECONDS),
                 allow_redirects=True
             )
         except requests.exceptions.RequestException:

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import unicodedata
@@ -29,18 +30,28 @@ MAX_ITENS_EMAIL = 5
 TZ_BRASIL = ZoneInfo("America/Sao_Paulo")
 
 # paginação do PNCP
-TAMANHO_PAGINA_PNCP = 20
-MAX_PAGINAS_PNCP = 3
+TAMANHO_PAGINA_PNCP = int(os.getenv("MONITORAMENTO_TAMANHO_PAGINA_PNCP", "20"))
+MAX_PAGINAS_PNCP = int(os.getenv("MONITORAMENTO_MAX_PAGINAS_PNCP", "1"))
 
 # limita processamento por execução
-MAX_CLIENTES_POR_EXECUCAO = 5
-MAX_UFS_POR_CLIENTE = 3
-MAX_KEYWORDS_POR_CLIENTE = 5
-MAX_LICITACOES_NOVAS_POR_CLIENTE = 30
-MAX_ITENS_PROCESSADOS_POR_CLIENTE = 100
+MAX_CLIENTES_POR_EXECUCAO = int(os.getenv("MONITORAMENTO_MAX_CLIENTES_POR_EXECUCAO", "2"))
+MAX_UFS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_UFS_POR_CLIENTE", "2"))
+MAX_KEYWORDS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_KEYWORDS_POR_CLIENTE", "3"))
+MAX_LICITACOES_NOVAS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_LICITACOES_NOVAS_POR_CLIENTE", "20"))
+MAX_ITENS_PROCESSADOS_POR_CLIENTE = int(os.getenv("MONITORAMENTO_MAX_ITENS_PROCESSADOS_POR_CLIENTE", "40"))
 
 # modalidades mais úteis por padrão
 MODALIDADES_PADRAO = [4, 6, 8, 9]
+
+MODO_LEVE_LIMITES = {
+    "max_clientes": 1,
+    "max_ufs": 1,
+    "max_keywords": 2,
+    "max_paginas": 1,
+    "max_licitacoes_novas": 10,
+    "max_itens_processados": 20,
+    "tamanho_pagina": 10,
+}
 
 
 # =========================================
@@ -192,6 +203,28 @@ def _termos_que_combinam_com_item(item: dict, termos: list[str]):
     return termos_encontrados
 
 
+def _resolver_limites(modo_leve: bool = False, overrides: dict | None = None):
+    limites = {
+        "max_clientes": MAX_CLIENTES_POR_EXECUCAO,
+        "max_ufs": MAX_UFS_POR_CLIENTE,
+        "max_keywords": MAX_KEYWORDS_POR_CLIENTE,
+        "max_paginas": MAX_PAGINAS_PNCP,
+        "max_licitacoes_novas": MAX_LICITACOES_NOVAS_POR_CLIENTE,
+        "max_itens_processados": MAX_ITENS_PROCESSADOS_POR_CLIENTE,
+        "tamanho_pagina": TAMANHO_PAGINA_PNCP,
+    }
+
+    if modo_leve:
+        limites.update(MODO_LEVE_LIMITES)
+
+    if overrides:
+        for chave, valor in overrides.items():
+            if chave in limites and valor is not None:
+                limites[chave] = int(valor)
+
+    return limites
+
+
 # =========================================
 # HISTÓRICO DE BUSCAS
 # =========================================
@@ -236,7 +269,9 @@ def _registrar_historico_busca(
 # BUSCA DE LICITAÇÕES POR CLIENTE
 # =========================================
 
-def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime | None):
+def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime | None, limites: dict | None = None):
+    limites = limites or _resolver_limites()
+
     preferencias = ClientePreferencias.query.filter_by(
         cliente_id=cliente.id,
         ativo=True,
@@ -255,12 +290,12 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
     keywords = list(dict.fromkeys(
         termo.strip() for termo in keywords if termo and termo.strip()
     ))
-    keywords = keywords[:MAX_KEYWORDS_POR_CLIENTE]
+    keywords = keywords[:limites["max_keywords"]]
 
     if not ufs:
         ufs = [None]
     else:
-        ufs = ufs[:MAX_UFS_POR_CLIENTE]
+        ufs = ufs[:limites["max_ufs"]]
 
     if not modalidades:
         modalidades = MODALIDADES_PADRAO
@@ -286,14 +321,14 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
                 )
                 continue
 
-            for pagina in range(1, MAX_PAGINAS_PNCP + 1):
+            for pagina in range(1, limites["max_paginas"] + 1):
                 try:
                     resposta = fetch_contratacoes_publicacao(
                         data_inicial=data_inicial,
                         data_final=data_final,
                         codigo_modalidade=codigo_modalidade,
                         pagina=pagina,
-                        tamanho=TAMANHO_PAGINA_PNCP,
+                        tamanho=limites["tamanho_pagina"],
                         uf=uf,
                     )
                     total_paginas_consultadas += 1
@@ -314,7 +349,7 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
 
                 for item in itens:
                     contador_itens += 1
-                    if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+                    if contador_itens > limites["max_itens_processados"]:
                         break
 
                     termos_encontrados = _termos_que_combinam_com_item(item, keywords)
@@ -350,31 +385,31 @@ def buscar_licitacoes_para_cliente(cliente: Cliente, ultima_execucao: datetime |
                         novas_licitacoes.append(licitacao)
                         licitacoes_ids_adicionadas.add(licitacao.id)
 
-                    if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+                    if len(novas_licitacoes) >= limites["max_licitacoes_novas"]:
                         break
 
-                if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+                if contador_itens > limites["max_itens_processados"]:
                     break
 
-                if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+                if len(novas_licitacoes) >= limites["max_licitacoes_novas"]:
                     break
 
-                if len(itens) < TAMANHO_PAGINA_PNCP:
+                if len(itens) < limites["tamanho_pagina"]:
                     break
 
                 if ultima_execucao and not encontrou_item_novo_na_pagina:
                     break
 
-            if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+            if contador_itens > limites["max_itens_processados"]:
                 break
 
-            if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+            if len(novas_licitacoes) >= limites["max_licitacoes_novas"]:
                 break
 
-        if contador_itens > MAX_ITENS_PROCESSADOS_POR_CLIENTE:
+        if contador_itens > limites["max_itens_processados"]:
             break
 
-        if len(novas_licitacoes) >= MAX_LICITACOES_NOVAS_POR_CLIENTE:
+        if len(novas_licitacoes) >= limites["max_licitacoes_novas"]:
             break
 
     _registrar_historico_busca(
@@ -558,15 +593,16 @@ def enviar_lembretes_prazo():
 # PROCESSO PRINCIPAL
 # =========================================
 
-def processar_monitoramento():
+def processar_monitoramento(modo_leve: bool = False, overrides: dict | None = None):
     agora = _agora_brasil_naive()
     registro_execucao = _obter_registro_execucao()
     ultima_execucao = registro_execucao.ultima_execucao
+    limites = _resolver_limites(modo_leve=modo_leve, overrides=overrides)
 
     clientes = (
         Cliente.query
         .filter_by(ativo=True)
-        .limit(MAX_CLIENTES_POR_EXECUCAO)
+        .limit(limites["max_clientes"])
         .all()
     )
 
@@ -580,6 +616,7 @@ def processar_monitoramento():
         novas_licitacoes = buscar_licitacoes_para_cliente(
             cliente=cliente,
             ultima_execucao=ultima_execucao,
+            limites=limites,
         )
 
         if novas_licitacoes:
@@ -594,6 +631,8 @@ def processar_monitoramento():
     db.session.commit()
 
     return {
+        "modo_leve": modo_leve,
+        "limites": limites,
         "clientes_processados": total_clientes,
         "novas_licitacoes": total_novas,
         "licitacoes_enviadas_por_email": total_emails,

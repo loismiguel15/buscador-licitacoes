@@ -59,13 +59,16 @@ def raw_pncp():
 def debug_monitoramento():
     try:
         force = request.args.get("force", "0")
+        modo = request.args.get("modo", "leve").strip().lower()
 
         if force != "1":
             return jsonify({
                 "error": "Use ?force=1 para executar monitoramento"
             }), 400
 
-        resultado = processar_monitoramento()
+        resultado = processar_monitoramento(
+            modo_leve=(modo != "completo")
+        )
 
         return jsonify({
             "message": "Monitoramento executado",
