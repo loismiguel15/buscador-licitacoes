@@ -1094,19 +1094,19 @@ footer {
   }
 
   #theme-toggle {
-    width: 78px;
-    min-width: 78px;
-    height: 36px;
-    min-height: 36px;
+    width: 64px;
+    min-width: 64px;
+    height: 32px;
+    min-height: 32px;
   }
 
   #theme-toggle::before {
     inset: 3px auto 3px 3px;
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
   }
 
   body.dark #theme-toggle::before {
-    transform: translateX(42px);
+    transform: translateX(32px);
   }
 }

@@ -1239,12 +1239,20 @@ body.dark .mobile-menu-toggle {
     flex-shrink: 0 !important;
   }
 
-  #theme-toggle,
   .topbar-actions .btn {
     padding: 7px 10px !important;
     min-height: 34px !important;
     font-size: 11px !important;
     white-space: nowrap !important;
+  }
+
+  #theme-toggle {
+    padding: 0 !important;
+    width: 64px !important;
+    min-width: 64px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    flex: 0 0 auto !important;
   }
 
   /* CONTEÚDO */
