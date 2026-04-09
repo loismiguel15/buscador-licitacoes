@@ -984,15 +984,21 @@ body.dark .final-cta-box {
   .nav-actions {
     width: 100% !important;
     display: grid !important;
-    grid-template-columns: 0.9fr 1.1fr !important;
+    grid-template-columns: auto 1fr 1fr !important;
     gap: 10px !important;
+    align-items: center !important;
   }
 
   .nav-actions #theme-toggle {
-    grid-column: 1 / -1 !important;
-    min-height: 38px !important;
-    padding: 7px 12px !important;
-    font-size: 0.82rem !important;
+    grid-column: auto !important;
+    width: 64px !important;
+    min-width: 64px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 !important;
+    justify-self: start !important;
+    align-self: center !important;
+    font-size: 0 !important;
   }
 
   .nav-actions .btn,
@@ -1007,6 +1013,11 @@ body.dark .final-cta-box {
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
+  }
+
+  .nav-actions a.btn,
+  .nav-actions button.btn:not(#theme-toggle) {
+    width: 100% !important;
   }
 
   .nav-actions a.btn-outline {
